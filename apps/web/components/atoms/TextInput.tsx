@@ -9,6 +9,7 @@ export type TextInputProps = HTMLProps<HTMLInputElement> & FieldProps & {
   placeholder?: string; 
   errorMessage?: string;
   endAdornment?: ReactNode;
+  disabled?:boolean;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -28,7 +29,13 @@ export default function TextInput({ field, form, ...props }: TextInputProps): JS
         {...field}
         {...props}
         id={props.id || name}
-        className={`${errorMessage ? 'ring-2 ring-inset ring-red-400' : ''} peer bg-stone-100 outline-none pb-2 pt-[18px] px-3 rounded-lg text-sm text-stone-800 w-full placeholder-transparent`}
+        className={
+          `
+            ${errorMessage ? 'ring-2 ring-inset ring-red-400' : ''} 
+            ${props.disabled ? 'opacity-50 pointer-events-none' : ''}
+            peer bg-stone-100 outline-none pb-2 pt-[18px] px-3 rounded-lg text-sm text-stone-800 w-full placeholder-transparent
+          `
+        }
       />
       {props.endAdornment && (
         <div className={`${errorMessage ? 'top-0 bottom-4' : 'inset-y-0'} absolute right-0 flex items-center pr-3`}>

@@ -10,16 +10,12 @@ import {
   signOut,
   User,
 } from 'firebase/auth'
-
+import { doc, setDoc, serverTimestamp, getFirestore } from 'firebase/firestore';
 import firebaseConfig from '../configs/firebaseConfig';
 
-const firebaseApps = getApps();
-let firebaseApp;
-
-if (!firebaseApps.length) {
-  firebaseApp = initializeApp(firebaseConfig);
-}
-const auth = getAuth(firebaseApp);
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 async function forgotPassword(email: string): Promise<void> {
   sendPasswordResetEmail(auth, email);
@@ -37,8 +33,23 @@ async function setRememberUser(shouldRemeberUser: boolean): Promise<void> {
   );
 }
 
-async function registerWithEmailAndPassword(email: string, pasword: string): Promise<User> {
-  const { user } = await createUserWithEmailAndPassword(auth, email, pasword);
+async function registerWithEmailAndPassword(email: string, password: string, firstname: string, lastname: string): Promise<User> {
+  const { user } = await createUserWithEmailAndPassword(auth, email, password);
+
+  try {
+    await setDoc(doc(db, 'users', user.uid), {
+      accountId: user.uid,
+      createdAt: serverTimestamp(),
+      email: email,
+      firstname: firstname,
+      lastname: lastname,
+      lastLogin: serverTimestamp(),
+      profilePicture: "",
+      status: "active" 
+    });
+  } catch (err) {
+    console.log(err);
+  }
 
   return user;
 }

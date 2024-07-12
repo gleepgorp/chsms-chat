@@ -44,8 +44,8 @@ export default function Button({
     rounded-lg
     ${variantClasses[variant]}
     ${sizeClasses[size]}
-    ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-  `
+    ${disabled ? 'opacity-50 pointer-events-none' : ''}
+  `;
 
   return (
     <Component

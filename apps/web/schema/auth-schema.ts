@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-const passwordRules = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&}])[A-Za-z\d@$!%*?&]{8,}$/;
+const passwordRules = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};`':"\\|,.<>/?~`])[A-Za-z\d!@#$%^&*()_+\-=~`[\]{};':"\\|,.<>/?~`]{8,}$/;
 
 // sign up-schema
 export const signUpSchema = yup.object().shape({
@@ -22,7 +22,7 @@ export const signUpSchema = yup.object().shape({
   confirmPassword: yup  
     .string()
     .oneOf([yup.ref('password')], "Passwords must match")
-    .required() 
+    .required("Please confirm your password"), 
 })
 
 // login-schema
