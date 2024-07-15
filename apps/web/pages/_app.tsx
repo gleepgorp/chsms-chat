@@ -1,6 +1,8 @@
 import './global.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import AuthProvider from '../context/AuthContext';
+import Authenticated from '../components/atoms/Authenticated';
 
 export default function App({ Component, pageProps }: AppProps) {
   const defaultTitle = 'Chsms';
@@ -11,7 +13,13 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>{defaultTitle}</title>
         <link rel="icon" href="/favicon.png"/>
       </Head>
-      <Component {...pageProps} />
+      <AuthProvider>
+        <Authenticated>
+          <main>
+            <Component {...pageProps} />
+          </main>
+        </Authenticated>
+      </AuthProvider>
     </>
   );
 }

@@ -8,7 +8,7 @@ type LoadingScreenProps = {
 
 export default function LoadingScreen({ size }: LoadingScreenProps) {
   return (
-    <div className='absolute w-full h-full z-99 flex items-center justify-center'>
+    <div className='absolute w-full h-full z-99 flex items-center justify-center max-w-screen-xl mx-auto'>
       <LoadingSpinner size={size}/>
     </div>
   )

@@ -1,11 +1,10 @@
 
 import Image from 'next/image';
 import AuthContainer from 'apps/web/components/organisms/AuthContainer';
-import LoadingScreen from 'apps/web/components/molecules/LoadingScreen';
 import { signInWithEmailPassword } from 'apps/web/utils/firebase.utils';
 
 export default function Login () {
-  async function handleSignUp(email: string, password: string): Promise<void> {
+  async function handleSignIn(email: string, password: string): Promise<void> {
     await signInWithEmailPassword(email, password);
   };
 
@@ -28,7 +27,7 @@ export default function Login () {
             <span className="text-chsms-orange font-bold sm:text-8xl text-7xl">chsms!</span>
             <span className="text-stone-100 font-light text-lg mt-2">Login to start gossiping 🤭</span>
           </div>
-          <AuthContainer handleFormSubmit={handleSignUp}/>
+          <AuthContainer handleFormSubmit={handleSignIn}/>
         </div>
       </div>
     </div>

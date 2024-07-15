@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 type ButtonVariant = 'primary' | 'secondary' | 'gray' | 'link';
 type ButtonSize = 'sm' | 'md' | 'lg';
+type ButtonWidth = 'full' | 'standard';
 
 type ButtonProps = {
   children: React.ReactNode;
@@ -12,11 +13,13 @@ type ButtonProps = {
   variant?: ButtonVariant;
   size?: ButtonSize;
   disabled?: boolean;
+  adornment?:boolean;
+  width?: ButtonWidth;
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary: 'bg-chsms-orange hover:bg-chsms-orange/90 text-stone-100 active:scale-95',
-  secondary: 'border border-stone-400 text-stone-400 hover:text-stone-100 hover:bg-stone-400 active:scale-95',
+  secondary: 'bg-stone-700/10 hover:bg-stone-700/50 text-stone-100 active:scale-95',
   gray: 'bg-stone-400 text-stone-100 hover:bg-stone-400/90',
   link: 'bg-none text-stone-400 active:scale-95 text-sm'
 }
@@ -27,6 +30,11 @@ const sizeClasses: Record<ButtonSize, string> = {
   lg: 'px-4 py-3 text-lg'
 }
 
+const widthClasses: Record<ButtonWidth, string> = {
+  full: 'w-full',
+  standard: '',
+}
+
 export default function Button({
   children,
   href,
@@ -34,7 +42,9 @@ export default function Button({
   type = 'button',
   variant = 'primary',
   size = 'md',
-  disabled = false
+  disabled = false,
+  adornment = false,
+  width = 'standard',
 }: ButtonProps) {
   const Component = typeof href === 'string' ? Link : 'button';
 
@@ -44,7 +54,12 @@ export default function Button({
     rounded-lg
     ${variantClasses[variant]}
     ${sizeClasses[size]}
+    ${widthClasses[width]}
     ${disabled ? 'opacity-50 pointer-events-none' : ''}
+  `;
+
+  const adornmentClass = `
+    ${adornment ? 'flex flex-row gap-4' : ''}
   `;
 
   return (
@@ -54,7 +69,9 @@ export default function Button({
       type={type}
       onClick={onClick}
     >
-      {children}
+      <div className={adornmentClass}>
+        {children}
+      </div>
     </Component>
   )
 }

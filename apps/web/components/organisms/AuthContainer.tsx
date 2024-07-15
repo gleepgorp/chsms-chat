@@ -92,7 +92,7 @@ export default function AuthContainer(props: AuthContainerPropsType) {
               placeholder='password' 
               type={showPass ? 'text' : 'password'} 
               disabled={isSubmitting ? true : false}
-              endAdornment={
+              endadornment={
                 <PasswordEyeIcon 
                   isVisible={showPass}  
                   onToggle={toggleShowPass} 

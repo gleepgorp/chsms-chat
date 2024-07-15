@@ -8,7 +8,7 @@ export type TextInputProps = HTMLProps<HTMLInputElement> & FieldProps & {
   label?: string;
   placeholder?: string; 
   errorMessage?: string;
-  endAdornment?: ReactNode;
+  endadornment?: ReactNode;
   disabled?:boolean;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
@@ -37,10 +37,10 @@ export default function TextInput({ field, form, ...props }: TextInputProps): JS
           `
         }
       />
-      {props.endAdornment && (
+      {props.endadornment && (
         <div className={`${errorMessage ? 'top-0 bottom-4' : 'inset-y-0'} absolute right-0 flex items-center pr-3`}>
           <div className='cursor-pointer rounded-md text-stone-600 hover:bg-stone-200'>
-            {props.endAdornment}
+            {props.endadornment}
           </div>
         </div>
       )}

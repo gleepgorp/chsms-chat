@@ -7,10 +7,10 @@
 html,
 body {
   margin: 0;
-  background-color: #2F3031;
+  background-color: #27272a;
   font-family: 'Inter', 'sans-serif';
 }
 
 * {
-  transition: all 150ms ease-in-out;
+  transition: all 100ms ease-in-out;
 }

@@ -45,7 +45,7 @@ async function registerWithEmailAndPassword(email: string, password: string, fir
       lastname: lastname,
       lastLogin: serverTimestamp(),
       profilePicture: "",
-      status: "active" 
+      status: "active"  
     });
   } catch (err) {
     console.log(err);
