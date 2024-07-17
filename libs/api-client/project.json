@@ -1,0 +1,27 @@
+{
+  "name": "api-client",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api-client/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/api-client",
+        "main": "libs/api-client/src/index.ts",
+        "tsConfig": "libs/api-client/tsconfig.lib.json",
+        "assets": ["libs/api-client/*.md"],
+        "generatePackageJson": true,
+        "format": ["cjs"]
+      }
+    },
+    "generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "openapi-generator-cli generate -i http://localhost:3000/api-docs-json -g typescript-axios -o libs/api-client/src/lib"
+      }
+    } 
+  }
+}
