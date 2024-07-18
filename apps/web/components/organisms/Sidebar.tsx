@@ -2,7 +2,7 @@ import React from 'react'
 import LogoutButton from '../atoms/LogoutButton'
 import { IoChatbubbleEllipsesOutline , IoChatbubbleEllipses   } from "react-icons/io5";
 import { PiUser, PiUserBold  } from "react-icons/pi";
-import { Routes } from 'apps/web/constants/routes';
+import { Routes } from '../../constants/routes';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
@@ -39,6 +39,7 @@ export default function Sidebar() {
           text-stone-100 active:scale-95
           cursor-pointer
           text-base rounded-lg
+          ${isActive(menu.route) ? 'font-semibold' : ''}
           ${isActive(menu.route) ? 'bg-stone-700/40' : ''}
         `}
     >

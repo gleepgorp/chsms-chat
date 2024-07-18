@@ -12,6 +12,7 @@ import {
 } from 'firebase/auth'
 import { doc, setDoc, serverTimestamp, getFirestore } from 'firebase/firestore';
 import firebaseConfig from '../configs/firebaseConfig';
+import randomColorRGB from './randomRGB.util';
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
@@ -45,7 +46,9 @@ async function registerWithEmailAndPassword(email: string, password: string, fir
       lastname: lastname,
       lastLogin: serverTimestamp(),
       profilePicture: "",
-      status: "active"  
+      status: "active",
+      bio: "",
+      profileBgColor: randomColorRGB(),
     });
   } catch (err) {
     console.log(err);

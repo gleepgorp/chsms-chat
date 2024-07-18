@@ -1,3 +1,3 @@
 export class UserDocument {
-  static collectionName = 'user';
+  static collectionName = 'users';
 }

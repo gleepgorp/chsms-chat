@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import React, { useEffect, useState } from 'react'
 import { useAuth } from 'apps/web/context/AuthContext'
 import { useRouter } from 'next/router';
@@ -11,6 +12,7 @@ type PropsType = {
 export default function Authenticated({ children }: PropsType): React.ReactElement | null {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { query } = router;
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -19,11 +21,13 @@ export default function Authenticated({ children }: PropsType): React.ReactEleme
         router.push(Routes.HOME);
       } else if (!user && router.pathname === Routes.HOME) {
         router.push(Routes.LOGIN);
+      } else if (user && user?.uid === query.id) {
+        router.push('/profile');
       } else {
         setIsAuthorized(true);
       }
     }
-  }, [user, router, loading]);
+  }, [user, router, loading, query]);
 
   if (isAuthorized === null || loading) {
     return (

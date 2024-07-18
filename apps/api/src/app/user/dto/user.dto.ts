@@ -17,4 +17,10 @@ export class UserDTO {
 
   @IsString()
   readonly status: string;
+
+  @IsString()
+  readonly bio?: string;
+
+  @IsString()
+  readonly profileBgColor?: string;
 };

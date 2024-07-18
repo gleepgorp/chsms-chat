@@ -1,7 +1,7 @@
-import React from 'react'
-import Image from 'next/image'
-import AuthContainer from 'apps/web/components/organisms/AuthContainer'
-import { registerWithEmailAndPassword } from 'apps/web/utils/firebase.utils'
+import React from 'react';
+import Image from 'next/image';
+import AuthContainer from '../components/organisms/AuthContainer';
+import { registerWithEmailAndPassword } from '../utils/firebase.utils';
 
 export default function CreateAccount(): JSX.Element {
   async function handleSignUp(email: string, password: string, firstname: string, lastname: string): Promise<void> {

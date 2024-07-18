@@ -5,4 +5,6 @@ export type ProfileType = {
   lastname?: string;
   profilePicture?: string;
   status?: string;
+  bio?: string;
+  profileBgColor?: string;
 };

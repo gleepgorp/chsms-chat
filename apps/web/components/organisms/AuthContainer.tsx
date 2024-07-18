@@ -5,7 +5,7 @@ import Button from '../atoms/Button';
 import PasswordEyeIcon from '../atoms/PasswordEyeIcon';
 import { Routes } from '../../constants/routes';
 import { Formik, Form, Field } from 'formik';
-import { loginSchema, signUpSchema } from 'apps/web/schema/auth-schema';
+import { loginSchema, signUpSchema } from '../../schema/auth-schema';
 import LoadingSpinner from '../atoms/LoadingSpinner';
 
 type AuthContainerPropsType = {
@@ -39,7 +39,7 @@ export default function AuthContainer(props: AuthContainerPropsType) {
       if (handleFormSubmit) {
         await handleFormSubmit(email, password, firstname, lastname);
       } else {
-        console.log('handleFormSubmit is not defined');
+        console.error('handleFormSubmit is not defined');
       }
       setIsLoading(false);
     } catch (err) {

@@ -1,15 +1,16 @@
-import MainLayout from '../../layout/MainLayout';
+import MainLayout from '../../layout/MainLayout'
+import { useRouter } from 'next/router';
 import React from 'react'
 import { useGetUserById } from '../../hooks/userQuery';
-import { useAuth } from '../../context/AuthContext';
 import LoadingScreen from '../../components/molecules/LoadingScreen';
 import ProfileContainer from '../../components//organisms/ProfileContainer';
 import { ProfileType } from 'types/Profile.type';
 
-export default function Index() {
-  const { user } = useAuth();
-  const { data: fetchedUser, isLoading } = useGetUserById(user?.uid as string);
-  
+export default function Profile() {
+  const router = useRouter();
+  const { query } = router;
+  const { data: fetchedUser, isLoading } = useGetUserById(query?.id as string);
+
   return (  
     <MainLayout>
       {isLoading ? (
@@ -20,5 +21,5 @@ export default function Index() {
     <ProfileContainer fetchedProfileData={fetchedUser as ProfileType}/>}
     </MainLayout>
   ) 
-} 
+}
 
