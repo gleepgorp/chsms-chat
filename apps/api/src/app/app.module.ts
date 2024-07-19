@@ -4,15 +4,20 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { AppService } from './app.service';
 import { FirestoreModule } from './firestore/firestore.module';
-import { UserModule } from './user/user.module';
 import { ConfigKeys } from '../config/config-keys';
 import { IPLimitMiddleware } from '../middleware/ip-limit';
+
+import { UserModule } from './user/user.module';
+import { ChatModule } from './chat/chat.module';
+import { MessageModule } from './message/message.module';
 
 @Module({
   controllers: [],
   imports: [
     FirestoreModule,
     UserModule,
+    ChatModule,
+    MessageModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

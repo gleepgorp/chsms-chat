@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import TextInput from '../atoms/TextInput';
+import TextInputFormik from '../atoms/TextInputFormik';
 import Button from '../atoms/Button';
 import PasswordEyeIcon from '../atoms/PasswordEyeIcon';
 import { Routes } from '../../constants/routes';
@@ -59,7 +59,7 @@ export default function AuthContainer(props: AuthContainerPropsType) {
             {signUpPath && 
               <>
                 <Field
-                  component={TextInput} 
+                  component={TextInputFormik} 
                   name='firstname'
                   id='firstname' 
                   label='firstname' 
@@ -67,7 +67,7 @@ export default function AuthContainer(props: AuthContainerPropsType) {
                   disabled={isSubmitting ? true : false}
                 />
                 <Field
-                  component={TextInput} 
+                  component={TextInputFormik} 
                   name='lastname'
                   id='lastname' 
                   label='lastname' 
@@ -78,7 +78,7 @@ export default function AuthContainer(props: AuthContainerPropsType) {
             }
             <Field
               name='email'
-              component={TextInput}
+              component={TextInputFormik}
               id='email' 
               label='email' 
               placeholder='email' 
@@ -86,7 +86,7 @@ export default function AuthContainer(props: AuthContainerPropsType) {
             />
             <Field
               name='password'
-              component={TextInput}
+              component={TextInputFormik}
               id='password' 
               label='password' 
               placeholder='password' 
@@ -101,7 +101,7 @@ export default function AuthContainer(props: AuthContainerPropsType) {
             />
             {signUpPath && 
               <Field
-                component={TextInput} 
+                component={TextInputFormik} 
                 name='confirmPassword'
                 id='confirmPassword' 
                 label='confirm password' 

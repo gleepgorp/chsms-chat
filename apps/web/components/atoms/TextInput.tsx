@@ -1,49 +1,38 @@
-import { ChangeEvent, HTMLProps, ReactNode } from 'react';
-import { FieldProps } from 'formik';
-import Label from './Label';
+import React, { ChangeEvent, ReactNode } from 'react'
 
-export type TextInputProps = HTMLProps<HTMLInputElement> & FieldProps & {
-  id: string; 
+type TextInputProps = {
   type?: string;
   label?: string;
   placeholder?: string; 
-  errorMessage?: string;
-  endadornment?: ReactNode;
-  disabled?:boolean;
+  adornment?: ReactNode;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
-export default function TextInput({ field, form, ...props }: TextInputProps): JSX.Element {
-  const { name } = field;
-  const { errors, touched } = form;
-  const errorMessage = touched[name] && errors[name] ? errors[name] as string : undefined;
+export default function TextInput(props: TextInputProps): JSX.Element {
+  const { type, label, placeholder, adornment, onChange } = props;
 
   return (
-    <Label
-      label={props.label}
-      isVisible={!!props.label}
-      errorMessage={errorMessage}
-      labelVariant={errorMessage ? 'error' : 'standard'}
-    >
-      <input 
-        {...field}
-        {...props}
-        id={props.id || name}
-        className={
-          `
-            ${errorMessage ? 'ring-2 ring-inset ring-red-400' : ''} 
-            ${props.disabled ? 'opacity-50 pointer-events-none' : ''}
-            peer bg-stone-100 outline-none pb-2 pt-[18px] px-3 rounded-lg text-sm text-stone-800 w-full placeholder-transparent
-          `
-        }
-      />
-      {props.endadornment && (
-        <div className={`${errorMessage ? 'top-0 bottom-4' : 'inset-y-0'} absolute right-0 flex items-center pr-3`}>
-          <div className='cursor-pointer rounded-md text-stone-600 hover:bg-stone-200'>
-            {props.endadornment}
+    <div className='relative flex items-center'>
+      {adornment && (
+        <div className='absolute left-0 pl-4'>
+          <div className='cursor-pointer rounded-md text-stone-400'>
+          {adornment}
           </div>
         </div>
       )}
-    </Label>
+      <input 
+        type={type}
+        placeholder={placeholder}
+        className='
+          outline-none    
+          py-2 pr-4 pl-10
+          bg-stone-600/40
+          text-stone-100
+          w-full rounded-full
+          placeholder:text-stone-400
+          '
+      />
+    </div>
   )
 }
+

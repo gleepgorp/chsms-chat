@@ -34,13 +34,13 @@ export default function Sidebar() {
     <div 
       key={index} 
       className={`
-          bg-[#212021]
+          bg-none
+          ${isActive(menu.route) && 'bg-stone-700 hover:bg-stone-700'}
           hover:bg-stone-700/40
           text-stone-100 active:scale-95
           cursor-pointer
           text-base rounded-lg
-          ${isActive(menu.route) ? 'font-semibold' : ''}
-          ${isActive(menu.route) ? 'bg-stone-700/40' : ''}
+          ${isActive(menu.route) && 'font-semibold'}
         `}
     >
       <Link href={menu.route} className='px-3 py-2 flex flex-row gap-4 items-center'>
@@ -51,7 +51,7 @@ export default function Sidebar() {
   ))
 
   return (
-    <div className='py-6 px-3 min-w-[256px] bg-stone-900/50'>
+    <div className='py-6 px-3 min-w-[250px] bg-stone-900/50'>
       <div className='flex flex-col h-full'>
         <div className='flex-1'>{mappedMenu}</div>
         <LogoutButton />

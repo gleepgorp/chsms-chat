@@ -1,3 +1,3 @@
 export class MessageDocument {
-  static collectionName = 'message';
+  static collectionName = 'messages';
 }

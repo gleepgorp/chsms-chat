@@ -1,3 +1,3 @@
 export class ChatDocument {
-  static collectionName = 'chat';
+  static collectionName = 'chats';
 }
