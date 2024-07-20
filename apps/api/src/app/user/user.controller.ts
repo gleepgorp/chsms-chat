@@ -1,5 +1,5 @@
 import { ProfileType } from "types/Profile.type";
-import { Controller, Get, Param } from "@nestjs/common";
+import { Controller, Get, Param, Query } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { UserService } from "./user.service";
 
@@ -11,5 +11,11 @@ export class UserController {
   @Get(':id')
   findById(@Param('id') id: string): Promise<ProfileType> {
     return this.userService.findById(id);
+  }
+
+  @Get('/search')
+  searchUsers(
+    @Query('term') query: string): Promise<ProfileType[]> {
+    return this.userService.searchUsers(query);
   }
 }

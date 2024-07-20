@@ -35,8 +35,8 @@ export default function Sidebar() {
       key={index} 
       className={`
           bg-none
-          ${isActive(menu.route) && 'bg-stone-700 hover:bg-stone-700'}
-          hover:bg-stone-700/40
+          ${isActive(menu.route) && 'bg-stone-700'}
+          ${!isActive(menu.route) && 'hover:bg-stone-700/40'}
           text-stone-100 active:scale-95
           cursor-pointer
           text-base rounded-lg

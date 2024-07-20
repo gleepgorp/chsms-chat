@@ -4,6 +4,7 @@ export enum ChatEnum {
 }
 
 export type ChatType = {
+  id: string;
   participants: string[];
   lastMessageId: string;
   chatName: string;

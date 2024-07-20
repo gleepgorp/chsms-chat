@@ -37,6 +37,6 @@ import { MessageModule } from './message/message.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void{
-    consumer.apply(IPLimitMiddleware).forRoutes('*');
+    // consumer.apply(IPLimitMiddleware).forRoutes('*');
   }
 }

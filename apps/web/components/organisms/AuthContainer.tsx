@@ -12,7 +12,7 @@ type AuthContainerPropsType = {
   handleFormSubmit?: (email: string, password: string, firstname: string, lastname: string) => Promise<void>;
 }
 
-export default function AuthContainer(props: AuthContainerPropsType) {
+export default function AuthContainer(props: AuthContainerPropsType): JSX.Element {
   const router = useRouter();
   const { handleFormSubmit } = props;
 

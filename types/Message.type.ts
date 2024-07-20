@@ -1,4 +1,5 @@
 export type MessageType = {
+  id: string;
   chatId: string;
   senderId: string;
   content: string;

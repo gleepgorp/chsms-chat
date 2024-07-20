@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import Tooltip from './Tooltip';
 import { extractInitials } from '../../utils/extractInitials.util';
 
 type ProfilePhotoProps = {
@@ -29,12 +28,6 @@ export default function ProfilePhoto(props: ProfilePhotoProps) {
           </label>
         }
       </div>
-      <Tooltip 
-        id='upload-photo'
-        place='bottom'
-        content='Upload photo'
-        arrowColor='transparent'
-      />
     </>
   )
 }

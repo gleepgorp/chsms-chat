@@ -1,10 +1,11 @@
-import { ArrayMinSize, IsArray, IsOptional, IsString } from "class-validator";
+import { IsArray, IsOptional, IsString } from "class-validator";
 
 export class MessageDTO {
   @IsString()      
   content?: string;
 
   @IsString()
+  @IsOptional()
   chatId?: string;
 
   @IsString()
@@ -12,6 +13,8 @@ export class MessageDTO {
 
   @IsArray()
   @IsOptional()
-  @ArrayMinSize(2)
   readBy?: string[];
+
+  @IsArray()
+  recipientId?: string[];
 }

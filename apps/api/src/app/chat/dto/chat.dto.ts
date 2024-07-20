@@ -7,7 +7,6 @@ export class ChatDTO {
   id?: string;
 
   @IsArray()
-  @ArrayMinSize(2)
   participants?: string[];
 
   @IsString()

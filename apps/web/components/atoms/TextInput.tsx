@@ -3,13 +3,14 @@ import React, { ChangeEvent, ReactNode } from 'react'
 type TextInputProps = {
   type?: string;
   label?: string;
+  value?: string;
   placeholder?: string; 
   adornment?: ReactNode;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
 export default function TextInput(props: TextInputProps): JSX.Element {
-  const { type, label, placeholder, adornment, onChange } = props;
+  const { type, label, placeholder, adornment, onChange, value } = props;
 
   return (
     <div className='relative flex items-center'>
@@ -22,6 +23,8 @@ export default function TextInput(props: TextInputProps): JSX.Element {
       )}
       <input 
         type={type}
+        value={value}
+        onChange={onChange}
         placeholder={placeholder}
         className='
           outline-none    

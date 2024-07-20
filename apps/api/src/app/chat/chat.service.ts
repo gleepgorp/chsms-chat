@@ -14,11 +14,6 @@ export class ChatService {
     private db,
   ) {}
 
-  async checkChatExist(chatId: string): Promise<boolean> {
-    const chatDoc = await this.chatCollection.doc(chatId).get();
-    return chatDoc.exists;
-  }
-
   async createChat(chatData: ChatDTO): Promise<ChatType> {
     const writeBatch = this.db.batch();
     const docRef = this.chatCollection.doc();
@@ -38,5 +33,20 @@ export class ChatService {
       lastMessageId: messageId,
       updatedAt: new Date(),
     })
+  }
+
+  async findExistingChat(senderId: string, recipients: string[]): Promise<{ id: string } | null> {
+    const allParticipants = [senderId, ...recipients].sort();
+
+    const chatSnapshot = await this.chatCollection
+    .where('participants', '==', allParticipants)
+    .limit(1)
+    .get();
+
+    if (!chatSnapshot.empty) {
+      return { id: chatSnapshot.docs[0].id };
+    }
+
+    return null;
   }
 }

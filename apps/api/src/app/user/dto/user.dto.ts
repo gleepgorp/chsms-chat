@@ -3,24 +3,24 @@ import { IsEmail, IsString, IsOptional } from "class-validator";
 
 export class UserDTO {
   @IsEmail()
-  readonly email: string;
+  email: string;
 
   @IsString()
-  readonly firstname: string;
+  firstname: string;
 
   @IsString()
-  readonly lastname: string;
+  lastname: string;
 
   @IsOptional()
   @IsString()
-  readonly profilePicture?: string;
+  profilePicture?: string;
 
   @IsString()
-  readonly status: string;
+  status: string;
 
   @IsString()
-  readonly bio?: string;
+  bio?: string;
 
   @IsString()
-  readonly profileBgColor?: string;
+  profileBgColor?: string;
 };

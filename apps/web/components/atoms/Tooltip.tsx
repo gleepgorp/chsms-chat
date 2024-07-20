@@ -1,21 +1,30 @@
-import React from 'react'
-import { PlacesType, Tooltip as ReactTooltip } from 'react-tooltip';
+import React, { useState } from 'react'
+import TooltipContent from './TooltipContent'
+import { TipPlacement } from './TooltipContent';
 
 type TooltipProps = {
-  id?: string;
-  place?: PlacesType;
-  content?: string;
-  arrowColor?: string;
-}
+  content: React.ReactNode;
+  placement?: TipPlacement;
+  children: React.ReactNode;
+};
 
-export default function Tooltip({ id, place = 'bottom', content, arrowColor }: TooltipProps) {
+export default function Tooltip(props: TooltipProps) {
+  const { content, placement = 'bottom', children } = props;
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+
   return (
-    <ReactTooltip 
-      id={id}
-      place={place}
-      content={content}
-      arrowColor={arrowColor}
-    />
+    <div
+      className='relative inline-block'
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {children}
+      {isHovered && 
+        <TooltipContent placement={placement}>
+        {content}
+      </TooltipContent>
+      }
+    </div>
   )
 }
 
