@@ -16,12 +16,36 @@ export class UserService {
   async findById(id: string): Promise<ProfileType> {
     try {
       const snapshot = await this.userCollection.doc(id).get();
-      const user: ProfileType = {...snapshot.data(), id: snapshot.id};
       
-      return user;
+      return { ...snapshot.data(), id: snapshot.id } as ProfileType;
     } catch (err) {
-      throw new HttpException(err.details, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  async findByIds(ids: string[]): Promise<ProfileType[]> {
+    const userPromise = ids.map(async (id) => {
+      const userSnapshot = await this.userCollection
+      .where('accountId', '==', id)
+      .get();
+
+      const users = userSnapshot.docs.map((doc) => ({
+        ...doc.data(),
+      }));
+
+      const formattedUsers = users.map((user) => ({
+        accountId: user.accountId || '',
+        profilePicture: user.profilePicture || '',
+        fullname: `${user.firstname || ''} ${user.lastname || ''}`,
+        status: user.status || '',
+        profileBgColor: user.profileBgColor || ''
+      }));
+  
+      return formattedUsers;
+    });
+
+    const users = await Promise.all(userPromise);
+    return users as ProfileType[];
   }
 
   async searchUsers(searchTerm: string, limit = 10): Promise<ProfileType[]> {
@@ -65,7 +89,7 @@ export class UserService {
       return users.slice(0, limit);
     } catch (err) {
       console.error('Error in searchUsers:', err);
-      throw new HttpException(err.message || 'An error occurred while searching users', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

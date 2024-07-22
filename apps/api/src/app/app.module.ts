@@ -10,6 +10,7 @@ import { IPLimitMiddleware } from '../middleware/ip-limit';
 import { UserModule } from './user/user.module';
 import { ChatModule } from './chat/chat.module';
 import { MessageModule } from './message/message.module';
+import { SharedModule } from './shared.module';
 
 @Module({
   controllers: [],
@@ -18,6 +19,7 @@ import { MessageModule } from './message/message.module';
     UserModule,
     ChatModule,
     MessageModule,
+    SharedModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -37,6 +39,6 @@ import { MessageModule } from './message/message.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void{
-    // consumer.apply(IPLimitMiddleware).forRoutes('*');
+    consumer.apply(IPLimitMiddleware).forRoutes('*');
   }
 }

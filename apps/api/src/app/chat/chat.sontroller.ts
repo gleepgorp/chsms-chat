@@ -14,4 +14,8 @@ export class ChatController {
     return this.chatService.createChat(post);
   }
 
+  @Get(':id')
+  getChatsByUserId(@Param('id') userId: string): Promise<ChatType[]> {
+    return this.chatService.getChatsByUserId(userId);
+  }
 }

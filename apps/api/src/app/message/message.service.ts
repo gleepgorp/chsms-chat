@@ -1,7 +1,7 @@
 import { FirestoreDatabaseProvider } from "../firestore/firestore.providers";
 import { CollectionReference } from "@google-cloud/firestore";
 import { MessageDocument } from "../../documents/message.document";
-import { Injectable, Inject, HttpException, HttpStatus } from "@nestjs/common";
+import { Injectable, Inject, forwardRef } from "@nestjs/common";
 import { MessageType } from 'types/Message.type'
 import { MessageDTO } from "./dto/message.dto";
 import { ChatService } from "../chat/chat.service";
@@ -15,8 +15,9 @@ import { ChatDocument } from "../../documents/chat.document";
       private messageCollection: CollectionReference<MessageType>,
       @Inject(ChatDocument.collectionName)  
       private chatCollection: CollectionReference<MessageType>,
+      @Inject(forwardRef(() => ChatService))
       private chatService: ChatService,
-      @Inject(FirestoreDatabaseProvider)
+      @Inject(FirestoreDatabaseProvider)  
       private db, 
     ) {}
 
@@ -48,8 +49,9 @@ import { ChatDocument } from "../../documents/chat.document";
       const writeBatch = this.db.batch(); 
       const docRef = this.messageCollection.doc();
       writeBatch.set(docRef, {
+        messageId: docRef.id,
         timestamp: new Date(),
-        chatId: chatId,
+        chatId: chatId, 
         ...messageData,
       });
       
@@ -66,6 +68,24 @@ import { ChatDocument } from "../../documents/chat.document";
       await this.chatService.updateLastMessage(chatId, message.id);
 
       return message;
+    }
+
+    async getMessageByLastMessageId(id: string): Promise<MessageType> {
+      const messageSnapshot = await this.messageCollection
+      .where('messageId', '==', id)
+      .get();
+
+      const messages = messageSnapshot.docs.map((doc) => ({
+        ...doc.data(),
+      }));
+
+      const formattedMessages = messages.map((message) => ({
+        content: message.content || '',
+        timestamp: message.timestamp || '',
+        senderId: message .senderId || ''
+      }));
+
+      return formattedMessages as MessageType;
     }
   }
 

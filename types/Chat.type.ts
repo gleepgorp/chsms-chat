@@ -1,3 +1,5 @@
+import { ProfileType } from "./Profile.type";
+
 export enum ChatEnum {
   DIRECT = 'direct',
   GROUP = 'group',
@@ -5,7 +7,7 @@ export enum ChatEnum {
 
 export type ChatType = {
   id: string;
-  participants: string[];
+  participants: ProfileType[];
   lastMessageId: string;
   chatName: string;
   creatorId: string;
