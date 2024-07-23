@@ -236,6 +236,39 @@ export const MessageApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        messageControllerGetMessagesByChatId: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('messageControllerGetMessagesByChatId', 'id', id)
+            const localVarPath = `/api/message/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -258,6 +291,18 @@ export const MessageApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['MessageApi.messageControllerCreateMessage']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async messageControllerGetMessagesByChatId(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.messageControllerGetMessagesByChatId(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['MessageApi.messageControllerGetMessagesByChatId']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -276,6 +321,15 @@ export const MessageApiFactory = function (configuration?: Configuration, basePa
          */
         messageControllerCreateMessage(body: object, options?: any): AxiosPromise<void> {
             return localVarFp.messageControllerCreateMessage(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        messageControllerGetMessagesByChatId(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.messageControllerGetMessagesByChatId(id, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -297,6 +351,17 @@ export class MessageApi extends BaseAPI {
     public messageControllerCreateMessage(body: object, options?: RawAxiosRequestConfig) {
         return MessageApiFp(this.configuration).messageControllerCreateMessage(body, options).then((request) => request(this.axios, this.basePath));
     }
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MessageApi
+     */
+    public messageControllerGetMessagesByChatId(id: string, options?: RawAxiosRequestConfig) {
+        return MessageApiFp(this.configuration).messageControllerGetMessagesByChatId(id, options).then((request) => request(this.axios, this.basePath));
+    }
 }
 
 
@@ -309,11 +374,11 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
     return {
         /**
          * 
-         * @param {any} id User ID
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerFindById: async (id: any, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        userControllerFindById: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('userControllerFindById', 'id', id)
             const localVarPath = `/api/user/{id}`
@@ -388,11 +453,11 @@ export const UserApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {any} id User ID
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerFindById(id: any, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async userControllerFindById(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerFindById(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.userControllerFindById']?.[localVarOperationServerIndex]?.url;
@@ -422,11 +487,11 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
     return {
         /**
          * 
-         * @param {any} id User ID
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerFindById(id: any, options?: any): AxiosPromise<void> {
+        userControllerFindById(id: string, options?: any): AxiosPromise<void> {
             return localVarFp.userControllerFindById(id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -450,12 +515,12 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
 export class UserApi extends BaseAPI {
     /**
      * 
-     * @param {any} id User ID
+     * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public userControllerFindById(id: any, options?: RawAxiosRequestConfig) {
+    public userControllerFindById(id: string, options?: RawAxiosRequestConfig) {
         return UserApiFp(this.configuration).userControllerFindById(id, options).then((request) => request(this.axios, this.basePath));
     }
 

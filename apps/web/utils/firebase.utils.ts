@@ -12,7 +12,7 @@ import {
 } from 'firebase/auth'
 import { doc, setDoc, serverTimestamp, getFirestore } from 'firebase/firestore';
 import firebaseConfig from '../configs/firebaseConfig';
-import randomColorRGB from './randomRGB.util';
+import randomColorRGB from './randomRGB.utils';
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);

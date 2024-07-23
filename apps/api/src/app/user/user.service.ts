@@ -24,28 +24,21 @@ export class UserService {
   }
 
   async findByIds(ids: string[]): Promise<ProfileType[]> {
-    const userPromise = ids.map(async (id) => {
+    const userPromises = ids.map(async (id) => {
       const userSnapshot = await this.userCollection
-      .where('accountId', '==', id)
-      .get();
-
-      const users = userSnapshot.docs.map((doc) => ({
-        ...doc.data(),
-      }));
-
-      const formattedUsers = users.map((user) => ({
-        accountId: user.accountId || '',
-        profilePicture: user.profilePicture || '',
-        fullname: `${user.firstname || ''} ${user.lastname || ''}`,
-        status: user.status || '',
-        profileBgColor: user.profileBgColor || ''
-      }));
+        .where('accountId', '==', id)
+        .limit(1)
+        .get();
   
-      return formattedUsers;
+      if (userSnapshot.empty) {
+        return null;
+      }
+  
+      return userSnapshot.docs[0].data() as ProfileType;
     });
-
-    const users = await Promise.all(userPromise);
-    return users as ProfileType[];
+  
+    const users = await Promise.all(userPromises);
+    return users.filter((user): user is ProfileType => user !== null);
   }
 
   async searchUsers(searchTerm: string, limit = 10): Promise<ProfileType[]> {

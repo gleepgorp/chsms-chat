@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { extractInitials } from '../../utils/extractInitials.util';
+import { extractInitials } from '../../utils/extractInitials.utils';
 
 type ProfilePhotoProps = {
   profileUrl?: string;

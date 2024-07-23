@@ -1,3 +1,4 @@
+import { MessageType } from "./Message.type";
 import { ProfileType } from "./Profile.type";
 
 export enum ChatEnum {
@@ -13,4 +14,5 @@ export type ChatType = {
   creatorId: string;
   type: ChatEnum;
   updatedAt: string;
+  lastMessage: MessageType
 }

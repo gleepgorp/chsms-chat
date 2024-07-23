@@ -65,15 +65,19 @@ export class ChatService {
         const chatData = doc.data();
         const participants = chatData.participants;
         const lastMessageId = chatData.lastMessageId;
-        const users = await this.userService.findByIds(participants as string[]);
-        const lastMessages = await this.messageService.getMessageByLastMessageId(lastMessageId);
+        const users = await this.userService.findByIds(participants as unknown as string[]);
+        const lastMessage = await this.messageService.getMessageByLastMessageId(lastMessageId);
 
-      return {
-        chatId: doc.id,
-        ...chatData,
-        participants: users,
-        lastMessage: lastMessages,
-      } as ChatType;
+        return {
+          id: doc.id,
+          participants: users,
+          lastMessageId: lastMessageId,
+          chatName: chatData.chatName || '',
+          creatorId: chatData.creatorId,
+          type: chatData.type,
+          updatedAt: chatData.updatedAt,
+          lastMessage: lastMessage || null,
+        };
       }));
 
       return chats as unknown as ChatType[];

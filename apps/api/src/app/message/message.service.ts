@@ -1,12 +1,12 @@
-import { FirestoreDatabaseProvider } from "../firestore/firestore.providers";
-import { CollectionReference } from "@google-cloud/firestore";
-import { MessageDocument } from "../../documents/message.document";
-import { Injectable, Inject, forwardRef } from "@nestjs/common";
+import { FirestoreDatabaseProvider } from '../firestore/firestore.providers';
+import { CollectionReference } from '@google-cloud/firestore';
+import { MessageDocument } from '../../documents/message.document';
+import { Injectable, Inject, forwardRef, HttpException, HttpStatus } from '@nestjs/common';
 import { MessageType } from 'types/Message.type'
-import { MessageDTO } from "./dto/message.dto";
-import { ChatService } from "../chat/chat.service";
-import { ChatEnum } from "types/Chat.type";
-import { ChatDocument } from "../../documents/chat.document";
+import { MessageDTO } from './dto/message.dto';
+import { ChatService } from '../chat/chat.service';
+import { ChatEnum } from 'types/Chat.type';
+import { ChatDocument } from '../../documents/chat.document';
 
 @Injectable() 
   export class MessageService {
@@ -70,22 +70,40 @@ import { ChatDocument } from "../../documents/chat.document";
       return message;
     }
 
-    async getMessageByLastMessageId(id: string): Promise<MessageType> {
+    async getMessageByLastMessageId(id: string): Promise<MessageType | null> {
       const messageSnapshot = await this.messageCollection
-      .where('messageId', '==', id)
-      .get();
+        .where('messageId', '==', id)
+        .limit(1)
+        .get();
+    
+      if (messageSnapshot.empty) {
+        return null;
+      }
+    
+      return messageSnapshot.docs[0].data() as MessageType;
+    }
 
-      const messages = messageSnapshot.docs.map((doc) => ({
-        ...doc.data(),
-      }));
+    async getMessagesByChatId(id: string): Promise<MessageType[]> {
+      try {
+        const messageSnapshot = await this.messageCollection
+        .where('chatId', '==', id)
+        .get();
+        
+        const message = messageSnapshot.docs.map((doc) => ({
+          ...doc.data()
+        }));
 
-      const formattedMessages = messages.map((message) => ({
-        content: message.content || '',
-        timestamp: message.timestamp || '',
-        senderId: message .senderId || ''
-      }));
+        const formattedMessages = message.map((message) => ({
+          content: message.content,
+          timestamp: message.timestamp,
+          recipientId: message.recipientId,
+          senderId: message.senderId,
+        }));
 
-      return formattedMessages as MessageType;
+        return formattedMessages as unknown as MessageType[];
+      } catch (err) {
+        throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
     }
   }
 

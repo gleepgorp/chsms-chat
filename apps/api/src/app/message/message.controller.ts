@@ -13,4 +13,9 @@ export class MessageController {
   createMessage(@Body() post: CreateMessageDTO): Promise<MessageType> {
     return this.messageSevice.createMessage(post);
   }
+
+  @Get(':id')
+  getMessagesByChatId(@Param('id') chatId: string): Promise<MessageType[]>{
+    return this.messageSevice.getMessagesByChatId(chatId);
+  }
 }
