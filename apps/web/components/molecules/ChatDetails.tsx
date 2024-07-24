@@ -3,6 +3,10 @@ import MeatballMenu from '../atoms/MeatballMenu'
 import { ChatType } from 'types/Chat.type';
 import { useAuth } from '../../context/index';
 import { convertTimestamp } from '../../utils/index';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useChatContext } from '../../context/ChatContext';
+import ChatProfilePicture from '../atoms/ChatProfilePicture';
 
 type ChatDetailsProps = {
   fetchedChats: ChatType[];
@@ -11,35 +15,79 @@ type ChatDetailsProps = {
 
 export default function ChatDetails(props: ChatDetailsProps) {
   const { fetchedChats, isChatLoading } = props;
+  const { setSelectedChatId, setFirstnameInitial, setLastnameInitial, setProfile, setFirstname, setLastname } = useChatContext();
   const { user } = useAuth();
+  const router = useRouter();
+  const { id } = router.query;
 
-  if (!fetchedChats || fetchedChats.length === 0) {
-    return <div>No chats available.</div>;
-  }
-  
-  return (
-    <div>
-      {fetchedChats.map((data, index) => (
-        <div key={index} className='hover:bg-stone-500/20 rounded-xl py-4 px-3 cursor-pointer text-stone-100 flex flex-row items-center justify-between'>
+  const mappedChats = fetchedChats.map((data, index) => {
+    const participants = data.participants.filter(p => p.accountId !== user?.uid);
+    const recipient = participants.find(p => p.accountId !== user?.uid);
+
+    if (!recipient || !user) {
+      return <div key={index} className='text-stone-400'>User not available</div>
+    }
+
+    const firstname = recipient.firstname;
+    const lastname = recipient.lastname;
+    const firstnameInitial = recipient.firstname.charAt(0);
+    const lastnameInitial = recipient.lastname.charAt(0);
+    const profileBg = recipient.profileBgColor;
+    const profilePicture = recipient.profilePicture;
+    const profile = !profilePicture ? profileBg : ''
+    const ownerLastMessage = data.lastMessage.senderId === user.uid ? 'You: ' : ''
+    const isActive = data.id === id ? 'bg-stone-500/40 hover:bg-stone-500/40' : ''
+
+    const handleChatSelect = (chatId: string) => {
+      setSelectedChatId(chatId);
+      setFirstnameInitial(firstnameInitial);
+      setLastnameInitial(lastnameInitial);
+      setFirstname(firstname);
+      setLastname(lastname);
+      setProfile(profile);
+    }
+
+    return (
+      <Link 
+        key={index}
+        onClick={() => handleChatSelect(data.id)}
+        href={`/chat/${data.id}`} 
+      >
+        <div 
+          className={
+            `${isActive}
+            hover:bg-stone-500/20 rounded-xl py-4 px-3 cursor-pointer text-stone-100 flex flex-row items-center justify-between group`
+          }
+          >
           <div className='flex flex-row items-center gap-2'>
-            <div className='flex items-center justify-center w-12 h-12 rounded-full'>
-              <span className=''>VT</span>
-            </div>
+            <ChatProfilePicture 
+              profile={profile}
+              firstnameInitial={firstnameInitial}
+              lastnameInitial={lastnameInitial}
+              variant='md'
+            />
             <div className='flex flex-col'>
-              <span className='font-medium text-md '>{data.participants?.map(p => p.firstname) || 'No data'}</span>
-              <div className='flex flex-row gap-2 text-sm text-stone-400'>
-                <span>{data.lastMessage.content}</span>
+              <span className='font-medium text-md capitalize'>
+                {`${firstname} ${lastname}`}
+              </span>
+              <div className='flex flex-row gap-2 text-sm text-stone-400 whitespace-nowrap'>
+                <span className='truncate max-w-64'>
+                  {ownerLastMessage} 
+                  {data.lastMessage.content}
+                </span>
                 <span className='font-bold'>·</span>
-                <span>{convertTimestamp(data.lastMessage.timestamp).toLocaleString()}</span>
+                <span>{convertTimestamp(data.lastMessage.timestamp).formatted}</span>
               </div>
             </div>
           </div>
           <div>
-            <MeatballMenu />
+            <MeatballMenu isHidden={true}/>
           </div>
         </div>
-      ))}
-    </div>
-  );
+      </Link>
+    )
+  })
+  
+  return <>{mappedChats}</>;
 }
 

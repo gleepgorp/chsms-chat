@@ -11,7 +11,7 @@ export default function Sidebar() {
   function isActive(route: string) {
     const cleanRoute = route.startsWith('/') ? route.slice(1) : route;
     if (cleanRoute === '') {
-      return router.pathname === '/';
+      return router.pathname === '/' || router.pathname.includes('/chat');
     }
     return router.pathname === `/${cleanRoute}` || router.pathname.startsWith(`/${cleanRoute}/`);
   };

@@ -1,10 +1,36 @@
 import React from 'react'
+import ChatMessageHeader from '../atoms/ChatMessageHeader';
 
-export default function ChatMessageContainer() {
+type ChatMessageContainerProps = {
+  chatId: string | null;
+  firstnameInitiial: string;
+  lastnameInitial: string;
+  profile: string;
+  firstname: string;
+  lastname: string;
+}
+
+export default function ChatMessageContainer(props: ChatMessageContainerProps) {
+  const { chatId, firstnameInitiial, lastnameInitial, profile, firstname, lastname } = props;
+
   return (
-    <div className='p-2 w-full h-full'>
-      <div className='p-2 w-full h-full bg-stone-700/20'>
-        <span className='text-slate-50'>ChatMessageContainer</span>
+    <div className='w-full h-full rounded-lg'>
+      <div className='p-2 bg-stone-700/20 h-full'>
+        <div className='flex flex-col h-full'>
+          <ChatMessageHeader 
+            firstname={firstname}
+            lastname={lastname}
+            profile={profile}
+            lastnameInitial={lastnameInitial}
+            firstnameInitiial={firstnameInitiial}
+          />
+          <div className='bg-red-200 flex-1'>
+            asd
+          </div>
+          <div className='bg-lime-100'>
+            Chat footer
+          </div>
+        </div>
       </div>
     </div>
   )

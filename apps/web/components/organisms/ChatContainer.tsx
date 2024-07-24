@@ -24,20 +24,22 @@ export default function ChatContainer(props: ChatContainerType): JSX.Element {
 
   return (
     <>
-    <div className='min-w-[480px] h-full flex-1 p-2'>
-      <div className='bg-stone-700/20 h-full rounded-lg p-2 flex flex-col gap-3'>
+    <div className='min-w-[480px] h-full flex-1 pt-3 pl-3 pb-3'>
+      <div className='bg-stone-700/20 h-full rounded-lg p-3 flex flex-col'>
         <div className='flex flex-col gap-3'>
           <div className='flex flex-row items-center justify-between'>
             <span className='text-stone-100 font-bold text-xl'>Chats</span>
             <NewChat />
           </div>
-          <TextInput 
-            type='text'
-            value={searchItem}
-            placeholder='Search a chat' 
-            onChange={(e) => setSearchItem(e.target.value)}
-            adornment={<IoSearchSharp />}
-            />
+          <div className='pb-3'>
+            <TextInput 
+              type='text'
+              value={searchItem}
+              placeholder='Search a chat' 
+              onChange={(e) => setSearchItem(e.target.value)}
+              adornment={<IoSearchSharp />}
+              />
+          </div>
         </div>
         <ChatDetails 
           isChatLoading={isChatLoading}
@@ -45,7 +47,7 @@ export default function ChatContainer(props: ChatContainerType): JSX.Element {
         />
       </div>
     </div>
-    <div className='w-full'>{children}</div>
+    <div className='w-full pt-3 pr-3 pb-3'>{children}</div>
     </>
   )
 }
