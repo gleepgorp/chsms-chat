@@ -7,7 +7,7 @@ type MainLayoutProps = {
 
 export default function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className="w-full relative h-screen overflow-hidden ">
+    <div className="w-full relative h-screen">
       <div className="flex flex-row z-50">
         <Sidebar />
         <div className="bg-color3 text-white w-full relative h-screen">{children}</div>

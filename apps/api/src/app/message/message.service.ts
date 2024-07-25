@@ -87,6 +87,7 @@ import { ChatDocument } from '../../documents/chat.document';
       try {
         const messageSnapshot = await this.messageCollection
         .where('chatId', '==', id)
+        .orderBy('timestamp', 'asc')
         .get();
         
         const message = messageSnapshot.docs.map((doc) => ({

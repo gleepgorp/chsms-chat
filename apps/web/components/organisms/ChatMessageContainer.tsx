@@ -1,34 +1,33 @@
 import React from 'react'
+import { useRouter } from 'next/router';
 import ChatMessageHeader from '../atoms/ChatMessageHeader';
+import ChatMessageFooter from '../atoms/ChatMessageFooter';
+import { useGetMessagesByChatId } from '../../hooks/messageQuery';
+import ChatMessageBody from '../atoms/ChatMessageBody';
 
 type ChatMessageContainerProps = {
-  chatId: string | null;
-  firstnameInitiial: string;
-  lastnameInitial: string;
-  profile: string;
-  firstname: string;
-  lastname: string;
+  chatId: string;
 }
 
-export default function ChatMessageContainer(props: ChatMessageContainerProps) {
-  const { chatId, firstnameInitiial, lastnameInitial, profile, firstname, lastname } = props;
+export default function ChatMessageContainer(props: ChatMessageContainerProps): JSX.Element {
+  const { chatId } = props;
+  const router = useRouter();
+  const { id } = router.query;
+  const { data: fetchedMessages, isLoading } = useGetMessagesByChatId(chatId)
 
   return (
     <div className='w-full h-full rounded-lg'>
       <div className='p-2 bg-stone-700/20 h-full'>
         <div className='flex flex-col h-full'>
-          <ChatMessageHeader 
-            firstname={firstname}
-            lastname={lastname}
-            profile={profile}
-            lastnameInitial={lastnameInitial}
-            firstnameInitiial={firstnameInitiial}
-          />
-          <div className='bg-red-200 flex-1'>
-            asd
+          <ChatMessageHeader />
+          <div className='flex-1 p-2 overflow-auto'>
+            <ChatMessageBody 
+              fetchedMessages={fetchedMessages || []}
+              isLoading={isLoading}
+            />
           </div>
-          <div className='bg-lime-100'>
-            Chat footer
+          <div className='p-2'>
+            <ChatMessageFooter />
           </div>
         </div>
       </div>

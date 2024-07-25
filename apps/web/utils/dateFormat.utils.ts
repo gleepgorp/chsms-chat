@@ -8,10 +8,6 @@ export function convertTimestamp(timestamp: FirebaseTimestamp | string): { forma
     ? new Date(timestamp)
     : new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000);
 
-  if (isNaN(date.getTime())) {
-    throw new Error('Invalid timestamp format');
-  }
-
   const timeNow = new Date();
   const timeDifference = Math.floor((timeNow.getTime() - date.getTime()) / (60 * 1000));
 

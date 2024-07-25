@@ -12,7 +12,7 @@ type ChatLayoutProps = {
 
 export default function ChatLayout(props: ChatLayoutProps): JSX.Element {
   const { fetchedChats, isLoading } = props;
-  const { selectedChatId, firstnameInitial, lastnameInitial, profile, firstname, lastname } = useChatContext();
+  const { selectedChatId } = useChatContext();
 
   return (
     <MainLayout>
@@ -22,12 +22,7 @@ export default function ChatLayout(props: ChatLayoutProps): JSX.Element {
             isChatLoading={isLoading}
           >
           <ChatMessageContainer
-            profile={profile}
-            lastnameInitial={lastnameInitial}
-            firstnameInitiial={firstnameInitial} 
-            chatId={selectedChatId}
-            firstname={firstname}
-            lastname={lastname}
+            chatId={selectedChatId || ''}
           />
         </ChatContainer>
       </div>

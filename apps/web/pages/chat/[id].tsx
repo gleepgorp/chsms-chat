@@ -8,13 +8,13 @@ function Messages() {
   const { data: fetchedChats, isLoading } = useGetChatsByUserId(user?.uid as string);
 
   return (
-    <>
+    <div className='h-screen'>
       <ChatLayout 
         fetchedChats={fetchedChats || []} 
         isLoading={isLoading}
       />
-    </>
+    </div>
   )
-}
+} 
 
 export default Messages

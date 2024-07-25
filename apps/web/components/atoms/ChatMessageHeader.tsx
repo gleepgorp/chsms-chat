@@ -1,25 +1,17 @@
 import React from 'react'
 import MeatballMenu from './MeatballMenu'
 import ChatProfilePicture from './ChatProfilePicture'
+import { useChatContext } from '../../context/ChatContext';
 
-type ChatMessageHeaderProps = {
-  firstnameInitiial: string;
-  lastnameInitial: string;
-  profile: string;
-  firstname: string;
-  lastname: string;
-}
-
-export default function ChatMessageHeader(props: ChatMessageHeaderProps) 
-{
-  const { firstnameInitiial, lastnameInitial, profile, firstname, lastname } = props;
+export default function ChatMessageHeader(): JSX.Element {
+  const { firstnameInitial, lastnameInitial, profile, firstname, lastname } = useChatContext();
 
   return (
     <div className='p-2 flex flex-row justify-between'>
       <div className='flex flex-row items-center gap-2'>
         <ChatProfilePicture 
           profile={profile}
-          firstnameInitial={firstnameInitiial}
+          firstnameInitial={firstnameInitial}
           lastnameInitial={lastnameInitial}
           variant='sm'
         />

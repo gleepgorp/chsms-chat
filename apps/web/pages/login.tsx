@@ -1,7 +1,7 @@
 
 import Image from 'next/image';
-import AuthContainer from 'apps/web/components/organisms/AuthContainer';
-import { signInWithEmailPassword } from 'apps/web/utils/firebase.utils';
+import AuthContainer from '../components/organisms/AuthContainer';
+import { signInWithEmailPassword } from '../utils/firebase.utils';
 
 export default function Login () {
   async function handleSignIn(email: string, password: string): Promise<void> {

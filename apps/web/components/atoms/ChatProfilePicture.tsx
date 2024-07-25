@@ -1,6 +1,6 @@
 import React from 'react'
 
-type ProfileVariant = 'sm' | 'md' | 'lg';
+type ProfileVariant = 'sm' | 'md' | 'lg' | 'xs';
 
 type ChatProfilePictureProps = {
   profile?: string;
@@ -10,6 +10,7 @@ type ChatProfilePictureProps = {
 }
 
 const variantClass: Record<ProfileVariant, string> = {
+  xs: 'w-8 h-8',
   sm: 'w-10 h-10',
   md: 'w-12 h-12',
   lg: 'w-14 h-14'

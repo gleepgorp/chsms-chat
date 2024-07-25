@@ -6,6 +6,7 @@ type TextInputProps = {
   value?: string;
   placeholder?: string; 
   adornment?: ReactNode;
+  isChatPath?: boolean;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 

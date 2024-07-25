@@ -24,7 +24,7 @@ export default function ChatContainer(props: ChatContainerType): JSX.Element {
 
   return (
     <>
-    <div className='min-w-[480px] h-full flex-1 pt-3 pl-3 pb-3'>
+    <div className='min-w-[480px] h-full flex-1 pt-4 pl-4 pb-4'>
       <div className='bg-stone-700/20 h-full rounded-lg p-3 flex flex-col'>
         <div className='flex flex-col gap-3'>
           <div className='flex flex-row items-center justify-between'>
@@ -47,7 +47,7 @@ export default function ChatContainer(props: ChatContainerType): JSX.Element {
         />
       </div>
     </div>
-    <div className='w-full pt-3 pr-3 pb-3'>{children}</div>
+    <div className='w-full pt-4 pr-4 pb-4'>{children}</div>
     </>
   )
 }

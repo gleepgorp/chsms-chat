@@ -17,6 +17,8 @@ type ChatContextType = {
   setLastname: (lastname: string) => void;
   firstname: string
   setFirstname: (firstname: string) => void;
+  recipientId: string
+  setRecipientId: (id: string) => void;
 }
 
 export const ChatContext = createContext<ChatContextType | null>(null);
@@ -37,6 +39,7 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
   const [firstname, setFirstname] = useState<string>("");
   const [lastnameInitial, setLastnameInitial] = useState<string>("");
   const [lastname, setLastname] = useState<string>("");
+  const [recipientId, setRecipientId] = useState<string>("");
 
   return (
     <ChatContext.Provider value={{ 
@@ -52,6 +55,8 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
         setLastnameInitial,
         lastname,
         setLastname,
+        recipientId,
+        setRecipientId
       }}
     >
       {children}
