@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import TooltipContent, { PaddingSize } from './TooltipContent'
 import { TipPlacement } from './TooltipContent';
 import { TipSize } from './TooltipContent';
@@ -14,17 +14,34 @@ type TooltipProps = {
 export default function Tooltip(props: TooltipProps) {
   const { content, placement = 'bottom', children, size = 'sm', paddingSize = 'xs' } = props;
   const [isHovered, setIsHovered] = useState<boolean>(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const showTooltip = useCallback(() => {
-    const timer = setTimeout(() => setIsHovered(true), 400);
-    return () => clearTimeout(timer);
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, []);
+
+  function handleMouseEnter() {
+    timeoutRef.current = setTimeout(() => {
+      setIsHovered(true);
+    }, 300);
+  }
+
+  function handleMouseLeave() {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setIsHovered(false);
+  }
 
   return (
     <div
       className='relative inline-block'
-      onMouseEnter={showTooltip}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {children}
       {isHovered && 
