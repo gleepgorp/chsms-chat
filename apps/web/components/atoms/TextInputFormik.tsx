@@ -2,14 +2,24 @@ import { ChangeEvent, HTMLProps, ReactNode } from 'react';
 import { FieldProps } from 'formik';
 import Label from './Label';
 
+type InputVariant = 'auth' | 'standard';
+
+const variantClass: Record<InputVariant, string> = {
+  auth: 'bg-stone-100 rounded-lg text-stone-800',
+  standard: 'bg-stone-600/40 rounded-full text-stone-100'
+}
+
 export type TextInputFormikProps = HTMLProps<HTMLInputElement> & FieldProps & {
   id: string; 
   type?: string;
   label?: string;
+  showLabel?: boolean;
   placeholder?: string; 
   errorMessage?: string;
   endadornment?: ReactNode;
   disabled?:boolean;
+  autoComplete?: string;
+  variant: InputVariant;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -20,21 +30,24 @@ export default function TextInputFormik({ field, form, ...props }: TextInputForm
 
   return (
     <Label
-      label={props.label}
-      isVisible={!!props.label}
       errorMessage={errorMessage}
+      isVisible={!!props.label}
+      label={props.showLabel ? props.label : ''}
       labelVariant={errorMessage ? 'error' : 'standard'}
     >
       <input 
         {...field}
         {...props}
         id={props.id || name}
+        autoComplete={props.autoComplete}
         className={
-          `
+          ` 
             ${errorMessage ? 'ring-2 ring-inset ring-red-400' : ''} 
             ${props.disabled ? 'opacity-50 pointer-events-none' : ''}
-            peer bg-stone-100 outline-none pb-2 pt-[18px] px-3 rounded-lg text-sm text-stone-800 w-full placeholder-transparent
-          `
+            ${variantClass[props.variant]}
+            ${props.showLabel ? 'pb-2 pt-[18px] px-3 placeholder-transparent' : 'p-3'}
+            peer outline-none text-sm w-full 
+          ` 
         }
       />
       {props.endadornment && (

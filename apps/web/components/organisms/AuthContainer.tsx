@@ -64,6 +64,8 @@ export default function AuthContainer(props: AuthContainerPropsType): JSX.Elemen
                   id='firstname' 
                   label='firstname' 
                   placeholder='firstname' 
+                  showLabel={true}
+                  variant='auth'
                   disabled={isSubmitting ? true : false}
                 />
                 <Field
@@ -72,6 +74,8 @@ export default function AuthContainer(props: AuthContainerPropsType): JSX.Elemen
                   id='lastname' 
                   label='lastname' 
                   placeholder='lastname' 
+                  showLabel={true}
+                  variant='auth'
                   disabled={isSubmitting ? true : false}
                 />
               </>
@@ -82,6 +86,8 @@ export default function AuthContainer(props: AuthContainerPropsType): JSX.Elemen
               id='email' 
               label='email' 
               placeholder='email' 
+              showLabel={true}
+              variant='auth'
               disabled={isSubmitting ? true : false}
             />
             <Field
@@ -90,6 +96,8 @@ export default function AuthContainer(props: AuthContainerPropsType): JSX.Elemen
               id='password' 
               label='password' 
               placeholder='password' 
+              showLabel={true}
+              variant='auth'
               type={showPass ? 'text' : 'password'} 
               disabled={isSubmitting ? true : false}
               endadornment={
@@ -105,6 +113,8 @@ export default function AuthContainer(props: AuthContainerPropsType): JSX.Elemen
                 name='confirmPassword'
                 id='confirmPassword' 
                 label='confirm password' 
+                showLabel={true}
+                variant='auth'
                 placeholder='confirm password' 
                 disabled={isSubmitting ? true : false}
                 type={showPass ? 'text' : 'password'}

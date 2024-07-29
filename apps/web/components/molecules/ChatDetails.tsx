@@ -48,7 +48,7 @@ export default function ChatDetails(props: ChatDetailsProps) {
         setFirstname(firstname);
         setLastname(lastname);
         setProfile(profile);
-        setRecipientId(recipient.id);
+        setRecipientId(recipient.accountId);
       }
       
       return (

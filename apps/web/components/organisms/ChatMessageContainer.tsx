@@ -27,7 +27,7 @@ export default function ChatMessageContainer(props: ChatMessageContainerProps): 
             />
           </div>
           <div className='p-2'>
-            <ChatMessageFooter />
+            <ChatMessageFooter chatId={chatId}/>
           </div>
         </div>
       </div>
