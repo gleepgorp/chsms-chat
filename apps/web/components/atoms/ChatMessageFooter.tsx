@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { IoSend } from "react-icons/io5";
 import Button from './Button';
-import { Field, Form, Formik } from 'formik';
+import { Field, Form, Formik, FormikHelpers } from 'formik';
 import TextInputFormik from './TextInputFormik';
 import { useCreateMessage } from '../../hooks/useMutation';
 import { useQueryClient } from '@tanstack/react-query';
@@ -25,11 +25,12 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
     },
   });
   
-  function onSubmit(data: MessageDTO) {
+  function onSubmit(data: MessageDTO, { resetForm }: FormikHelpers<MessageDTO>)   {
     createMessage({ messageData: data });
+    resetForm();
   }
 
-  const initialValues = {
+  const values = {
     chatId: chatId,
     content: '',
     senderId: user?.uid,
@@ -39,7 +40,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
   return (
     <Formik
       enableReinitialize
-      initialValues={initialValues}
+      initialValues={values }
       validationSchema={''}
       onSubmit={onSubmit}
     >

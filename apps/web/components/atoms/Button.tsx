@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import Link from 'next/link';
 
 type ButtonVariant = 'primary' | 'secondary' | 'gray' | 'link' | 'icon';

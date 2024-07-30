@@ -41,47 +41,17 @@ export class UserService {
     return users.filter((user): user is ProfileType => user !== null);
   }
 
-  async searchUsers(searchTerm: string, limit = 10): Promise<ProfileType[]> {
+  async searchUser(searchItem: string): Promise<ProfileType[]> {
     try {
-      const lowercaseSearchTerm = searchTerm.toLowerCase();
-  
-      const firstnameQuery = this.userCollection
-        .orderBy('firstname')
-        .startAt(lowercaseSearchTerm)
-        .endAt(lowercaseSearchTerm + '\uf8ff')
-        .limit(limit);
-
-      const lastnameQuery = this.userCollection
-        .orderBy('lastname')
-        .startAt(lowercaseSearchTerm)
-        .endAt(lowercaseSearchTerm + '\uf8ff')
-        .limit(limit);
-  
-      const [firstnameSnapshot, lastnameSnapshot] = await Promise.all([
-        firstnameQuery.get(),
-        lastnameQuery.get()
-      ]);
+      const query = await this.userCollection
+        .where('firstname', '==', searchItem)
+        .get();
   
       const users: ProfileType[] = [];
-
-      firstnameSnapshot.forEach((doc) => {
-        users.push({ id: doc.id, ...doc.data() } as ProfileType);
-      });
-      lastnameSnapshot.forEach((doc) => {
-        if (!users.some(user => user.id === doc.id)) {
-          users.push({ id: doc.id, ...doc.data() } as ProfileType);
-        }
-      });
+      query.forEach((doc) => users.push({...doc.data(), id: doc.id}));
   
-      users.sort((a, b) => {
-        const aFullName = `${a.firstname} ${a.lastname}`.toLowerCase();
-        const bFullName = `${b.firstname} ${b.lastname}`.toLowerCase();
-        return aFullName.indexOf(lowercaseSearchTerm) - bFullName.indexOf(lowercaseSearchTerm);
-      });
-  
-      return users.slice(0, limit);
+      return users;
     } catch (err) {
-      console.error('Error in searchUsers:', err);
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

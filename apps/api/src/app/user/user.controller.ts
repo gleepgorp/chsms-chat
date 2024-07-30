@@ -13,9 +13,9 @@ export class UserController {
     return this.userService.findById(id);
   }
 
-  @Get('/search')
-  searchUsers(
-    @Query('term') query: string): Promise<ProfileType[]> {
-    return this.userService.searchUsers(query);
+  @Get()
+  findAll(
+    @Query('query') query: string): Promise<ProfileType[]> {
+    return this.userService.searchUser(query);
   }
 }

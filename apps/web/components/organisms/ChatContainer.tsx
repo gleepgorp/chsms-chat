@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 import ChatDetails from '../molecules/ChatDetails'
 import TextInput from '../atoms/TextInput'
 import { IoSearchSharp } from "react-icons/io5";
@@ -8,6 +8,7 @@ import { useSearchUser } from 'apps/web/hooks';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import useDebounce from 'apps/web/hooks/useDebounce';
 import { ChatType } from 'types/Chat.type';
+import ChatSearchContainer from '../atoms/ChatSearchContainer';
 
 type ChatContainerType = {
   children?: React.ReactNode;
@@ -22,6 +23,10 @@ export default function ChatContainer(props: ChatContainerType): JSX.Element {
   const searchItemDebounced = useDebounce(searchItem, debouncedDelay);
   const { data, isLoading, error } = useSearchUser(searchItemDebounced);
 
+  function handleSearchItem() {
+    setSearchItem('');
+  }
+
   return (
     <>
     <div className='min-w-[480px] h-full flex-1 pt-4 pl-4 pb-4'>
@@ -35,16 +40,25 @@ export default function ChatContainer(props: ChatContainerType): JSX.Element {
             <TextInput 
               type='text'
               value={searchItem}
+              searchItem={searchItem}
+              handleSearchItem={handleSearchItem}
               placeholder='Search a chat' 
               onChange={(e) => setSearchItem(e.target.value)}
               adornment={<IoSearchSharp />}
               />
           </div>
         </div>
-        <ChatDetails 
-          isChatLoading={isChatLoading}
-          fetchedChats={fetchedChats}
-        />
+        <div className='overflow-y-auto h-full'>
+          {searchItem ? 
+            <ChatSearchContainer 
+              data={data || []}
+            /> :
+            <ChatDetails 
+              isChatLoading={isChatLoading}
+              fetchedChats={fetchedChats}
+              />
+          } 
+        </div>
       </div>
     </div>
     <div className='w-full pt-4 pr-4 pb-4'>{children}</div>
