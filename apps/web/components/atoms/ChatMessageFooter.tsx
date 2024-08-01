@@ -40,7 +40,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
   return (
     <Formik
       enableReinitialize
-      initialValues={values }
+      initialValues={values}
       validationSchema={''}
       onSubmit={onSubmit}
     >

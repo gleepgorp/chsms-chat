@@ -1,4 +1,9 @@
-import React, { createContext, useState, ReactNode, useContext } from 'react';
+import React, { createContext, useState, ReactNode, useContext, useEffect } from 'react';
+import { getChatById } from '../services/chat';
+import { getUserById } from '../services/user';
+import { useAuth } from './AuthContext';
+import { useRouter } from 'next/router';
+import { extractInitials } from '../utils';
 
 type ChatProviderType = {
   children: ReactNode;
@@ -6,19 +11,12 @@ type ChatProviderType = {
 
 type ChatContextType = {
   selectedChatId: string | null;
-  setSelectedChatId: (id: string) => void;
   profile: string;
-  setProfile: (url: string) => void;
   firstnameInitial: string;
-  setFirstnameInitial: (fInitial: string) => void;
   lastnameInitial: string
-  setLastnameInitial: (lInitial: string) => void;
   lastname: string
-  setLastname: (lastname: string) => void;
   firstname: string
-  setFirstname: (firstname: string) => void;
   recipientId: string
-  setRecipientId: (id: string) => void;
 }
 
 export const ChatContext = createContext<ChatContextType | null>(null);
@@ -33,6 +31,11 @@ export function useChatContext(): ChatContextType {
 
 export default function ChatProvider(props: ChatProviderType): JSX.Element {
   const  { children } = props;
+  const { user } = useAuth();
+  const router = useRouter();
+  const { id } = router.query;
+  const loggedInUser = user?.uid;
+  const chatId = Array.isArray(id) ? id[0] : id || '';
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [profile, setProfile] = useState<string>("");
   const [firstnameInitial, setFirstnameInitial] = useState<string>("");
@@ -41,22 +44,47 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
   const [lastname, setLastname] = useState<string>("");
   const [recipientId, setRecipientId] = useState<string>("");
 
+  useEffect(() => {
+    async function fetchChat() {
+      setSelectedChatId(chatId);
+      const chatData = await getChatById(chatId);
+      
+      const recipient = chatData?.participants?.find(p => p !== loggedInUser);
+      const userData = recipient ? await getUserById(recipient) : null
+
+      if (userData && recipient) {
+        const profileBg = userData.profileBgColor;
+        const profileUrl = userData.profilePicture;
+        const profile = !profileUrl ? profileBg : '';
+        const firstname = userData.firstname;
+        const lastname = userData.lastname;
+        const firstnameInital = extractInitials(firstname);
+        const lastnameInital = extractInitials(lastname);
+        
+        setProfile(profile || '');
+        setFirstnameInitial(firstnameInital || '');
+        setFirstname(firstname || '');
+        setLastnameInitial(lastnameInital || '');
+        setLastname(lastname || '');
+        setRecipientId(recipient || '');
+
+      } else {
+        return null;
+      }
+    }
+
+    fetchChat();
+  }, [chatId, loggedInUser])
+
   return (
     <ChatContext.Provider value={{ 
         selectedChatId, 
-        setSelectedChatId,
         profile,
-        setProfile,
         firstnameInitial,
         firstname,
-        setFirstnameInitial,
-        setFirstname,
         lastnameInitial,
-        setLastnameInitial,
         lastname,
-        setLastname,
         recipientId,
-        setRecipientId
       }}
     >
       {children}

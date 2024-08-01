@@ -43,12 +43,36 @@ export class UserService {
 
   async searchUser(searchItem: string): Promise<ProfileType[]> {
     try {
-      const query = await this.userCollection
-        .where('firstname', '==', searchItem)
-        .get();
-  
+      //splits searchterm into words
+      const searchTerms = searchItem.toLowerCase().split(/\s+/).filter(term => term.length > 0);
+
+      const generateQueries = (field: string, term: string) => {
+        return this.userCollection
+          .where(field, '>=', term)
+          .where(field, '<', term + '\uf8ff');
+      }
+
+      const queries = searchTerms.flatMap(term => [
+        generateQueries('firstname', term),
+        generateQueries('lastname', term)
+      ]);
+
+      const results = await Promise.all(queries.map(query => query.get()));
+
+      const uniqueUserIds = new Set<string>();
       const users: ProfileType[] = [];
-      query.forEach((doc) => users.push({...doc.data(), id: doc.id}));
+
+      //adds users only once even if matches multiple criteria
+      const addUsers = (snapshot: FirebaseFirestore.QuerySnapshot) => {
+        snapshot.forEach((doc) => {
+          if (!uniqueUserIds.has(doc.id)) {
+            uniqueUserIds.add(doc.id);
+            users.push({...doc.data(), id: doc.id} as ProfileType);
+          }
+        });
+      };
+
+      results.forEach(addUsers);
   
       return users;
     } catch (err) {

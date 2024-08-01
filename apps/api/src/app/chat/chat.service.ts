@@ -1,7 +1,7 @@
 import { FirestoreDatabaseProvider } from "../firestore/firestore.providers";
 import { CollectionReference } from "@google-cloud/firestore";
 import { ChatDocument } from "../../documents/chat.document";
-import { Injectable, Inject, HttpException, HttpStatus, forwardRef } from "@nestjs/common";
+import { Injectable, Inject, HttpException, HttpStatus, forwardRef, NotFoundException } from "@nestjs/common";
 import { ChatType } from "types/Chat.type";
 import { ChatDTO } from "./dto/chat.dto";
 import { UserService } from "../user/user.service";
@@ -55,11 +55,40 @@ export class ChatService {
     return null;
   }
 
+  async getChatById(id: string): Promise<ChatType> {
+    try {
+      const snapshot = await this.chatCollection.doc(id).get();
+      
+      return { ...snapshot.data(), id: snapshot.id } as ChatType;
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getChatByParticipants(senderId: string, recipients: string[]): Promise<ChatType | null> {
+    const allParticipants = [senderId, ...recipients].sort();
+    
+    const chatSnapshot = await this.chatCollection
+      .where('participants', '==', allParticipants)
+      .limit(1)
+      .get();
+  
+    if (!chatSnapshot.empty) {
+      const doc = chatSnapshot.docs[0];
+      return {
+        id: doc.id,
+      } as ChatType;
+    }
+  
+    return null;
+  }
+
   async getChatsByUserId(userId: string): Promise<ChatType[]> {
     try {
       const chatSnapshot = await this.chatCollection
-      .where('participants', 'array-contains', userId)
-      .get();
+        .where('participants', 'array-contains', userId)
+        .orderBy('updatedAt', 'desc')
+        .get();
 
       const chats: ChatType[] = await Promise.all(chatSnapshot.docs.map(async (doc) => {
         const chatData = doc.data();

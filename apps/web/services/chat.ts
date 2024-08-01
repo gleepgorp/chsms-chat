@@ -16,3 +16,25 @@ export async function getChatsByUserId(userId: string): Promise<ChatType[] | nul
     return null;
   }
 }
+
+export async function getChatByParticipants(senderId: string, recipients: string): Promise<ChatType | null> {
+  try {
+    const { data } = await chatApi.chatControllerGetChatByParticipants(senderId, recipients)
+
+    return data as unknown as ChatType;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
+export async function getChatById(chatId: string): Promise<ChatType | null> {
+  try {
+    const { data } = await chatApi.chatControllerGetChatById(chatId);
+
+    return data as unknown as ChatType;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}

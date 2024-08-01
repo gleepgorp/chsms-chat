@@ -21,9 +21,7 @@ export default function ChatLayout(props: ChatLayoutProps): JSX.Element {
             fetchedChats={fetchedChats || []}
             isChatLoading={isLoading}
           >
-          <ChatMessageContainer
-            chatId={selectedChatId || ''}
-          />
+          <ChatMessageContainer />
         </ChatContainer>
       </div>
     </MainLayout>

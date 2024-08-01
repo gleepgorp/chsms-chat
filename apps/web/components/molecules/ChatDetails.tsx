@@ -5,7 +5,6 @@ import { useAuth } from '../../context/index';
 import { convertTimestamp } from '../../utils/index';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useChatContext } from '../../context/ChatContext';
 import ChatProfilePicture from '../atoms/ChatProfilePicture';
 
 type ChatDetailsProps = {
@@ -15,20 +14,15 @@ type ChatDetailsProps = {
 
 export default function ChatDetails(props: ChatDetailsProps) {
   const { fetchedChats, isChatLoading } = props;
-  const { 
-    setSelectedChatId, 
-    setFirstnameInitial, 
-    setLastnameInitial, 
-    setProfile, 
-    setFirstname, 
-    setLastname, 
-    setRecipientId } = useChatContext();
   const { user } = useAuth();
   const router = useRouter();
   const { id } = router.query;
 
   const mappedChats = fetchedChats.map((data, index) => {
     const recipient = data.participants.find(p => p.accountId !== user?.uid);
+
+    const ownerLastMessage = data.lastMessage.senderId === user?.uid ? 'You: ' : ''
+    const isActive = data.id === id ? 'bg-stone-500/40 hover:bg-stone-500/40' : ''
 
     if (recipient && user) {
       const firstname = recipient.firstname;
@@ -38,23 +32,11 @@ export default function ChatDetails(props: ChatDetailsProps) {
       const profileBg = recipient.profileBgColor;
       const profilePicture = recipient.profilePicture;
       const profile = !profilePicture ? profileBg : ''
-      const ownerLastMessage = data.lastMessage.senderId === user.uid ? 'You: ' : ''
-      const isActive = data.id === id ? 'bg-stone-500/40 hover:bg-stone-500/40' : ''
       
-      const handleChatSelect = (chatId: string) => {
-        setSelectedChatId(chatId);
-        setFirstnameInitial(firstnameInitial);
-        setLastnameInitial(lastnameInitial);
-        setFirstname(firstname);
-        setLastname(lastname);
-        setProfile(profile);
-        setRecipientId(recipient.accountId);
-      }
       
       return (
         <Link 
           key={index}
-          onClick={() => handleChatSelect(data.id)}
           href={`/chat/${data.id}`} 
         >
           <div 

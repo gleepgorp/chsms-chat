@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getChatsByUserId } from "../services/chat";
+import { getChatById, getChatByParticipants, getChatsByUserId } from "../services/chat";
 
 export function useGetChatsByUserId(userId: string) {
   return useQuery({
@@ -8,3 +8,11 @@ export function useGetChatsByUserId(userId: string) {
     enabled: !!userId 
   })
 }
+
+export function useGetChatByParticipants(senderid: string, recipients: string) {
+  return useQuery({
+    queryFn: () => getChatByParticipants(senderid, recipients),
+    queryKey: ['GET_CHATS_BY_PARTICIPANTS', senderid, recipients],
+  })
+}
+

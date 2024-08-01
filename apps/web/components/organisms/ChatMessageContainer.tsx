@@ -5,15 +5,11 @@ import ChatMessageFooter from '../atoms/ChatMessageFooter';
 import { useGetMessagesByChatId } from '../../hooks/messageQuery';
 import ChatMessageBody from '../atoms/ChatMessageBody';
 
-type ChatMessageContainerProps = {
-  chatId: string;
-}
-
-export default function ChatMessageContainer(props: ChatMessageContainerProps): JSX.Element {
-  const { chatId } = props;
+export default function ChatMessageContainer(): JSX.Element {
   const router = useRouter();
   const { id } = router.query;
-  const { data: fetchedMessages, isLoading } = useGetMessagesByChatId(chatId)
+  const chatId = Array.isArray(id) ? id[0] : id || '';
+  const { data: fetchedMessages, isLoading } = useGetMessagesByChatId(chatId);
 
   return (
     <div className='w-full h-full rounded-lg'>

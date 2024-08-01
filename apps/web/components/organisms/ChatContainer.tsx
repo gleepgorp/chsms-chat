@@ -18,7 +18,7 @@ type ChatContainerType = {
 
 export default function ChatContainer(props: ChatContainerType): JSX.Element {
   const { children, fetchedChats, isChatLoading } = props;
-  const debouncedDelay = 200; 
+  const debouncedDelay = 300; 
   const [searchItem, setSearchItem] = useState<string>("");
   const searchItemDebounced = useDebounce(searchItem, debouncedDelay);
   const { data, isLoading, error } = useSearchUser(searchItemDebounced);
@@ -42,7 +42,7 @@ export default function ChatContainer(props: ChatContainerType): JSX.Element {
               value={searchItem}
               searchItem={searchItem}
               handleSearchItem={handleSearchItem}
-              placeholder='Search a chat' 
+              placeholder='Search someone' 
               onChange={(e) => setSearchItem(e.target.value)}
               adornment={<IoSearchSharp />}
               />
@@ -51,6 +51,7 @@ export default function ChatContainer(props: ChatContainerType): JSX.Element {
         <div className='overflow-y-auto h-full'>
           {searchItem ? 
             <ChatSearchContainer 
+              handleSearchItem={handleSearchItem}
               data={data || []}
             /> :
             <ChatDetails 

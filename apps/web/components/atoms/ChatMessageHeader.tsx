@@ -2,9 +2,11 @@ import React from 'react'
 import MeatballMenu from './MeatballMenu'
 import ChatProfilePicture from './ChatProfilePicture'
 import { useChatContext } from '../../context/ChatContext';
+import { useGetUserById } from '../../hooks';
 
 export default function ChatMessageHeader(): JSX.Element {
   const { firstnameInitial, lastnameInitial, profile, firstname, lastname } = useChatContext();
+  const { data: fetchedUser, isLoading } = useGetUserById('');
 
   return (
     <div className='p-2 flex flex-row justify-between'>
