@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { extractInitials } from '../../utils';
 import { useGetChatByParticipants } from '../../hooks';
 import { useAuth } from '../../context';
+import { useNewChatContext } from '../../context/NewChatContext';
 
 type SearchProfileLayoutrProps = {
   accountId: string;
@@ -17,13 +18,31 @@ type SearchProfileLayoutrProps = {
 export default function SearchProfileLayout(props: SearchProfileLayoutrProps) {
   const { user } = useAuth();
   const { accountId, profileUrl, firstname, lastname, bgColor, handleSearchItem } = props;
-  const { data: fetchedChats, isLoading } = useGetChatByParticipants
-  (user?.uid || '', accountId);
+  const { data: fetchedChats, isLoading } = useGetChatByParticipants(user?.uid || '', accountId);
   const profile = !profileUrl ? bgColor : profileUrl;
-  const chatExist = !fetchedChats?.id ? '/new' : `/chat/${fetchedChats.id}`;
+  const chatExist = !fetchedChats?.id ? '/chat/new' : `/chat/${fetchedChats.id}`;
+  const { 
+    setFirstnameInitial, 
+    setLastnameInitial, 
+    setFirstname, 
+    setLastname, 
+    setRecipientId, 
+    setProfile } = useNewChatContext();
+
+  function handleProfileClick() {
+    if (handleSearchItem) {
+      handleSearchItem();
+    }
+    setFirstnameInitial(extractInitials(firstname) || '');
+    setLastnameInitial(extractInitials(lastname) || '');
+    setFirstname(firstname || '');
+    setLastname(lastname || '');
+    setProfile(profile || '');
+    setRecipientId(accountId || '');
+  }
 
   return (
-    <Link href={chatExist} onClick={handleSearchItem} className='flex flex-row items-center gap-3 py-2 hover:bg-stone-500/20 rounded-lg cursor-pointer px-3'>
+    <Link href={chatExist} onClick={handleProfileClick} className='flex flex-row items-center gap-3 py-2 hover:bg-stone-500/20 rounded-lg cursor-pointer px-3'>
       <ChatProfilePicture 
         profile={profile}
         firstnameInitial={extractInitials(firstname)}

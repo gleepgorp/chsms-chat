@@ -2,10 +2,11 @@ import { FirestoreDatabaseProvider } from "../firestore/firestore.providers";
 import { CollectionReference } from "@google-cloud/firestore";
 import { ChatDocument } from "../../documents/chat.document";
 import { Injectable, Inject, HttpException, HttpStatus, forwardRef, NotFoundException } from "@nestjs/common";
-import { ChatType } from "types/Chat.type";
+import { ChatEnum, ChatType } from "types/Chat.type";
 import { ChatDTO } from "./dto/chat.dto";
 import { UserService } from "../user/user.service";
 import { MessageService } from "../message/message.service";
+import { ProfileType } from "types/Profile.type";
 
 @Injectable()
 export class ChatService {
@@ -41,17 +42,27 @@ export class ChatService {
   }
 
   async findExistingChat(senderId: string, recipients: string[]): Promise<{ id: string } | null> {
-    const allParticipants = [senderId, ...recipients].sort();
-
-    const chatSnapshot = await this.chatCollection
-    .where('participants', '==', allParticipants)
-    .limit(1)
-    .get();
-
-    if (!chatSnapshot.empty) {
-      return { id: chatSnapshot.docs[0].id };
+    if (recipients.length === 1) {
+      const participant1 = senderId;
+      const participant2 = recipients[0];
+  
+      const chatSnapshot = await this.chatCollection
+        .where('type', '==', ChatEnum.DIRECT)
+        .where('participants', 'array-contains', participant1)
+        .get();
+  
+      const exactMatch = chatSnapshot.docs.find(doc => {
+        const docParticipants = doc.data().participants;
+        return docParticipants.length === 2 &&
+               docParticipants.includes(participant1 as unknown as ProfileType) &&
+               docParticipants.includes(participant2 as unknown as ProfileType);
+      });
+  
+      if (exactMatch) {
+        return { id: exactMatch.id };
+      }
     }
-
+  
     return null;
   }
 

@@ -4,6 +4,7 @@ import Head from 'next/head';
 import AuthProvider from '../context/AuthContext';
 import Authenticated from '../components/atoms/Authenticated';
 import ChatProvider from '../context/ChatContext';
+import NewChatProvider from '../context/NewChatContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -20,9 +21,11 @@ export default function App({ Component, pageProps }: AppProps) {
         <AuthProvider>
           <Authenticated>
             <ChatProvider>
-              <main>
-                <Component {...pageProps} />
-              </main>
+              <NewChatProvider>
+                <main>
+                  <Component {...pageProps} />
+                </main>
+              </NewChatProvider>
             </ChatProvider>
           </Authenticated>
         </AuthProvider>

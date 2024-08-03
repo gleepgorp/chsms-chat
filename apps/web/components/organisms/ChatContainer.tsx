@@ -9,6 +9,8 @@ import { useSearchUser } from 'apps/web/hooks';
 import useDebounce from 'apps/web/hooks/useDebounce';
 import { ChatType } from 'types/Chat.type';
 import ChatSearchContainer from '../atoms/ChatSearchContainer';
+import NewChatProfileLayout from '../molecules/NewChatProfileLayout';
+import { useRouter } from 'next/router';
 
 type ChatContainerType = {
   children?: React.ReactNode;
@@ -19,6 +21,8 @@ type ChatContainerType = {
 export default function ChatContainer(props: ChatContainerType): JSX.Element {
   const { children, fetchedChats, isChatLoading } = props;
   const debouncedDelay = 300; 
+  const router = useRouter();
+  const newChatRoute = router.pathname.includes('/new');
   const [searchItem, setSearchItem] = useState<string>("");
   const searchItemDebounced = useDebounce(searchItem, debouncedDelay);
   const { data, isLoading, error } = useSearchUser(searchItemDebounced);
@@ -49,6 +53,7 @@ export default function ChatContainer(props: ChatContainerType): JSX.Element {
           </div>
         </div>
         <div className='overflow-y-auto h-full'>
+          {newChatRoute && <NewChatProfileLayout />}
           {searchItem ? 
             <ChatSearchContainer 
               handleSearchItem={handleSearchItem}

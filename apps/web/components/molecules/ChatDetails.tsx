@@ -19,10 +19,10 @@ export default function ChatDetails(props: ChatDetailsProps) {
   const { id } = router.query;
 
   const mappedChats = fetchedChats.map((data, index) => {
-    const recipient = data.participants.find(p => p.accountId !== user?.uid);
+  const recipient = data.participants.find(p => p.accountId !== user?.uid);
 
-    const ownerLastMessage = data.lastMessage.senderId === user?.uid ? 'You: ' : ''
-    const isActive = data.id === id ? 'bg-stone-500/40 hover:bg-stone-500/40' : ''
+  const ownerLastMessage = data?.lastMessage?.senderId === user?.uid ? 'You: ' : ''
+  const isActive = data.id === id ? 'bg-stone-500/40 hover:bg-stone-500/40' : '';
 
     if (recipient && user) {
       const firstname = recipient.firstname;
@@ -32,7 +32,6 @@ export default function ChatDetails(props: ChatDetailsProps) {
       const profileBg = recipient.profileBgColor;
       const profilePicture = recipient.profilePicture;
       const profile = !profilePicture ? profileBg : ''
-      
       
       return (
         <Link 
@@ -59,10 +58,10 @@ export default function ChatDetails(props: ChatDetailsProps) {
                 <div className='flex flex-row gap-2 text-sm text-stone-400 whitespace-nowrap'>
                   <span className='truncate max-w-64'>
                     {ownerLastMessage} 
-                    {data.lastMessage.content}
+                    {data.lastMessage?.content}
                   </span>
                   <span className='font-bold'>·</span>
-                  <span>{convertTimestamp(data.lastMessage.timestamp).formatted}</span>
+                  <span>{convertTimestamp(data.lastMessage?.timestamp).formatted}</span>
                 </div>
               </div>
             </div>

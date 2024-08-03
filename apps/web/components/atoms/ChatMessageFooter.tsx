@@ -9,6 +9,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { MessageDTO } from 'apps/api/src/app/message/dto/message.dto';
 import { useAuth } from '../../context';
 import { useChatContext } from '../../context/ChatContext';
+import { useRouter } from 'next/router';
+import { useNewChatContext } from '../../context/NewChatContext';
 
 type ChatMessageFooterProps = {
   chatId: string;
@@ -17,8 +19,10 @@ type ChatMessageFooterProps = {
 export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.Element {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const { chatId } = props;
   const { recipientId } = useChatContext();
+  const router = useRouter();
+  const newChatRoute = router.pathname.includes('/new');
+  const { recipientId: NewChatRecipient } = useNewChatContext();
   const { isPending, mutate: createMessage } = useCreateMessage({
     onSuccess: createMessage => {
       queryClient.setQueryData(['GET_MSSG_BY_CHATID', createMessage.id], createMessage)
@@ -30,21 +34,20 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
     resetForm();
   }
 
-  const values = {
-    chatId: chatId,
+  const initialValues = {
     content: '',
     senderId: user?.uid,
-    recipientId: [recipientId],
+    recipientId: [newChatRoute ? NewChatRecipient : recipientId],
   }
 
   return (
     <Formik
       enableReinitialize
-      initialValues={values}
+      initialValues={initialValues}
       validationSchema={''}
       onSubmit={onSubmit}
     >
-      {({ isSubmitting }) => (
+      {() => (
         <Form className='flex flex-row gap-3 p-2'>
           <div className='flex-1'>
             <Field 
