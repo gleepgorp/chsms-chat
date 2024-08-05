@@ -7,6 +7,7 @@ import { ChatDTO } from "./dto/chat.dto";
 import { UserService } from "../user/user.service";
 import { MessageService } from "../message/message.service";
 import { ProfileType } from "types/Profile.type";
+import { ChatGateway } from "./chat.gateway";
 
 @Injectable()
 export class ChatService {
@@ -16,6 +17,7 @@ export class ChatService {
     @Inject(forwardRef(() => MessageService))
     private messageService: MessageService,
     private userService: UserService,
+    private chatGateway: ChatGateway,
     @Inject(FirestoreDatabaseProvider)
     private db,
   ) {}

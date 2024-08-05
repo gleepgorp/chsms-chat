@@ -7,6 +7,7 @@ import { MessageDTO } from './dto/message.dto';
 import { ChatService } from '../chat/chat.service';
 import { ChatEnum } from 'types/Chat.type';
 import { ChatDocument } from '../../documents/chat.document';
+import { ChatGateway } from '../chat/chat.gateway';
 
 @Injectable() 
   export class MessageService {
@@ -17,6 +18,8 @@ import { ChatDocument } from '../../documents/chat.document';
       private chatCollection: CollectionReference<MessageType>,
       @Inject(forwardRef(() => ChatService))
       private chatService: ChatService,
+      @Inject(forwardRef(() => ChatGateway))
+      private chatGateway: ChatGateway,
       @Inject(FirestoreDatabaseProvider)  
       private db, 
     ) {}
@@ -66,6 +69,9 @@ import { ChatDocument } from '../../documents/chat.document';
       const message = { ...messageDoc.data(), id: messageDoc.id } as MessageType;
 
       await this.chatService.updateLastMessage(chatId, message.id);
+
+      // emit new mssg to chatroom
+      this.chatGateway.server.to(chatId).emit('newMessage', message);
 
       return message;
     }

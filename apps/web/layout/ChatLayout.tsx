@@ -2,7 +2,6 @@ import React from 'react'
 import { ChatType } from 'types/Chat.type';
 import MainLayout from "../layout/MainLayout";
 import ChatContainer from "../components/organisms/ChatContainer";
-import { useChatContext } from '../context/ChatContext';
 import ChatMessageContainer from "../components/organisms/ChatMessageContainer";
 
 type ChatLayoutProps = {
@@ -12,7 +11,6 @@ type ChatLayoutProps = {
 
 export default function ChatLayout(props: ChatLayoutProps): JSX.Element {
   const { fetchedChats, isLoading } = props;
-  const { selectedChatId } = useChatContext();
 
   return (
     <MainLayout>
@@ -22,7 +20,7 @@ export default function ChatLayout(props: ChatLayoutProps): JSX.Element {
             isChatLoading={isLoading}
           >
           <ChatMessageContainer />
-        </ChatContainer>
+        </ChatContainer>  
       </div>
     </MainLayout>
   );

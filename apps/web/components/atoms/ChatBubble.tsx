@@ -2,6 +2,7 @@ import React from 'react';
 import { useAuth } from '../../context';
 import Tooltip from './Tooltip';
 import ChatProfilePicture from './ChatProfilePicture';
+import { useChatContext } from '../../context/ChatContext';
 
 type ChatBubbleProps = {
   message?: string;
@@ -13,6 +14,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
   const { message, senderId, timestamp } = props;
   const { user } = useAuth();
   const isSender = senderId === user?.uid;
+  const { firstnameInitial, lastnameInitial, profile } = useChatContext();
   
   return (
     <>
@@ -21,9 +23,9 @@ export default function ChatBubble(props: ChatBubbleProps) {
           {!isSender && 
             <div className='text-sm'>
               <ChatProfilePicture
-                firstnameInitial='L'
-                lastnameInitial='B'
-                profile='#ffffff'
+                firstnameInitial={firstnameInitial}
+                lastnameInitial={lastnameInitial}
+                profile={profile}
                 variant='xs'
               />
             </div>

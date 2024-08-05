@@ -51,7 +51,7 @@ export default function Sidebar() {
   ))
 
   return (
-    <div className='py-6 px-3 min-w-[250px] bg-stone-900/50'>
+    <div className='py-6 px-3 min-w-[150px] bg-stone-900/50'>
       <div className='flex flex-col h-full'>
         <div className='flex-1'>{mappedMenu}</div>
         <LogoutButton />

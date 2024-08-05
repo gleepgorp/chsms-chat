@@ -20,7 +20,7 @@ export default function SearchProfileLayout(props: SearchProfileLayoutrProps) {
   const { accountId, profileUrl, firstname, lastname, bgColor, handleSearchItem } = props;
   const { data: fetchedChats, isLoading } = useGetChatByParticipants(user?.uid || '', accountId);
   const profile = !profileUrl ? bgColor : profileUrl;
-  const chatExist = !fetchedChats?.id ? '/chat/new' : `/chat/${fetchedChats.id}`;
+  const chatExist = fetchedChats && fetchedChats?.id ? `/chat/${fetchedChats?.id}` : '/chat/new';
   const { 
     setFirstnameInitial, 
     setLastnameInitial, 

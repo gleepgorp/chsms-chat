@@ -37,3 +37,4 @@ export const loginSchema = yup.object().shape({
     .matches(passwordRules, "Password must be alphanumeric")
     .required("Password is required")
 })
+

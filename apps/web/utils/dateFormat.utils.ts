@@ -6,7 +6,7 @@ type FirebaseTimestamp = {
 export function convertTimestamp(timestamp: FirebaseTimestamp | string): { formatted: string; date: Date } {
   const date = typeof timestamp === 'string' 
     ? new Date(timestamp)
-    : new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000);
+    : new Date(timestamp?._seconds * 1000 + timestamp?._nanoseconds / 1000000);
 
   const timeNow = new Date();
   const timeDifference = Math.floor((timeNow.getTime() - date.getTime()) / (60 * 1000));

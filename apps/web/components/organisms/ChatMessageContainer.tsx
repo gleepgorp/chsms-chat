@@ -4,12 +4,16 @@ import ChatMessageHeader from '../atoms/ChatMessageHeader';
 import ChatMessageFooter from '../atoms/ChatMessageFooter';
 import { useGetMessagesByChatId } from '../../hooks/messageQuery';
 import ChatMessageBody from '../atoms/ChatMessageBody';
+import { useWebSocketMessage } from '../../hooks/useWebSocketMessage';
 
 export default function ChatMessageContainer(): JSX.Element {
   const router = useRouter();
   const { id } = router.query;
   const chatId = Array.isArray(id) ? id[0] : id || '';
   const { data: fetchedMessages, isLoading } = useGetMessagesByChatId(chatId);
+  const realtimeMessages = useWebSocketMessage(chatId);
+
+  const allMessages = [...(fetchedMessages || []), ...realtimeMessages];
 
   return (
     <div className='w-full h-full rounded-lg'>
@@ -18,7 +22,7 @@ export default function ChatMessageContainer(): JSX.Element {
           <ChatMessageHeader />
           <div className='flex-1 p-2 overflow-auto'>
             <ChatMessageBody 
-              fetchedMessages={fetchedMessages || []}
+              fetchedMessages={allMessages}
               isLoading={isLoading}
             />
           </div>

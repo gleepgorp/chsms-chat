@@ -11,6 +11,7 @@ import { useAuth } from '../../context';
 import { useChatContext } from '../../context/ChatContext';
 import { useRouter } from 'next/router';
 import { useNewChatContext } from '../../context/NewChatContext';
+import { messageSchema } from '../../schema/message-schema';
 
 type ChatMessageFooterProps = {
   chatId: string;
@@ -44,7 +45,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
     <Formik
       enableReinitialize
       initialValues={initialValues}
-      validationSchema={''}
+      validationSchema={messageSchema}
       onSubmit={onSubmit}
     >
       {() => (

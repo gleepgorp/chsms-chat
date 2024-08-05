@@ -1,6 +1,7 @@
 import { ChangeEvent, HTMLProps, ReactNode } from 'react';
 import { FieldProps } from 'formik';
 import Label from './Label';
+import { InputVariants } from '../../constants/input';
 
 type InputVariant = 'auth' | 'standard';
 
@@ -30,7 +31,7 @@ export default function TextInputFormik({ field, form, ...props }: TextInputForm
 
   return (
     <Label
-      errorMessage={errorMessage}
+      errorMessage={props.variant === InputVariants.STANDARD ? '' : errorMessage}
       isVisible={!!props.label}
       label={props.showLabel ? props.label : ''}
       labelVariant={errorMessage ? 'error' : 'standard'}
@@ -42,7 +43,7 @@ export default function TextInputFormik({ field, form, ...props }: TextInputForm
         autoComplete={props.autoComplete}
         className={
           ` 
-            ${errorMessage ? 'ring-2 ring-inset ring-red-400' : ''} 
+            ${props.variant === InputVariants.STANDARD  ? '' : ''} 
             ${props.disabled ? 'opacity-50 pointer-events-none' : ''}
             ${variantClass[props.variant]}
             ${props.showLabel ? 'pb-2 pt-[18px] px-3 placeholder-transparent' : 'p-3'}

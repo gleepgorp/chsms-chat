@@ -25,7 +25,7 @@ export default function ChatContainer(props: ChatContainerType): JSX.Element {
   const newChatRoute = router.pathname.includes('/new');
   const [searchItem, setSearchItem] = useState<string>("");
   const searchItemDebounced = useDebounce(searchItem, debouncedDelay);
-  const { data, isLoading, error } = useSearchUser(searchItemDebounced);
+  const { data } = useSearchUser(searchItemDebounced);
 
   function handleSearchItem() {
     setSearchItem('');
@@ -33,7 +33,7 @@ export default function ChatContainer(props: ChatContainerType): JSX.Element {
 
   return (
     <>
-    <div className='min-w-[480px] h-full flex-1 pt-4 pl-4 pb-4'>
+    <div className='lg:min-w-[480px] h-full flex-1 pt-4 pl-4 pb-4'>
       <div className='bg-stone-700/20 h-full rounded-lg p-3 flex flex-col'>
         <div className='flex flex-col gap-3'>
           <div className='flex flex-row items-center justify-between'>

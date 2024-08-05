@@ -17,7 +17,6 @@ export default function ChatDetails(props: ChatDetailsProps) {
   const { user } = useAuth();
   const router = useRouter();
   const { id } = router.query;
-
   const mappedChats = fetchedChats.map((data, index) => {
   const recipient = data.participants.find(p => p.accountId !== user?.uid);
 
@@ -27,8 +26,8 @@ export default function ChatDetails(props: ChatDetailsProps) {
     if (recipient && user) {
       const firstname = recipient.firstname;
       const lastname = recipient.lastname;
-      const firstnameInitial = recipient.firstname.charAt(0);
-      const lastnameInitial = recipient.lastname.charAt(0);
+      const firstnameInitial = recipient.firstname?.charAt(0);
+      const lastnameInitial = recipient.lastname?.charAt(0);
       const profileBg = recipient.profileBgColor;
       const profilePicture = recipient.profilePicture;
       const profile = !profilePicture ? profileBg : ''
