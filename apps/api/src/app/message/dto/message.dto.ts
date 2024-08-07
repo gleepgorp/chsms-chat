@@ -1,4 +1,4 @@
-import { IsArray, IsOptional, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsOptional, IsString } from "class-validator";
 
 export class MessageDTO {
   @IsString()      
@@ -17,4 +17,7 @@ export class MessageDTO {
 
   @IsArray()
   recipientId?: string[];
+
+  @IsBoolean()
+  read?: boolean;
 }

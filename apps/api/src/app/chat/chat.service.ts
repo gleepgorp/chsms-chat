@@ -33,14 +33,25 @@ export class ChatService {
     const chatDoc = await docRef.get();
     const chat = { ...chatDoc.data(), id: chatDoc.id };
 
+    this.chatGateway.server.emit('newChat', chat);
+
     return chat;
   }
 
   async updateLastMessage(chatId: string, messageId: string): Promise<void> {
-    await this.chatCollection.doc(chatId).update({
+    const chatRef = this.chatCollection.doc(chatId);
+    const updatedAt = new Date();
+    await chatRef.update({
       lastMessageId: messageId,
-      updatedAt: new Date(),
-    })
+      updatedAt: updatedAt,
+    });
+  
+    // Emit lastMessageUpdated event
+    this.chatGateway.server.to(chatId).emit('lastMessageUpdated', { chatId, messageId });
+    
+    // Emit chatUpdated event with the full chat object
+    const updatedChat = await this.getChatByIdLong(chatId);
+    this.chatGateway.server.to(chatId).emit('chatUpdated', updatedChat);
   }
 
   async findExistingChat(senderId: string, recipients: string[]): Promise<{ id: string } | null> {
@@ -73,6 +84,34 @@ export class ChatService {
       const snapshot = await this.chatCollection.doc(id).get();
       
       return { ...snapshot.data(), id: snapshot.id } as ChatType;
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async getChatByIdLong(id: string): Promise<ChatType> {
+    try {
+      const snapshot = await this.chatCollection.doc(id).get();
+      if (!snapshot.exists) {
+        throw new HttpException('Chat not found', HttpStatus.NOT_FOUND);
+      }
+  
+      const chatData = snapshot.data();
+      const participants = chatData.participants;
+      const lastMessageId = chatData.lastMessageId;
+      const users = await this.userService.findByIds(participants as unknown as string[]);
+      const lastMessage = await this.messageService.getMessageByLastMessageId(lastMessageId);
+  
+      return {
+        id: snapshot.id,
+        participants: users,
+        lastMessageId: lastMessageId,
+        chatName: chatData.chatName || '',
+        creatorId: chatData.creatorId,
+        type: chatData.type || ChatEnum.DIRECT,
+        updatedAt: chatData.updatedAt,
+        lastMessage: lastMessage || null,
+      } as ChatType;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -116,7 +155,7 @@ export class ChatService {
           lastMessageId: lastMessageId,
           chatName: chatData.chatName || '',
           creatorId: chatData.creatorId,
-          type: chatData.type,
+          type: chatData.type || ChatEnum.DIRECT,
           updatedAt: chatData.updatedAt,
           lastMessage: lastMessage || null,
         };

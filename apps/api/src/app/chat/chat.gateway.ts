@@ -12,12 +12,7 @@ export class ChatGateway {
 
   @SubscribeMessage('joinUserRoom')
   handleJoinUserRoom(@MessageBody() userId: string, @ConnectedSocket() client: Socket) {
-    client.join(`user_${userId}`);
-  }
-
-  @SubscribeMessage('leaveUserRoom')
-  handleLeaveUserRoom(@MessageBody() userId: string, @ConnectedSocket() client: Socket) {
-    client.leave(`user_${userId}`);
+    client.join(userId);
   }
 
   @SubscribeMessage('joinRoom') 
@@ -33,5 +28,10 @@ export class ChatGateway {
   @SubscribeMessage('sendMessage')
   handleMessage(@MessageBody() data: string): void {
     this.server.emit('newMessage', data);
+  }
+
+  @SubscribeMessage('updateLastMessage')
+  handleUpdateLastMessage(@MessageBody() data: { chatId: string, messageId: string }): void {
+    this.server.to(data.chatId).emit('lastMessageUpdated', data);
   }
 }

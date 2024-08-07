@@ -74,7 +74,7 @@ import { ChatGateway } from '../chat/chat.gateway';
       this.chatGateway.server.to(chatId).emit('newMessage', message);
 
       return message;
-    }
+    } 
 
     async getMessageByLastMessageId(id: string): Promise<MessageType | null> {
       const messageSnapshot = await this.messageCollection

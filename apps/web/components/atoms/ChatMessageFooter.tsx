@@ -12,6 +12,7 @@ import { useChatContext } from '../../context/ChatContext';
 import { useRouter } from 'next/router';
 import { useNewChatContext } from '../../context/NewChatContext';
 import { messageSchema } from '../../schema/message-schema';
+import { useGetChatsByUserId } from '../../hooks';
 
 type ChatMessageFooterProps = {
   chatId: string;
@@ -23,8 +24,9 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
   const { recipientId } = useChatContext();
   const router = useRouter();
   const newChatRoute = router.pathname.includes('/new');
+  const { data: fetchedChats } = useGetChatsByUserId(user?.uid as string);
   const { recipientId: NewChatRecipient } = useNewChatContext();
-  const { isPending, mutate: createMessage } = useCreateMessage({
+  const { mutate: createMessage } = useCreateMessage({
     onSuccess: createMessage => {
       queryClient.setQueryData(['GET_MSSG_BY_CHATID', createMessage.id], createMessage)
     },
@@ -33,10 +35,16 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
   function onSubmit(data: MessageDTO, { resetForm }: FormikHelpers<MessageDTO>)   {
     createMessage({ messageData: data });
     resetForm();
+    if (newChatRoute && fetchedChats) {
+      setTimeout(() => {
+        router.replace(`/`);
+      }, 1000)
+    }
   }
 
   const initialValues = {
     content: '',
+    read: false,
     senderId: user?.uid,
     recipientId: [newChatRoute ? NewChatRecipient : recipientId],
   }

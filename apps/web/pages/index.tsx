@@ -1,9 +1,7 @@
-import ChatLayout from "../layout/ChatLayout";
 import { useAuth } from "../context";
 import { useRouter } from "next/router";
 import { useGetChatsByUserId } from "../hooks";
 import { useEffect } from "react";
-import { useChatContext } from "../context/ChatContext";
 import LoadingScreen from "../components/molecules/LoadingScreen";
 import MainLayout from "../layout/MainLayout";
 
