@@ -72,7 +72,7 @@ export function dateAndTime(timestamp: FirebaseTimestamp | string): { formatted:
 
 import { Timestamp } from 'firebase/firestore';
 
-export function isVisibleTimestamp(currentMessage: any, previousMessage: any | undefined): boolean {
+export function isVisibleTimestamp(currentMessage: any, previousMessage: any, type: string | undefined): boolean {
   if (!previousMessage) {
     return true;
   }
@@ -85,8 +85,16 @@ export function isVisibleTimestamp(currentMessage: any, previousMessage: any | u
     ? previousMessage.timestamp.toMillis()
     : previousMessage.timestamp._seconds * 1000 + previousMessage.timestamp._nanoseconds / 1000000;
 
+  let bool = false;
   const timeDifference = currentTime - previousTime;
   const thirtyMinutesInMs = 30 * 60 * 1000;
+  const fiveMinutesInMs = 5 * 60 * 1000;
 
-  return timeDifference >= thirtyMinutesInMs;
+  if (type === 'timestamp') {
+    bool = timeDifference >= thirtyMinutesInMs;
+  } else if (type === 'gap') {
+    bool = timeDifference >= fiveMinutesInMs;
+  }
+
+  return bool;
 }

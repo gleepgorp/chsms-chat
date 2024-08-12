@@ -12,9 +12,11 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
   const { fetchedMessages, isLoading } = props;
 
   const mappedMessages = fetchedMessages.map((data, index) => {
-    const showTimeStamp = isVisibleTimestamp(data, fetchedMessages[index - 1]);
+    const showTimeStamp = isVisibleTimestamp(data, fetchedMessages[index - 1], 'timestamp');
+    const allowGap = isVisibleTimestamp(data, fetchedMessages[index - 1], 'gap');
+    
     return (
-      <div key={index}>
+      <div key={data.id || index} className={`${allowGap ? 'mt-6' : 'mt-0.5'}`}>
         {showTimeStamp && 
           <div className='flex flex-col items-center'>
             <span className='text-xs text-stone-500 font-semibold'>
@@ -33,7 +35,7 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
 
   return (
     <div className='text-stone-100 text-4xl max-h-[820px]'>
-      <div className='flex gap-2 flex-col'>
+      <div className='flex flex-col'>
         {mappedMessages}
       </div>
     </div>

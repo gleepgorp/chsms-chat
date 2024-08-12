@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/router';
 import ChatMessageHeader from '../atoms/ChatMessageHeader';
 import ChatMessageFooter from '../atoms/ChatMessageFooter';
@@ -12,14 +12,29 @@ export default function ChatMessageContainer(): JSX.Element {
   const chatId = Array.isArray(id) ? id[0] : id || '';
   const { data: fetchedMessages, isLoading } = useGetMessagesByChatId(chatId);
   const realtimeMessages = useWebSocketMessage(chatId);
-  const allMessages = [...(fetchedMessages || []), ...realtimeMessages];
+  const allMessages = useMemo(() => {
+    return [...(fetchedMessages || []), ...realtimeMessages];
+  }, [fetchedMessages, realtimeMessages]);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollerRef.current) {
+      scrollerRef.current?.scrollTo({
+        top: scrollerRef.current.scrollHeight
+      });
+    }
+  }, [allMessages]);
 
   return (
     <div className='w-full h-full rounded-lg'>
       <div className='p-2 bg-stone-700/20 h-full'>
         <div className='flex flex-col h-full'>
           <ChatMessageHeader />
-          <div className='flex-1 p-2 overflow-auto' id='scroller'>
+          <div 
+            className='flex-1 p-2 overflow-auto' 
+            id='scroller'
+            ref={scrollerRef}
+          >
             <ChatMessageBody 
               fetchedMessages={allMessages}
               isLoading={isLoading}
