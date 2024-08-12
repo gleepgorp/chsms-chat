@@ -1,7 +1,7 @@
 import React from 'react'
 import { MessageType } from 'types/Message.type'
 import ChatBubble from './ChatBubble';
-import { convertTimestamp } from '../../utils';
+import { convertTimestamp, dateAndTime, isVisibleTimestamp } from '../../utils';
 
 type ChatMessageBodyProps = {
   fetchedMessages: MessageType[]  
@@ -12,8 +12,16 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
   const { fetchedMessages, isLoading } = props;
 
   const mappedMessages = fetchedMessages.map((data, index) => {
+    const showTimeStamp = isVisibleTimestamp(data, fetchedMessages[index - 1]);
     return (
       <div key={index}>
+        {showTimeStamp && 
+          <div className='flex flex-col items-center'>
+            <span className='text-xs text-stone-500 font-semibold'>
+              {dateAndTime(data.timestamp).formatted}
+            </span>
+          </div>
+        }
         <ChatBubble 
           message={data.content}
           senderId={data.senderId}

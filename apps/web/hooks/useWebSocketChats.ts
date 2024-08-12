@@ -1,28 +1,40 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import socket from "../utils/socket.utils";
 import { ChatType } from "types/Chat.type";
 
 export function useWebSocketChats(initialChats: ChatType[]) {
   const [chats, setChats] = useState<ChatType[]>(initialChats);
+  const isMounted = useRef(true);
 
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+  
   useEffect(() => {
     setChats(initialChats);
   }, [initialChats]);
 
   useEffect(() => {
     const handleChatUpdate = (updatedChat: ChatType) => {
-      setChats(prevChats => prevChats.map(chat => 
-        chat.id === updatedChat.id ? updatedChat : chat
-      ));
+      if (isMounted.current) {
+        setChats(prevChats => prevChats.map(chat => 
+          chat.id === updatedChat.id ? updatedChat : chat
+        ));
+      }
     };
 
     const handleNewChat = (newChat: ChatType) => {
-      setChats(prevChats => {
-        if(!prevChats.some(chat => chat.id === newChat.id)) {
-          return [newChat, ...prevChats];
-        }
-        return prevChats;
-      })
+      if (isMounted.current) {
+        setChats(prevChats => {
+          if(!prevChats.some(chat => chat.id === newChat.id)) {
+            return [newChat, ...prevChats];
+          }
+          return prevChats;
+        });
+      }
     }
 
     socket.on('chatUpdated', handleChatUpdate);

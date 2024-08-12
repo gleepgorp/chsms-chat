@@ -52,7 +52,7 @@ export default function ChatContainer(props: ChatContainerType): JSX.Element {
               />
           </div>
         </div>
-        <div className='overflow-y-auto h-full'>
+        <div className='overflow-y-auto overflow-x-hidden h-full'>
           {newChatRoute && <NewChatProfileLayout />}
           {searchItem ? 
             <ChatSearchContainer 

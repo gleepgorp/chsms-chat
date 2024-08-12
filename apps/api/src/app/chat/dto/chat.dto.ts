@@ -10,15 +10,23 @@ export class ChatDTO {
   participants?: string[];
 
   @IsString()
-  type?: ChatEnum;
+  lastMessageId?: string;
+
+  @IsString()
+  @IsOptional()
+  chatName?: string;
 
   @IsString()
   creatorId?: string;
-  
-  @IsString()
-  lastMessageId?: string;
 
-  @IsOptional()
   @IsString()
-  chatName?: string;
+  type?: ChatEnum;
+
+  @IsString()
+  @IsOptional()
+  updatedAt?: string;
+
+  @IsString()
+  @IsOptional()
+  lastMessage?: string;
 }

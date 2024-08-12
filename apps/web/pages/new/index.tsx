@@ -1,7 +1,7 @@
 import React from 'react'
-import { useAuth } from '../../../context';
-import { useGetChatsByUserId } from '../../../hooks';
-import ChatLayout from '../../../layout/ChatLayout'
+import { useAuth } from '../../context';
+import { useGetChatsByUserId } from '../../hooks';
+import ChatLayout from '../../layout/ChatLayout'
 
 export default function NewChatPage() {
   const { user } = useAuth();

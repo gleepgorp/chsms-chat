@@ -8,12 +8,17 @@ import { UserService } from "../user/user.service";
 import { MessageService } from "../message/message.service";
 import { ProfileType } from "types/Profile.type";
 import { ChatGateway } from "./chat.gateway";
+import { MessageDTO } from "../message/dto/message.dto";
+import { MessageDocument } from "../../documents/message.document";
+import { MessageType } from "types/Message.type";
 
 @Injectable()
 export class ChatService {
   constructor (
     @Inject(ChatDocument.collectionName)
     private chatCollection: CollectionReference<ChatType>,
+    @Inject(MessageDocument.collectionName)
+    private messageCollection: CollectionReference<MessageType>,
     @Inject(forwardRef(() => MessageService))
     private messageService: MessageService,
     private userService: UserService,
@@ -22,20 +27,35 @@ export class ChatService {
     private db,
   ) {}
 
-  async createChat(chatData: ChatDTO): Promise<ChatType> {
+  async createChat(chatData: ChatDTO, initialMessage?: MessageDTO): Promise<ChatType> {
     const writeBatch = this.db.batch();
     const docRef = this.chatCollection.doc();
+
+    let lastMessageId = '';
+
+    if (initialMessage) {
+      const messageDocRef = this.messageCollection.doc();
+      writeBatch.set(messageDocRef, {
+        messageId: messageDocRef.id,
+        timestamp: new Date(),
+        chatId: docRef.id,
+        ...initialMessage,
+      });
+      lastMessageId = messageDocRef.id;
+    }
+
     writeBatch.set(docRef, {
       updatedAt: new Date(),
+      lastMessageId,
       ...chatData,
     });
     await writeBatch.commit();
-    const chatDoc = await docRef.get();
-    const chat = { ...chatDoc.data(), id: chatDoc.id };
 
-    this.chatGateway.server.emit('newChat', chat);
+    const chatObject = await this.getChatByIdLong(docRef.id);
 
-    return chat;
+    this.chatGateway.server.emit('newChat', chatObject);
+
+    return chatObject;
   }
 
   async updateLastMessage(chatId: string, messageId: string): Promise<void> {

@@ -42,9 +42,10 @@ import { ChatGateway } from '../chat/chat.gateway';
       } else {
         const newChat = await this.chatService.createChat({
           participants: [messageData.senderId, ...recipients],
-          type: recipients.length > singleRecipient ? ChatEnum.GROUP : ChatEnum.DIRECT,
+          lastMessageId: '',
+          chatName: "",
           creatorId: messageData.senderId,
-          chatName: ""
+          type: recipients.length > singleRecipient ? ChatEnum.GROUP : ChatEnum.DIRECT,
         });
         chatId = newChat.id;
       }

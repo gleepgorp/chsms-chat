@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import MeatballMenu from '../atoms/MeatballMenu'
 import { ChatType } from 'types/Chat.type';
 import { useAuth } from '../../context/index';
@@ -17,11 +17,20 @@ export default function ChatDetails(props: ChatDetailsProps) {
   const { user } = useAuth();
   const router = useRouter();
   const { id } = router.query;
+  const [isOpen, setisOpen] = useState<boolean>(false);
+  const [dropdownIndex, setDropdownIndex] = useState<number>(null || 0);
   const mappedChats = fetchedChats.map((data, index) => {
   const recipient = data.participants.find(p => p.accountId !== user?.uid);
 
   const ownerLastMessage = data?.lastMessage?.senderId === user?.uid ? 'You: ' : ''
   const isActive = data.id === id ? 'bg-stone-500/40 hover:bg-stone-500/40' : '';
+
+  function handleClick(event: any, index: number) {
+    event.stopPropagation();
+    event.preventDefault();
+    setDropdownIndex(index);
+    setisOpen(prevIsOpen => !prevIsOpen);
+  }
 
     if (recipient && user) {
       const firstname = recipient.firstname;
@@ -35,7 +44,7 @@ export default function ChatDetails(props: ChatDetailsProps) {
       return (
         <Link 
           key={index}
-          href={`/chat/${data.id}`} 
+          href={`/chat/${data.id}`}
         >
           <div 
             className={
@@ -55,7 +64,7 @@ export default function ChatDetails(props: ChatDetailsProps) {
                   {`${firstname} ${lastname}`}
                 </span>
                 <div className='flex flex-row gap-2 text-sm text-stone-400 whitespace-nowrap'>
-                  <span className='truncate max-w-64'>
+                  <span className={`truncate max-w-64 ${data.lastMessage?.read ? 'font-semibold text-stone-100' : ''}`}>
                     {ownerLastMessage} 
                     {data.lastMessage?.content}
                   </span>
@@ -65,7 +74,11 @@ export default function ChatDetails(props: ChatDetailsProps) {
               </div>
             </div>
             <div>
-              <MeatballMenu isHidden={true}/>
+            <MeatballMenu 
+              isHidden={true} 
+              onClick={(e) => handleClick(e, index)} 
+              isOpen={isOpen && dropdownIndex === index}
+            />
             </div>
           </div>
         </Link>

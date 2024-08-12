@@ -12,7 +12,6 @@ export default function ChatMessageContainer(): JSX.Element {
   const chatId = Array.isArray(id) ? id[0] : id || '';
   const { data: fetchedMessages, isLoading } = useGetMessagesByChatId(chatId);
   const realtimeMessages = useWebSocketMessage(chatId);
-
   const allMessages = [...(fetchedMessages || []), ...realtimeMessages];
 
   return (
@@ -20,11 +19,12 @@ export default function ChatMessageContainer(): JSX.Element {
       <div className='p-2 bg-stone-700/20 h-full'>
         <div className='flex flex-col h-full'>
           <ChatMessageHeader />
-          <div className='flex-1 p-2 overflow-auto'>
+          <div className='flex-1 p-2 overflow-auto' id='scroller'>
             <ChatMessageBody 
               fetchedMessages={allMessages}
               isLoading={isLoading}
             />
+            <div id="anchor"></div>
           </div>
           <div className='p-2'>
             <ChatMessageFooter chatId={chatId}/>

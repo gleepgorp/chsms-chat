@@ -32,13 +32,14 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
     },
   });
   
-  function onSubmit(data: MessageDTO, { resetForm }: FormikHelpers<MessageDTO>)   {
+  function onSubmit(data: MessageDTO, { resetForm }: FormikHelpers<MessageDTO>) {
     createMessage({ messageData: data });
     resetForm();
+
     if (newChatRoute && fetchedChats) {
       setTimeout(() => {
         router.replace(`/`);
-      }, 1000)
+      }, 1000)  
     }
   }
 
@@ -57,7 +58,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
       onSubmit={onSubmit}
     >
       {() => (
-        <Form className='flex flex-row gap-3 p-2'>
+        <Form className='flex flex-row gap-4 p-2'>
           <div className='flex-1'>
             <Field 
               label="message"
@@ -70,8 +71,8 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
               placeholder='Send a message'
             />
           </div>
-          <Button type='submit'>
-            <IoSend />
+          <Button type='submit' variant='svg' size='svg'>
+            <IoSend className='text-xl'/>
           </Button>
         </Form>
       )}

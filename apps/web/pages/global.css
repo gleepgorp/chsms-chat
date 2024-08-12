@@ -23,3 +23,34 @@ body {
 ::-webkit-scrollbar-thumb {
 	background-color: #57534e;
 }
+
+.inner-headings span{
+  position: relative;
+  line-height: 100px;
+  animation: slide 10s ease infinite;
+}
+
+@keyframes slide {
+  0%, 100% { top: 0; }
+  20% { top: 0; }
+  25% { top: -100px; }
+  45% { top: -100px; }
+  50% { top: -205px; }
+  70% { top: -205px; }
+  75% { top: -305px; }
+  95% { top: -305px; }
+  100% { top: -400px; }
+}
+
+body {
+  height: 100.001vh;
+}
+
+#scroller * {
+  overflow-anchor: none;
+}
+
+#anchor {
+  overflow-anchor: auto;
+  height: 1px;
+}

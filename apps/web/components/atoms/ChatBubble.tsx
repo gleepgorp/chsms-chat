@@ -3,6 +3,7 @@ import { useAuth } from '../../context';
 import Tooltip from './Tooltip';
 import ChatProfilePicture from './ChatProfilePicture';
 import { useChatContext } from '../../context/ChatContext';
+import { dateAndTime } from '../../utils';
 
 type ChatBubbleProps = {
   message?: string;
@@ -32,7 +33,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
           } 
           <Tooltip
             size='sm'
-            content={timestamp}
+            content={dateAndTime(timestamp || '').formatted}
             paddingSize='sm'
             placement={isSender ? 'left' : 'right'}
           >

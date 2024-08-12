@@ -8,4 +8,5 @@ export type MessageType = {
   readBy: string;
   timestamp: string;
   recipientId: ProfileType;
+  read: string;
 }

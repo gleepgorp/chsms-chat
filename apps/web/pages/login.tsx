@@ -24,8 +24,16 @@ export default function Login () {
               <span className="text-stone-100 font-bold sm:text-6xl text-4xl">Haiii! {'>.<'}</span>
               <span className="text-stone-100 font-bold sm:text-5xl text-4xl">time for some</span>
             </div>
-            <span className="text-chsms-orange font-bold sm:text-8xl text-7xl">chsms!</span>
-            <span className="text-stone-100 font-light text-lg mt-2">Login to start gossiping 🤭</span>
+            <div className='h-[100px] overflow-hidden inner-headings'>
+              <span className="text-chsms-orange font-bold sm:text-8xl text-7xl">
+                chsms!<br />
+                chikas!<br />
+                gossips!<br />
+                stories!<br />
+                chsms!<br />
+              </span>
+            </div>
+            <span className="text-stone-100 font-light text-lg mt-2">Login to start using chsms! 🤭</span>
           </div>
           <AuthContainer handleFormSubmit={handleSignIn}/>
         </div>
