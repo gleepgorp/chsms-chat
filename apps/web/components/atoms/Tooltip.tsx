@@ -46,8 +46,8 @@ export default function Tooltip(props: TooltipProps) {
       {children}
       {isHovered && 
         <TooltipContent placement={placement} size={size} paddingSize={paddingSize}>
-        {content}
-      </TooltipContent>
+          {content}
+        </TooltipContent>
       }
     </div>
   )

@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import Link from 'next/link';
 
-type ButtonVariant = 'primary' | 'secondary' | 'gray' | 'link' | 'icon' | 'svg';
+type ButtonVariant = 'primary' | 'secondary' | 'gray' | 'link' | 'icon' | 'svg' | 'noBg';
 type ButtonSize = 'sm' | 'md' | 'lg' | 'icon' | 'svg';
 type ButtonWidth = 'full' | 'standard';
 type RoundedSize = 'sm' | 'md' | 'lg' | 'full';
@@ -32,12 +32,13 @@ const variantClasses: Record<ButtonVariant, string> = {
   gray: 'bg-stone-400 text-stone-100 hover:bg-stone-400/90',
   link: 'bg-none text-stone-400 active:scale-95 text-sm',
   icon: 'bg-stone-600/50 hover:bg-stone-600/80 text-stone-400',
-  svg: 'text-chsms-orange'
+  svg: 'text-chsms-orange',
+  noBg: 'bg-none hover:bg-stone-600'
 }
 
 const sizeClasses: Record<ButtonSize, string> = {
   sm: 'px-2 py-1 text-sm',
-  md: 'px-3 py-2 text-base',
+  md: 'px-2 py-2 text-base',
   lg: 'px-4 py-3 text-lg',
   icon: 'p-2',
   svg: 'p-1 text-2xl'

@@ -42,9 +42,6 @@ body {
   100% { top: -400px; }
 }
 
-body {
-  height: 100.001vh;
-}
 
 #scroller * {
   overflow-anchor: none;
@@ -52,5 +49,4 @@ body {
 
 #anchor {
   overflow-anchor: auto;
-  height: 1px;
 }

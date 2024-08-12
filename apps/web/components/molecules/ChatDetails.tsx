@@ -19,9 +19,9 @@ export default function ChatDetails(props: ChatDetailsProps) {
   const { id } = router.query;
   const [isOpen, setisOpen] = useState<boolean>(false);
   const [dropdownIndex, setDropdownIndex] = useState<number>(null || 0);
+  
   const mappedChats = fetchedChats.map((data, index) => {
   const recipient = data.participants.find(p => p.accountId !== user?.uid);
-
   const ownerLastMessage = data?.lastMessage?.senderId === user?.uid ? 'You: ' : ''
   const isActive = data.id === id ? 'bg-stone-500/40 hover:bg-stone-500/40' : '';
 
@@ -76,6 +76,7 @@ export default function ChatDetails(props: ChatDetailsProps) {
             <div>
             <MeatballMenu 
               isHidden={true} 
+              participants={data.participants}
               onClick={(e) => handleClick(e, index)} 
               isOpen={isOpen && dropdownIndex === index}
             />

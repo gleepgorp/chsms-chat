@@ -72,10 +72,10 @@ export function dateAndTime(timestamp: FirebaseTimestamp | string): { formatted:
 
 import { Timestamp } from 'firebase/firestore';
 
-export function isVisibleTimestamp(currentMessage: any, previousMessage: any, type: string | undefined): boolean {
+export function isVisibleTimestamp(currentMessage: any, previousMessage: any, type: string, loggedUser?: string | undefined): boolean {
   if (!previousMessage) {
     return true;
-  }
+  } 
 
   const currentTime = currentMessage.timestamp instanceof Timestamp 
     ? currentMessage.timestamp.toMillis()
@@ -85,16 +85,22 @@ export function isVisibleTimestamp(currentMessage: any, previousMessage: any, ty
     ? previousMessage.timestamp.toMillis()
     : previousMessage.timestamp._seconds * 1000 + previousMessage.timestamp._nanoseconds / 1000000;
 
-  let bool = false;
   const timeDifference = currentTime - previousTime;
   const thirtyMinutesInMs = 30 * 60 * 1000;
   const fiveMinutesInMs = 5 * 60 * 1000;
 
-  if (type === 'timestamp') {
-    bool = timeDifference >= thirtyMinutesInMs;
-  } else if (type === 'gap') {
-    bool = timeDifference >= fiveMinutesInMs;
+  switch (type) {
+    case 'timestamp':
+      return timeDifference >= thirtyMinutesInMs;
+    case 'gap':
+      return timeDifference >= fiveMinutesInMs;
+    case 'profile':
+      // show profile if:
+      // 1. sender changed, or
+      // 2. more than 5 minutes since the last message from same sender
+      return currentMessage.senderId !== previousMessage.senderId || 
+             (currentMessage.senderId !== loggedUser && timeDifference >= fiveMinutesInMs);
+    default:
+      return false;
   }
-
-  return bool;
 }
