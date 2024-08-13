@@ -6,9 +6,9 @@ import { MessageDTO } from '../../api/src/app/message/dto/message.dto';
 
 const messageApi = apiClient.use(MessageApi);
 
-export async function createMessage(messageData: MessageDTO): Promise<MessageType | null> {
+export async function createMessage(messageData: MessageDTO, replyId?: string): Promise<MessageType | null> {
   try {
-    const { data } = await messageApi.messageControllerCreateMessage(messageData);
+    const { data } = await messageApi.messageControllerCreateMessage(replyId as string, messageData);
     return data as unknown as MessageType;
   } catch (err) {
     console.error(err);

@@ -20,4 +20,11 @@ export class MessageDTO {
 
   @IsBoolean()
   read?: boolean;
+
+  @IsString()
+  @IsOptional()
+  reply?: string;
+
+  @IsOptional()
+  messageId?: string;
 }

@@ -8,12 +8,13 @@ import { createMessage } from "../services/message";
 export const useCreateMessage = (
   mutationOptions: MutationOptions<
     any,
-    AxiosError<{ message: string }>,
-    {messageData: CreateMessageDTO; } 
+    AxiosError<{ message: string } >,
+    { messageData: CreateMessageDTO; 
+      replyId?: string; } 
   >,
 ) => {
   return useMutation({
-    mutationFn: ({ messageData }) => createMessage(messageData),
+    mutationFn: ({ messageData, replyId }) => createMessage(messageData, replyId),
     ...mutationOptions,
   });
 };

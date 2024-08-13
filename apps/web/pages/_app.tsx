@@ -6,6 +6,7 @@ import Authenticated from '../components/atoms/Authenticated';
 import ChatProvider from '../context/ChatContext';
 import NewChatProvider from '../context/NewChatContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ReplyProvider from '../context/ReplyContext';
 
 export default function App({ Component, pageProps }: AppProps) {
   const defaultTitle = 'Chsms';
@@ -22,9 +23,11 @@ export default function App({ Component, pageProps }: AppProps) {
           <Authenticated>
             <ChatProvider>
               <NewChatProvider>
-                <main>
-                  <Component {...pageProps} />
-                </main>
+                <ReplyProvider>
+                  <main>
+                    <Component {...pageProps} />
+                  </main>
+                </ReplyProvider>
               </NewChatProvider>
             </ChatProvider>
           </Authenticated>

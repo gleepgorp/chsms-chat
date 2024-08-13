@@ -24,7 +24,7 @@ import { ChatGateway } from '../chat/chat.gateway';
       private db, 
     ) {}
 
-    async createMessage(messageData: MessageDTO): Promise<MessageType> {
+    async createMessage(messageData: MessageDTO, replyId?: string): Promise<MessageType> {
       let chatId: string;
       const singleRecipient = 1;
       let recipients: string[];
@@ -50,14 +50,29 @@ import { ChatGateway } from '../chat/chat.gateway';
         chatId = newChat.id;
       }
       
+
       const writeBatch = this.db.batch(); 
       const docRef = this.messageCollection.doc();
-      writeBatch.set(docRef, {
-        messageId: docRef.id,
-        timestamp: new Date(),
-        chatId: chatId, 
-        ...messageData,
-      });
+
+      if (replyId) {
+        const replyDoc = await this.messageCollection.doc(replyId).get();
+        const reply = replyDoc.data().content;
+
+        writeBatch.set(docRef, {
+          messageId: docRef.id,
+          timestamp: new Date(),
+          chatId: chatId, 
+          reply: reply,
+          ...messageData,
+        });
+      } else {
+        writeBatch.set(docRef, {
+          messageId: docRef.id,
+          timestamp: new Date(),
+          chatId: chatId, 
+          ...messageData,
+        });
+      }
       
       const chatRef = this.chatCollection.doc(chatId);
       writeBatch.update(chatRef, {
@@ -76,6 +91,12 @@ import { ChatGateway } from '../chat/chat.gateway';
 
       return message;
     } 
+
+    async getMessageById(messageId: string): Promise<MessageType> {
+      const messageSnapshot = await this.messageCollection.doc(messageId).get();
+
+      return { ...messageSnapshot.data(), id: messageSnapshot.id } as MessageType;
+    }
 
     async getMessageByLastMessageId(id: string): Promise<MessageType | null> {
       const messageSnapshot = await this.messageCollection
@@ -102,10 +123,12 @@ import { ChatGateway } from '../chat/chat.gateway';
         }));
 
         const formattedMessages = message.map((message) => ({
+          messageId: message.messageId,
           content: message.content,
           timestamp: message.timestamp,
           recipientId: message.recipientId,
           senderId: message.senderId,
+          reply: message.reply,
         }));
 
         return formattedMessages as unknown as MessageType[];

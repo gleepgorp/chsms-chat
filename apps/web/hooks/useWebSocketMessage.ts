@@ -19,7 +19,7 @@ export function useWebSocketMessage(chatId: string) {
         return [...prevMessages, newMessage];
       }
 
-      return prevMessages;
+      return prevMessages; 
     });
   }, []);
 

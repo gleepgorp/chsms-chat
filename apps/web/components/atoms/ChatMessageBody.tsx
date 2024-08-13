@@ -20,10 +20,17 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
     const showTimeStamp = isVisibleTimestamp(data, fetchedMessages[index - 1], 'timestamp');
     const isSender = data.senderId === user?.uid;
     const allowGap = isVisibleTimestamp(data, fetchedMessages[index - 1], 'gap');
+    const recipientGap = isVisibleTimestamp(data, fetchedMessages[index - 1], 'recipient');
     const isProfileVisible = isVisibleTimestamp(data, fetchedMessages[index - 1], 'profile', user?.uid);
-    
+
     return (
-      <div key={data.id || index} className={`${allowGap ? 'mt-8' : 'mt-0.5'}`}>
+      <div 
+        key={data.id || index} 
+        className={`
+          ${allowGap ? 'mt-8' : 'mt-0.5'}
+          ${recipientGap ? 'mt-4' : ''}
+        `}
+      >
         {showTimeStamp && 
           <div className='flex flex-col items-center py-2'>
             <span className='text-xs text-stone-500 font-semibold'>
@@ -32,8 +39,10 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
           </div>
         }
         <ChatBubble 
+          reply={data?.reply}
           message={data.content}
           senderId={data.senderId}
+          messageId={data.messageId}
           isProfileVisible={isProfileVisible}
           placement={isSender ? 'left' : 'right'}
           timestamp={convertTimestamp(data.timestamp).date.toLocaleString()}

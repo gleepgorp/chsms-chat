@@ -17,8 +17,8 @@ export default function ChatMessageContainer(): JSX.Element {
   const allMessages = useMemo(() => {
     return [...(fetchedMessages || []), ...realtimeMessages];
   }, [fetchedMessages, realtimeMessages]);
-  const scrollerRef = useRef<HTMLDivElement>(null);
 
+  const scrollerRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState<boolean>(true);
   const [scrollPosition, setScrollPosition] = useState(0);
 
@@ -54,7 +54,7 @@ export default function ChatMessageContainer(): JSX.Element {
     }
   }, [debouncedScrollPosition]);
 
-  useEffect(() => {
+  useEffect(() => { 
     if (scrollerRef.current) {
       scrollerRef.current?.scrollTo({
         top: scrollerRef.current.scrollHeight
@@ -80,9 +80,7 @@ export default function ChatMessageContainer(): JSX.Element {
             />
             <div id="anchor"></div>
           </div>
-          <div className='p-2'>
-            <ChatMessageFooter chatId={chatId}/>
-          </div>
+          <ChatMessageFooter chatId={chatId}/>
         </div>
       </div>
     </div>

@@ -346,11 +346,14 @@ export const MessageApiAxiosParamCreator = function (configuration?: Configurati
     return {
         /**
          * 
+         * @param {string} replyId 
          * @param {object} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        messageControllerCreateMessage: async (body: object, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        messageControllerCreateMessage: async (replyId: string, body: object, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'replyId' is not null or undefined
+            assertParamExists('messageControllerCreateMessage', 'replyId', replyId)
             // verify required parameter 'body' is not null or undefined
             assertParamExists('messageControllerCreateMessage', 'body', body)
             const localVarPath = `/api/message`;
@@ -365,6 +368,10 @@ export const MessageApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
+            if (replyId !== undefined) {
+                localVarQueryParameter['replyId'] = replyId;
+            }
+
 
     
             localVarHeaderParameter['Content-Type'] = 'application/json';
@@ -373,6 +380,39 @@ export const MessageApiAxiosParamCreator = function (configuration?: Configurati
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} messageId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        messageControllerGetMessageById: async (messageId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'messageId' is not null or undefined
+            assertParamExists('messageControllerGetMessageById', 'messageId', messageId)
+            const localVarPath = `/api/message/getMessage/{messageId}`
+                .replace(`{${"messageId"}}`, encodeURIComponent(String(messageId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -424,14 +464,27 @@ export const MessageApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @param {string} replyId 
          * @param {object} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async messageControllerCreateMessage(body: object, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.messageControllerCreateMessage(body, options);
+        async messageControllerCreateMessage(replyId: string, body: object, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.messageControllerCreateMessage(replyId, body, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['MessageApi.messageControllerCreateMessage']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} messageId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async messageControllerGetMessageById(messageId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.messageControllerGetMessageById(messageId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['MessageApi.messageControllerGetMessageById']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -458,12 +511,22 @@ export const MessageApiFactory = function (configuration?: Configuration, basePa
     return {
         /**
          * 
+         * @param {string} replyId 
          * @param {object} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        messageControllerCreateMessage(body: object, options?: any): AxiosPromise<void> {
-            return localVarFp.messageControllerCreateMessage(body, options).then((request) => request(axios, basePath));
+        messageControllerCreateMessage(replyId: string, body: object, options?: any): AxiosPromise<void> {
+            return localVarFp.messageControllerCreateMessage(replyId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} messageId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        messageControllerGetMessageById(messageId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.messageControllerGetMessageById(messageId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -486,13 +549,25 @@ export const MessageApiFactory = function (configuration?: Configuration, basePa
 export class MessageApi extends BaseAPI {
     /**
      * 
+     * @param {string} replyId 
      * @param {object} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof MessageApi
      */
-    public messageControllerCreateMessage(body: object, options?: RawAxiosRequestConfig) {
-        return MessageApiFp(this.configuration).messageControllerCreateMessage(body, options).then((request) => request(this.axios, this.basePath));
+    public messageControllerCreateMessage(replyId: string, body: object, options?: RawAxiosRequestConfig) {
+        return MessageApiFp(this.configuration).messageControllerCreateMessage(replyId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} messageId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MessageApi
+     */
+    public messageControllerGetMessageById(messageId: string, options?: RawAxiosRequestConfig) {
+        return MessageApiFp(this.configuration).messageControllerGetMessageById(messageId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

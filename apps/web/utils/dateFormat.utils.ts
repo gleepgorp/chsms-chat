@@ -43,7 +43,7 @@ export function dateAndTime(timestamp: FirebaseTimestamp | string): { formatted:
 
   const timeNow = new Date();
   const timeDifference = timeNow.getTime() - date.getTime();
-  const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 16));
+  const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 14));
 
   const formatTime = (date: Date) => {
     return date.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
@@ -94,6 +94,8 @@ export function isVisibleTimestamp(currentMessage: any, previousMessage: any, ty
       return timeDifference >= thirtyMinutesInMs;
     case 'gap':
       return timeDifference >= fiveMinutesInMs;
+    case 'recipient':
+      return currentMessage.senderId !== previousMessage.senderId;  
     case 'profile':
       // show profile if:
       // 1. sender changed, or

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { IoSend } from "react-icons/io5";
 import Button from './Button';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
@@ -13,6 +13,8 @@ import { useRouter } from 'next/router';
 import { useNewChatContext } from '../../context/NewChatContext';
 import { messageSchema } from '../../schema/message-schema';
 import { useGetChatsByUserId } from '../../hooks';
+import ReplyChatLayout from '../molecules/ReplyChatLayout';
+import { useReplyContext } from '../../context/ReplyContext';
 
 type ChatMessageFooterProps = {
   chatId: string;
@@ -22,8 +24,20 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { recipientId } = useChatContext();
+  const { 
+    messageId: replyId,
+    replyChatId, 
+    setRecipient, 
+    setMessageReplied, 
+    setRecipientId,
+    setMessageId,
+  } = useReplyContext();
+
   const router = useRouter();
+  const { id } = router.query;
+
   const newChatRoute = router.pathname.includes('/new');
+  
   const { data: fetchedChats } = useGetChatsByUserId(user?.uid as string);
   const { recipientId: NewChatRecipient } = useNewChatContext();
   const { mutate: createMessage } = useCreateMessage({
@@ -33,7 +47,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
   });
   
   function onSubmit(data: MessageDTO, { resetForm }: FormikHelpers<MessageDTO>) {
-    createMessage({ messageData: data });
+    createMessage({ messageData: data, replyId });
     resetForm();
 
     if (newChatRoute && fetchedChats) {
@@ -43,6 +57,15 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
     }
   }
 
+  useEffect(() => {
+    if (!replyChatId) {
+      setRecipient(''); 
+      setMessageReplied('');
+      setRecipientId('');
+      setMessageId('');
+    }
+  }, [id, replyChatId, setRecipient, setMessageReplied, setRecipientId, setMessageId]);
+
   const initialValues = {
     content: '',
     read: false,
@@ -51,32 +74,35 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
   }
 
   return (
-    <Formik
-      enableReinitialize
-      initialValues={initialValues}
-      validationSchema={messageSchema}
-      onSubmit={onSubmit}
-    >
-      {() => (
-        <Form className='flex flex-row gap-4 p-2'>
-          <div className='flex-1'>
-            <Field 
-              label="message"
-              id='content'
-              name='content'
-              type='text'
-              autoComplete='off'
-              variant='standard'
-              component={TextInputFormik}
-              placeholder='Send a message'
-            />
-          </div>
-          <Button type='submit' variant='svg' size='svg'>
-            <IoSend className='text-xl'/>
-          </Button>
-        </Form>
-      )}
-    </Formik>
+    <div>
+      <ReplyChatLayout />
+      <Formik
+        enableReinitialize
+        initialValues={initialValues}
+        validationSchema={messageSchema}
+        onSubmit={onSubmit}
+      >
+        {() => (
+          <Form className='flex flex-row gap-4 p-2'>
+            <div className='flex-1'>
+              <Field 
+                label="message"
+                id='content'
+                name='content'
+                type='text'
+                autoComplete='off'
+                variant='standard'
+                component={TextInputFormik}
+                placeholder='Send a message'
+              />
+            </div>
+            <Button type='submit' variant='svg' size='svg'>
+              <IoSend className='text-xl'/>
+            </Button>
+          </Form>
+        )}
+      </Formik>
+    </div>
   )
 }
 
