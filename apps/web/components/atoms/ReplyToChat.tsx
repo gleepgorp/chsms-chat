@@ -16,7 +16,7 @@ export default function ReplyToChat(props: ReplyToChatProps) {
     >
       <div 
         onClick={onClickReply}
-        className='bg-stone-500/40 p-1 rounded-full cursor-pointer hover:bg-stone-400/50'
+        className='bg-stone-500/40 p-1 rounded-full cursor-pointer hover:bg-stone-400/50 mt-1'
       >
         <BsFillReplyFill className='text-[18px] flex'/>
       </div>

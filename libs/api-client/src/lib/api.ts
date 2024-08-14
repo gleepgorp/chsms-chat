@@ -422,12 +422,15 @@ export const MessageApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @param {string} id 
+         * @param {number} page 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        messageControllerGetMessagesByChatId: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        messageControllerGetMessagesByChatId: async (id: string, page: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('messageControllerGetMessagesByChatId', 'id', id)
+            // verify required parameter 'page' is not null or undefined
+            assertParamExists('messageControllerGetMessagesByChatId', 'page', page)
             const localVarPath = `/api/message/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -440,6 +443,10 @@ export const MessageApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
 
 
     
@@ -490,11 +497,12 @@ export const MessageApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} id 
+         * @param {number} page 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async messageControllerGetMessagesByChatId(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.messageControllerGetMessagesByChatId(id, options);
+        async messageControllerGetMessagesByChatId(id: string, page: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.messageControllerGetMessagesByChatId(id, page, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['MessageApi.messageControllerGetMessagesByChatId']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -531,11 +539,12 @@ export const MessageApiFactory = function (configuration?: Configuration, basePa
         /**
          * 
          * @param {string} id 
+         * @param {number} page 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        messageControllerGetMessagesByChatId(id: string, options?: any): AxiosPromise<void> {
-            return localVarFp.messageControllerGetMessagesByChatId(id, options).then((request) => request(axios, basePath));
+        messageControllerGetMessagesByChatId(id: string, page: number, options?: any): AxiosPromise<void> {
+            return localVarFp.messageControllerGetMessagesByChatId(id, page, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -573,12 +582,13 @@ export class MessageApi extends BaseAPI {
     /**
      * 
      * @param {string} id 
+     * @param {number} page 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof MessageApi
      */
-    public messageControllerGetMessagesByChatId(id: string, options?: RawAxiosRequestConfig) {
-        return MessageApiFp(this.configuration).messageControllerGetMessagesByChatId(id, options).then((request) => request(this.axios, this.basePath));
+    public messageControllerGetMessagesByChatId(id: string, page: number, options?: RawAxiosRequestConfig) {
+        return MessageApiFp(this.configuration).messageControllerGetMessagesByChatId(id, page, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

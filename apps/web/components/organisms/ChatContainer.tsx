@@ -33,7 +33,7 @@ export default function ChatContainer(props: ChatContainerType): JSX.Element {
 
   return (
     <>
-    <div className='lg:min-w-[480px] h-full flex-1 pt-4 pl-4 pb-4'>
+    <div className='min-w-[310px] xl:min-w-[476px] h-full flex-1 pt-4 pl-4 pb-4'>
       <div className='bg-stone-700/20 h-full rounded-lg p-3 flex flex-col'>
         <div className='flex flex-col gap-3'>
           <div className='flex flex-row items-center justify-between'>

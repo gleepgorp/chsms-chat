@@ -16,9 +16,9 @@ export async function createMessage(messageData: MessageDTO, replyId?: string): 
   }
 }
 
-export async function getMessagesByChatId(chatId: string): Promise<MessageType[] | null> {
+export async function getMessagesByChatId(chatId: string, pageParam: number): Promise<MessageType[] | null> {
   try {
-    const { data } = await messageApi.messageControllerGetMessagesByChatId(chatId);
+    const { data } = await messageApi.messageControllerGetMessagesByChatId(chatId, pageParam);
 
     return data as unknown as MessageType[]
   } catch  (err) {

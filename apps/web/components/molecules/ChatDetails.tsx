@@ -6,6 +6,7 @@ import { convertTimestamp } from '../../utils/index';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import ChatProfilePicture from '../atoms/ChatProfilePicture';
+import { useChatContext } from '../../context/ChatContext';
 
 type ChatDetailsProps = {
   fetchedChats: ChatType[];
@@ -17,6 +18,7 @@ export default function ChatDetails(props: ChatDetailsProps) {
   const { user } = useAuth();
   const router = useRouter();
   const { id } = router.query;
+  const { inputRef } = useChatContext();
   const [isOpen, setisOpen] = useState<boolean>(false);
   const [dropdownIndex, setDropdownIndex] = useState<number>(null || 0);
   
@@ -24,6 +26,10 @@ export default function ChatDetails(props: ChatDetailsProps) {
   const recipient = data.participants.find(p => p.accountId !== user?.uid);
   const ownerLastMessage = data?.lastMessage?.senderId === user?.uid ? 'You: ' : ''
   const isActive = data.id === id ? 'bg-stone-500/40 hover:bg-stone-500/40' : '';
+
+  function handleFocus() {
+    inputRef.current?.focus();
+  }
 
   function handleClick(event: any, index: number) {
     event.stopPropagation();
@@ -43,7 +49,8 @@ export default function ChatDetails(props: ChatDetailsProps) {
       
       return (
         <Link 
-          key={index}
+          key={data.id || index}
+          onClick={handleFocus}
           href={`/chat/${data.id}`}
         >
           <div 

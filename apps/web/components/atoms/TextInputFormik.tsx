@@ -2,6 +2,7 @@ import { ChangeEvent, HTMLProps, ReactNode } from 'react';
 import { FieldProps } from 'formik';
 import Label from './Label';
 import { InputVariants } from '../../constants/input';
+import { useChatContext } from '../../context/ChatContext';
 
 type InputVariant = 'auth' | 'standard';
 
@@ -27,6 +28,7 @@ export type TextInputFormikProps = HTMLProps<HTMLInputElement> & FieldProps & {
 export default function TextInputFormik({ field, form, ...props }: TextInputFormikProps): JSX.Element {
   const { name } = field;
   const { errors, touched } = form;
+  const { inputRef } = useChatContext();
   const errorMessage = touched[name] && errors[name] ? errors[name] as string : undefined;
 
   return (
@@ -37,6 +39,7 @@ export default function TextInputFormik({ field, form, ...props }: TextInputForm
       labelVariant={errorMessage ? 'error' : 'standard'}
     >
       <input 
+        ref={inputRef}
         {...field}
         {...props}
         id={props.id || name}

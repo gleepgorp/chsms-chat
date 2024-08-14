@@ -26,23 +26,29 @@ const placementClass: Record<TipPlacement, string> = {
 type TooltipProps = {
   size?: TipSize;
   paddingSize?: PaddingSize
+  content?: React.ReactNode;
   placement?: TipPlacement;
   children: React.ReactNode | React.ReactNode[];
 }
 
 export default function TooltipContent(props: TooltipProps) {
-  const { placement = 'bottom', children, size = 'xs', paddingSize = 'xs' } = props;
+  const { placement = 'bottom', children, size = 'xs', paddingSize = 'xs', content } = props;
   const classes = `
+    rounded-md
     z-50 absolute 
     font-medium
     text-stone-100
     whitespace-nowrap
-    bg-stone-900 rounded-md
     ${sizeClass[size]}
+    ${content && 'bg-stone-900'}
     ${placementClass[placement]}
     ${paddingSizeClass[paddingSize]}
   `;
   
-  return <div className={classes}>{children}</div>
+  return (
+    <>
+      <div className={classes}>{children}</div>
+    </>
+  )
 }
 

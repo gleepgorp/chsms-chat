@@ -5,7 +5,7 @@ import { TipSize } from './TooltipContent';
 
 type TooltipProps = {
   size?: TipSize;
-  content: React.ReactNode;
+  content?: React.ReactNode;
   placement?: TipPlacement;
   children: React.ReactNode;
   paddingSize?: PaddingSize;
@@ -38,18 +38,20 @@ export default function Tooltip(props: TooltipProps) {
   }
 
   return (
-    <div
-      className='relative inline-block'
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      {children}
-      {isHovered && 
-        <TooltipContent placement={placement} size={size} paddingSize={paddingSize}>
-          {content}
-        </TooltipContent>
-      }
-    </div>
+    <>
+      <div
+        className='relative inline-block'
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {children}
+        {isHovered && 
+          <TooltipContent content={content} placement={placement} size={size} paddingSize={paddingSize}>
+            {content}
+          </TooltipContent>
+        }
+      </div>
+    </>
   )
 }
 

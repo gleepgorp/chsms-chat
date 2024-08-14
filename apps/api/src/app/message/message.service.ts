@@ -1,5 +1,5 @@
 import { FirestoreDatabaseProvider } from '../firestore/firestore.providers';
-import { CollectionReference } from '@google-cloud/firestore';
+import { CollectionReference, Timestamp } from '@google-cloud/firestore';
 import { MessageDocument } from '../../documents/message.document';
 import { Injectable, Inject, forwardRef, HttpException, HttpStatus } from '@nestjs/common';
 import { MessageType } from 'types/Message.type'
@@ -111,18 +111,26 @@ import { ChatGateway } from '../chat/chat.gateway';
       return messageSnapshot.docs[0].data() as MessageType;
     }
 
-    async getMessagesByChatId(id: string): Promise<MessageType[]> {
+    async getMessagesByChatId(id: string, pageSize: number, lastVisibleSeconds?: number, lastVisibleNanoseconds?: number): Promise<MessageType[]> {
       try {
-        const messageSnapshot = await this.messageCollection
-        .where('chatId', '==', id)
-        .orderBy('timestamp', 'asc')
-        .get();
-        
-        const message = messageSnapshot.docs.map((doc) => ({
-          ...doc.data()
+        let query = this.messageCollection
+          .where('chatId', '==', id)
+          .orderBy('timestamp', 'desc')
+          .limit(pageSize);
+    
+        if (lastVisibleSeconds !== undefined && lastVisibleNanoseconds !== undefined) {
+          const lastVisibleTimestamp = new Timestamp(lastVisibleSeconds, lastVisibleNanoseconds);
+          query = query.startAt(lastVisibleTimestamp);
+        }
+    
+        const messageSnapshot = await query.get();
+    
+        const messages = messageSnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          messageId: doc.id,
         }));
-
-        const formattedMessages = message.map((message) => ({
+    
+        const formattedMessages = messages.map((message) => ({
           messageId: message.messageId,
           content: message.content,
           timestamp: message.timestamp,
@@ -130,8 +138,8 @@ import { ChatGateway } from '../chat/chat.gateway';
           senderId: message.senderId,
           reply: message.reply,
         }));
-
-        return formattedMessages as unknown as MessageType[];
+    
+        return formattedMessages as MessageType[];
       } catch (err) {
         throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
       }

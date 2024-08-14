@@ -44,7 +44,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
   return (
     <>
       <div className={`flex group items-center ${isSender ? 'justify-end' : 'justify-start'}`}>
-        <div className='flex relative flex-row gap-2 items-center group'>
+        <div className='flex relative flex-row gap-2 items-end group'>
           {!isSender && 
             <div className={`
                 text-sm 
@@ -59,32 +59,40 @@ export default function ChatBubble(props: ChatBubbleProps) {
               />
             </div>
           } 
-          <Tooltip
-            size='sm'
-            content={dateAndTime(timestamp || '').formatted}
-            paddingSize='sm'
-            placement={isSender ? 'left' : 'right'}
-          >
-            <div className=''>
-              {reply && 
-                <ReplyElement reply={reply}/>
-              }
-              <span className={`
-                  text-stone-100 text-sm
-                  ${isSender ? 'bg-chsms-orange' : 'bg-stone-500/40'}
-                    py-1.5 px-3 rounded-xl lg:rounded-full
-                    flex items-center
-                `}>
-                {message}
-              </span>
+          <div className={`flex flex-col ${isSender ? 'items-end' : 'items-start'}`}>
+            {reply && 
+              <ReplyElement 
+                reply={reply}
+                isSender={isSender}
+              />
+            }
+            <div className={`
+                text-stone-100 text-sm
+                flex items-center w-fit 
+                rounded-xl
+                ${reply && isSender ? 'rounded-tr' : ''}
+                ${reply && !isSender ? 'rounded-tl' : ''}
+                ${isSender ? 'bg-chsms-orange' : 'bg-stone-500/40'}
+              `}
+            >
+              <Tooltip placement={isSender ? 'left' : 'left'}>
+                <Tooltip
+                  size='sm'
+                  paddingSize='sm'
+                  content={dateAndTime(timestamp || '').formatted}
+                  placement={isSender ? 'left' : 'right'}
+                >
+                  <div className='py-1.5 px-3'>{message}</div>
+                </Tooltip>
+                  <div className={`
+                    absolute hidden
+                    group-hover:inline-block
+                    ${placementClass[placement]}
+                  `}>
+                  <ReplyToChat onClickReply={handleReply}/>
+                </div>
+              </Tooltip>
             </div>
-          </Tooltip>
-          <div className={`
-              absolute hidden
-              group-hover:inline-block
-              ${placementClass[placement]}
-            `}>
-            <ReplyToChat onClickReply={handleReply}/>
           </div>
         </div>
       </div>

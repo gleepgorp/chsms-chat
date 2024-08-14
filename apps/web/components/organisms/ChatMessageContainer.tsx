@@ -6,13 +6,15 @@ import { useGetMessagesByChatId } from '../../hooks/messageQuery';
 import ChatMessageBody from '../atoms/ChatMessageBody';
 import { useWebSocketMessage } from '../../hooks/useWebSocketMessage';
 import useDebounce from '../../hooks/useDebounce';
+import { useChatContext } from '../../context/ChatContext';
 
 export default function ChatMessageContainer(): JSX.Element {
   const router = useRouter();
   const { id } = router.query;
   const chatId = Array.isArray(id) ? id[0] : id || '';
   const realtimeMessages = useWebSocketMessage(chatId);
-  const { data: fetchedMessages, isLoading } = useGetMessagesByChatId(chatId);
+  const { inputRef } = useChatContext();
+  const { data: fetchedMessages, isLoading } = useGetMessagesByChatId(chatId, 10);
   
   const allMessages = useMemo(() => {
     return [...(fetchedMessages || []), ...realtimeMessages];
@@ -35,6 +37,10 @@ export default function ChatMessageContainer(): JSX.Element {
     if (scrollerRef.current) {
       scrollerRef.current.scrollTop = scrollerRef.current.scrollHeight;
     }
+  }
+
+  function handleFocus() {
+    inputRef.current?.focus();
   }
 
   useEffect(() => {
@@ -63,12 +69,12 @@ export default function ChatMessageContainer(): JSX.Element {
   }, [allMessages]);
 
   return (
-    <div className='w-full h-full rounded-lg'>
+    <div onClick={handleFocus} className='w-full h-full rounded-lg'>
       <div className='p-2 bg-stone-700/20 h-full'>
         <div className='flex flex-col h-full'>
           <ChatMessageHeader />
           <div 
-            className='flex-1 p-2 overflow-auto' 
+            className='flex-1 p-2 pr-2 overflow-auto' 
             id='scroller'
             ref={scrollerRef}
           >

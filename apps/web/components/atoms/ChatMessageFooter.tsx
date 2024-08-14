@@ -74,7 +74,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
   }
 
   return (
-    <div>
+    <div className='mt-2'>
       <ReplyChatLayout />
       <Formik
         enableReinitialize
@@ -92,6 +92,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
                 type='text'
                 autoComplete='off'
                 variant='standard'
+                autofocus={id && true}
                 component={TextInputFormik}
                 placeholder='Send a message'
               />

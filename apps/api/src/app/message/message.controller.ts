@@ -7,20 +7,27 @@ import { MessageType } from "types/Message.type";
 @ApiTags('message')
 @Controller('message')
 export class MessageController {
-  constructor(private messageSevice: MessageService) {}
+  constructor(private messageService: MessageService) {}
 
   @Post()
   createMessage(@Body() post: CreateMessageDTO, @Query('replyId') replyId?: string): Promise<MessageType> {
-    return this.messageSevice.createMessage(post, replyId);
+    return this.messageService.createMessage(post, replyId);
   }
 
   @Get(':id')
-  getMessagesByChatId(@Param('id') chatId: string): Promise<MessageType[]>{
-    return this.messageSevice.getMessagesByChatId(chatId);
+  getMessagesByChatId(
+    @Param('id') chatId: string,
+    @Query('pageSize') pageSize = 20,
+    @Query('lastVisibleSeconds') lastVisibleSeconds?: string,
+    @Query('lastVisibleNanoseconds') lastVisibleNanoseconds?: string
+  ): Promise<MessageType[]> {
+    const parsedSeconds = lastVisibleSeconds ? parseInt(lastVisibleSeconds, 10) : undefined;
+    const parsedNanoseconds = lastVisibleNanoseconds ? parseInt(lastVisibleNanoseconds, 10) : undefined;
+    return this.messageService.getMessagesByChatId(chatId, pageSize, parsedSeconds, parsedNanoseconds);
   }
 
   @Get('getMessage/:messageId')
   getMessageById(@Param('messageId') messageId: string): Promise<MessageType> {
-    return this.messageSevice.getMessageById(messageId);
+    return this.messageService.getMessageById(messageId);
   }
 }

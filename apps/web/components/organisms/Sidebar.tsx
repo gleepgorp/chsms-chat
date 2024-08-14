@@ -5,6 +5,7 @@ import { PiUser, PiUserBold  } from "react-icons/pi";
 import { Routes } from '../../constants/routes';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import Tooltip from '../atoms/Tooltip';
 
 export default function Sidebar() {
   const router = useRouter();
@@ -19,14 +20,14 @@ export default function Sidebar() {
     {
       route: `${Routes.HOME}`,
       title: 'Chat',
-      icon: <IoChatbubbleEllipsesOutline  className='text-lg'/>,
-      activeIcon: <IoChatbubbleEllipses  className='text-lg'/>
+      icon: <IoChatbubbleEllipsesOutline />,
+      activeIcon: <IoChatbubbleEllipses />
     },
     {
       route: `${Routes.PROFILE}`,
       title: 'Profile',
-      icon: <PiUser  className='text-lg'/>,
-      activeIcon: <PiUserBold  className='text-lg'/>,
+      icon: <PiUser />,
+      activeIcon: <PiUserBold />,
     },
   ];
 
@@ -43,15 +44,16 @@ export default function Sidebar() {
           ${isActive(menu.route) && 'font-semibold'}
         `}
     >
-      <Link href={menu.route} className='px-3 py-2 flex flex-row gap-4 items-center'>
-        {isActive(menu.route) ? menu.activeIcon : menu.icon}
-        {menu.title}
-      </Link>  
+      <Tooltip content={menu.title} placement='right'>
+        <Link href={menu.route} className='p-3 flex flex-row items-center'>
+          <span className='text-xl'>{isActive(menu.route) ? menu.activeIcon : menu.icon}</span>
+        </Link>  
+      </Tooltip>
     </div>
   ))
 
   return (
-    <div className='py-6 px-3 min-w-[150px] bg-stone-900/50'>
+    <div className='py-6 px-2 bg-stone-900/50'>
       <div className='flex flex-col h-full'>
         <div className='flex-1'>{mappedMenu}</div>
         <LogoutButton />

@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode, useContext, useEffect } from 'react';
+import React, { createContext, useState, ReactNode, useContext, useEffect, SetStateAction, Dispatch, useRef } from 'react';
 import { getChatById } from '../services/chat';
 import { getUserById } from '../services/user';
 import { useAuth } from './AuthContext';
@@ -17,6 +17,7 @@ type ChatContextType = {
   lastname: string
   firstname: string
   recipientId: string
+  inputRef: React.RefObject<HTMLInputElement>;
 }
 
 export const ChatContext = createContext<ChatContextType | null>(null);
@@ -43,6 +44,7 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
   const [lastnameInitial, setLastnameInitial] = useState<string>("");
   const [lastname, setLastname] = useState<string>("");
   const [recipientId, setRecipientId] = useState<string>("");
+  const inputRef = useRef(null);
 
   useEffect(() => {
     async function fetchChat() {
@@ -78,6 +80,7 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
 
   return (
     <ChatContext.Provider value={{ 
+        inputRef,
         selectedChatId, 
         profile,
         firstnameInitial,
