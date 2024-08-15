@@ -111,15 +111,15 @@ import { ChatGateway } from '../chat/chat.gateway';
       return messageSnapshot.docs[0].data() as MessageType;
     }
 
-    async getMessagesByChatId(id: string, pageSize: number, lastVisibleSeconds?: number, lastVisibleNanoseconds?: number): Promise<MessageType[]> {
+    async getMessagesByChatId(id: string, pageSize: number, seconds?: number, nanoseconds?: number): Promise<MessageType[]> {
       try {
         let query = this.messageCollection
           .where('chatId', '==', id)
           .orderBy('timestamp', 'desc')
           .limit(pageSize);
     
-        if (lastVisibleSeconds !== undefined && lastVisibleNanoseconds !== undefined) {
-          const lastVisibleTimestamp = new Timestamp(lastVisibleSeconds, lastVisibleNanoseconds);
+        if (seconds !== undefined && nanoseconds !== undefined) {
+          const lastVisibleTimestamp = new Timestamp(seconds, nanoseconds);
           query = query.startAt(lastVisibleTimestamp);
         }
     

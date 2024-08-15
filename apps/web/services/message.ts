@@ -16,13 +16,13 @@ export async function createMessage(messageData: MessageDTO, replyId?: string): 
   }
 }
 
-export async function getMessagesByChatId(chatId: string, pageParam: number): Promise<MessageType[] | null> {
+export async function getMessagesByChatId(chatId: string, pageSize: number, seconds?: string, nanoseconds?: string): Promise<MessageType[] | null> {
   try {
-    const { data } = await messageApi.messageControllerGetMessagesByChatId(chatId, pageParam);
+    const { data } = await messageApi.messageControllerGetMessagesByChatId(chatId, pageSize, seconds || '', nanoseconds || '');
 
-    return data as unknown as MessageType[]
+    return (data as unknown as MessageType[]) || [];
   } catch  (err) {
     console.error(err)
-    return null;
+    return [];
   }
 }

@@ -422,15 +422,21 @@ export const MessageApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @param {string} id 
-         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {string} seconds 
+         * @param {string} nanoseconds 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        messageControllerGetMessagesByChatId: async (id: string, page: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        messageControllerGetMessagesByChatId: async (id: string, pageSize: number, seconds: string, nanoseconds: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('messageControllerGetMessagesByChatId', 'id', id)
-            // verify required parameter 'page' is not null or undefined
-            assertParamExists('messageControllerGetMessagesByChatId', 'page', page)
+            // verify required parameter 'pageSize' is not null or undefined
+            assertParamExists('messageControllerGetMessagesByChatId', 'pageSize', pageSize)
+            // verify required parameter 'seconds' is not null or undefined
+            assertParamExists('messageControllerGetMessagesByChatId', 'seconds', seconds)
+            // verify required parameter 'nanoseconds' is not null or undefined
+            assertParamExists('messageControllerGetMessagesByChatId', 'nanoseconds', nanoseconds)
             const localVarPath = `/api/message/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -444,8 +450,16 @@ export const MessageApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (page !== undefined) {
-                localVarQueryParameter['page'] = page;
+            if (pageSize !== undefined) {
+                localVarQueryParameter['pageSize'] = pageSize;
+            }
+
+            if (seconds !== undefined) {
+                localVarQueryParameter['seconds'] = seconds;
+            }
+
+            if (nanoseconds !== undefined) {
+                localVarQueryParameter['nanoseconds'] = nanoseconds;
             }
 
 
@@ -497,12 +511,14 @@ export const MessageApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} id 
-         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {string} seconds 
+         * @param {string} nanoseconds 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async messageControllerGetMessagesByChatId(id: string, page: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.messageControllerGetMessagesByChatId(id, page, options);
+        async messageControllerGetMessagesByChatId(id: string, pageSize: number, seconds: string, nanoseconds: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.messageControllerGetMessagesByChatId(id, pageSize, seconds, nanoseconds, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['MessageApi.messageControllerGetMessagesByChatId']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -539,12 +555,14 @@ export const MessageApiFactory = function (configuration?: Configuration, basePa
         /**
          * 
          * @param {string} id 
-         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {string} seconds 
+         * @param {string} nanoseconds 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        messageControllerGetMessagesByChatId(id: string, page: number, options?: any): AxiosPromise<void> {
-            return localVarFp.messageControllerGetMessagesByChatId(id, page, options).then((request) => request(axios, basePath));
+        messageControllerGetMessagesByChatId(id: string, pageSize: number, seconds: string, nanoseconds: string, options?: any): AxiosPromise<void> {
+            return localVarFp.messageControllerGetMessagesByChatId(id, pageSize, seconds, nanoseconds, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -582,13 +600,15 @@ export class MessageApi extends BaseAPI {
     /**
      * 
      * @param {string} id 
-     * @param {number} page 
+     * @param {number} pageSize 
+     * @param {string} seconds 
+     * @param {string} nanoseconds 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof MessageApi
      */
-    public messageControllerGetMessagesByChatId(id: string, page: number, options?: RawAxiosRequestConfig) {
-        return MessageApiFp(this.configuration).messageControllerGetMessagesByChatId(id, page, options).then((request) => request(this.axios, this.basePath));
+    public messageControllerGetMessagesByChatId(id: string, pageSize: number, seconds: string, nanoseconds: string, options?: RawAxiosRequestConfig) {
+        return MessageApiFp(this.configuration).messageControllerGetMessagesByChatId(id, pageSize, seconds, nanoseconds, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

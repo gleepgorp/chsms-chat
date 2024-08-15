@@ -92,7 +92,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
                 type='text'
                 autoComplete='off'
                 variant='standard'
-                autofocus={id && true}
+                autoFocus={id && true}
                 component={TextInputFormik}
                 placeholder='Send a message'
               />

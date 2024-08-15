@@ -17,11 +17,11 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
   const { user } = useAuth();
 
   const mappedMessages = fetchedMessages.map((data, index) => {
-    const showTimeStamp = isVisibleTimestamp(data, fetchedMessages[index - 1], 'timestamp');
+    const showTimeStamp = isVisibleTimestamp(data, fetchedMessages[index + 1], 'timestamp');
     const isSender = data.senderId === user?.uid;
-    const allowGap = isVisibleTimestamp(data, fetchedMessages[index - 1], 'gap');
-    const recipientGap = isVisibleTimestamp(data, fetchedMessages[index - 1], 'recipient');
-    const isProfileVisible = isVisibleTimestamp(data, fetchedMessages[index - 1], 'profile', user?.uid);
+    const allowGap = isVisibleTimestamp(data, fetchedMessages[index + 1], 'gap');
+    const recipientGap = isVisibleTimestamp(data, fetchedMessages[index + 1], 'recipient');
+    const isProfileVisible = isVisibleTimestamp(data, fetchedMessages[index + 1], 'profile', user?.uid);
 
     return (
       <div 
@@ -53,7 +53,7 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
 
   return (
     <div className='text-stone-100 text-4xl max-h-[820px]'>
-      <div className='flex flex-col'>
+      <div className='flex flex-col-reverse'>
         {mappedMessages}
       </div>
       <JumpToCurrentMessage 

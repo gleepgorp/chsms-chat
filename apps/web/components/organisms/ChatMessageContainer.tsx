@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useMemo, useState } from 'react'
 import { useRouter } from 'next/router';
 import ChatMessageHeader from '../atoms/ChatMessageHeader';
 import ChatMessageFooter from '../atoms/ChatMessageFooter';
-import { useGetMessagesByChatId } from '../../hooks/messageQuery';
+import { useGetMessagesByChatId, useGetMessagesInfinite } from '../../hooks/messageQuery';
 import ChatMessageBody from '../atoms/ChatMessageBody';
 import { useWebSocketMessage } from '../../hooks/useWebSocketMessage';
 import useDebounce from '../../hooks/useDebounce';
@@ -12,13 +12,25 @@ export default function ChatMessageContainer(): JSX.Element {
   const router = useRouter();
   const { id } = router.query;
   const chatId = Array.isArray(id) ? id[0] : id || '';
-  const realtimeMessages = useWebSocketMessage(chatId);
   const { inputRef } = useChatContext();
-  const { data: fetchedMessages, isLoading } = useGetMessagesByChatId(chatId, 10);
+  const pageSize = 20;
+  const { 
+    data: fetchedMessagesPages, 
+    fetchNextPage,
+    hasNextPage,
+    isLoading
+  } = useGetMessagesInfinite(chatId, pageSize);
+  const realtimeMessages = useWebSocketMessage(chatId);
   
   const allMessages = useMemo(() => {
-    return [...(fetchedMessages || []), ...realtimeMessages];
-  }, [fetchedMessages, realtimeMessages]);
+    const allMessage = fetchedMessagesPages?.pages.flatMap(page => page) || [];
+
+    // in real time chat sort mssg by date to have correct order
+    //  when sending multiple messages
+    return [...realtimeMessages, ...allMessage].sort((a, b) => {
+      return new Date(b.timestamp._seconds).getTime() - new Date(a.timestamp._seconds).getTime();
+    });
+  }, [realtimeMessages, fetchedMessagesPages]);
 
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState<boolean>(true);
