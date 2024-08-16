@@ -13,10 +13,12 @@ type ChatContextType = {
   selectedChatId: string | null;
   profile: string;
   firstnameInitial: string;
-  lastnameInitial: string
-  lastname: string
-  firstname: string
-  recipientId: string
+  lastnameInitial: string;
+  lastname: string;
+  firstname: string;
+  recipientId: string;
+  fetchingOldMssgs: boolean;
+  setFetchingOldMssgs: Dispatch<SetStateAction<boolean>>;
   inputRef: React.RefObject<HTMLInputElement>;
 }
 
@@ -44,6 +46,7 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
   const [lastnameInitial, setLastnameInitial] = useState<string>("");
   const [lastname, setLastname] = useState<string>("");
   const [recipientId, setRecipientId] = useState<string>("");
+  const [fetchingOldMssgs, setFetchingOldMssgs] = useState<boolean>(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -88,6 +91,8 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
         lastnameInitial,
         lastname,
         recipientId,
+        fetchingOldMssgs,
+        setFetchingOldMssgs,
       }}
     >
       {children}

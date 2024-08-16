@@ -10,18 +10,21 @@ type ChatMessageBodyProps = {
   isLoading: boolean;
   scrollToBottom?: () => void;
   isAtBottom?: boolean;
+  innerRef?: React.Ref<HTMLDivElement>;
 }
 
 export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Element {
-  const { fetchedMessages, isLoading, isAtBottom, scrollToBottom } = props;
+  const { fetchedMessages, isLoading, isAtBottom, scrollToBottom, innerRef } = props;
   const { user } = useAuth();
 
   const mappedMessages = fetchedMessages.map((data, index) => {
+    // if asc index - 1, if desc index + 1
     const showTimeStamp = isVisibleTimestamp(data, fetchedMessages[index + 1], 'timestamp');
     const isSender = data.senderId === user?.uid;
     const allowGap = isVisibleTimestamp(data, fetchedMessages[index + 1], 'gap');
     const recipientGap = isVisibleTimestamp(data, fetchedMessages[index + 1], 'recipient');
     const isProfileVisible = isVisibleTimestamp(data, fetchedMessages[index + 1], 'profile', user?.uid);
+    const lastMessage = fetchedMessages.length === index + 1;
 
     return (
       <div 
@@ -39,6 +42,7 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
           </div>
         }
         <ChatBubble 
+          innerRef={lastMessage ? innerRef : null}
           reply={data?.reply}
           message={data.content}
           senderId={data.senderId}
@@ -46,7 +50,7 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
           isProfileVisible={isProfileVisible}
           placement={isSender ? 'left' : 'right'}
           timestamp={convertTimestamp(data.timestamp).date.toLocaleString()}
-        />
+        /> 
       </div>
     )
   })

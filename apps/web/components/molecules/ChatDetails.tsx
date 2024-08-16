@@ -18,7 +18,7 @@ export default function ChatDetails(props: ChatDetailsProps) {
   const { user } = useAuth();
   const router = useRouter();
   const { id } = router.query;
-  const { inputRef } = useChatContext();
+  const { inputRef, setFetchingOldMssgs } = useChatContext();
   const [isOpen, setisOpen] = useState<boolean>(false);
   const [dropdownIndex, setDropdownIndex] = useState<number>(null || 0);
   
@@ -29,6 +29,7 @@ export default function ChatDetails(props: ChatDetailsProps) {
 
   function handleFocus() {
     inputRef.current?.focus();
+    setFetchingOldMssgs(false);
   }
 
   function handleClick(event: any, index: number) {

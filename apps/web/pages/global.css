@@ -41,12 +41,3 @@ body {
   95% { top: -305px; }
   100% { top: -400px; }
 }
-
-
-#scroller * {
-  overflow-anchor: none;
-}
-
-#anchor {
-  overflow-anchor: auto;
-}

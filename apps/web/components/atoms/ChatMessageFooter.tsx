@@ -23,7 +23,7 @@ type ChatMessageFooterProps = {
 export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.Element {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const { recipientId } = useChatContext();
+  const { recipientId, setFetchingOldMssgs } = useChatContext();
   const { 
     messageId: replyId,
     replyChatId, 
@@ -49,6 +49,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
   function onSubmit(data: MessageDTO, { resetForm }: FormikHelpers<MessageDTO>) {
     createMessage({ messageData: data, replyId });
     resetForm();
+    setFetchingOldMssgs(false);
 
     if (newChatRoute && fetchedChats) {
       setTimeout(() => {

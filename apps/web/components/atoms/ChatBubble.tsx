@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { RefObject } from 'react';
 import { useAuth } from '../../context';
 import Tooltip from './Tooltip';
 import ChatProfilePicture from './ChatProfilePicture';
@@ -17,6 +17,7 @@ type ChatBubbleProps = {
   placement: TipPlacement;
   messageId?: string;
   reply?: string;
+  innerRef?: React.Ref<HTMLDivElement>;
 }
 
 const placementClass: Record<TipPlacement, string> = {
@@ -27,7 +28,7 @@ const placementClass: Record<TipPlacement, string> = {
 }
 
 export default function ChatBubble(props: ChatBubbleProps) {
-  const { message, senderId, timestamp, isProfileVisible, placement, messageId, reply } = props;
+  const { message, senderId, timestamp, isProfileVisible, placement, messageId, reply, innerRef } = props;
   const { user } = useAuth();
   const isSender = senderId === user?.uid;
   const { firstnameInitial, lastnameInitial, profile, firstname, lastname } = useChatContext();
@@ -43,7 +44,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
   
   return (
     <>
-      <div className={`flex group items-center ${isSender ? 'justify-end' : 'justify-start'}`}>
+      <div ref={innerRef} className={`flex group items-center ${isSender ? 'justify-end' : 'justify-start'}`}>
         <div className='flex relative flex-row gap-2 items-end group'>
           {!isSender && 
             <div className={`
