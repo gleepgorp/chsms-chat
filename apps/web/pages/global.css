@@ -12,16 +12,13 @@ body {
   font-family: 'Inter', 'sans-serif';
 }
 
-* {
-  transition: all 50ms ease-in-out;
-}
-
 ::-webkit-scrollbar {
 	width: 12px;
 }
 
 ::-webkit-scrollbar-thumb {
 	background-color: #57534e;
+
 }
 
 .inner-headings span{

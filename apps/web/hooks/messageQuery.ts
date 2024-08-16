@@ -7,7 +7,7 @@ export function useGetMessagesInfinite(chatId: string, pageSize: number) {
     queryFn: ({ pageParam }) => getMessagesByChatId(chatId, pageSize, pageParam?.seconds, pageParam?.nanoseconds),
     initialPageParam: { seconds: undefined, nanoseconds: undefined },
     getNextPageParam: (lastPage) => {
-      if (lastPage && lastPage.length > 0) {
+      if (lastPage && lastPage.length === pageSize) {
         const lastMessage = lastPage[lastPage.length - 1];
         if (lastMessage && lastMessage.timestamp) {
           return {

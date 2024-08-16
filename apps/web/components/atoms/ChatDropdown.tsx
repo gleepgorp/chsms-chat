@@ -28,16 +28,21 @@ export default function ChatDropdown(props: ChatDropdownProps) {
     },
   ];
 
-  const mappedMenu = dropdownMenu.map((menu, index) => (
-    <React.Fragment key={index}>
-      <Button variant='noBg'>
-        <div className='flex flex-row gap-4 items-center'>
-          <span className='text-base bg-stone-500/40 p-1.5 rounded-full'>{menu.icon}</span>
-          <span className=''>{menu.title}</span>
-        </div>
-      </Button>
-    </React.Fragment>
-  ))
+  const mappedMenu = dropdownMenu.map((menu, index) => {
+
+    return (
+      <React.Fragment key={index}>
+        <Button
+          variant='noBg'
+        >
+          <div className='flex flex-row gap-4 items-center'>
+            <span className='text-base bg-stone-500/40 p-1.5 rounded-full'>{menu.icon}</span>
+            <span className=''>{menu.title}</span>
+          </div>
+        </Button>
+      </React.Fragment>
+    )
+  })
   
   return (
     <>

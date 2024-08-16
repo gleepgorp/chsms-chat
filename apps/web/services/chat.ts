@@ -38,3 +38,11 @@ export async function getChatById(chatId: string): Promise<ChatType | null> {
     return null;
   }
 }
+
+export async function deleteChatAndMessagesByChatId(chatId: string): Promise<void> {
+  try {
+    await chatApi.chatControllerDeleteChatAndMessagesByChatId(chatId);
+  } catch (err) {
+    console.error(err);
+  }
+}

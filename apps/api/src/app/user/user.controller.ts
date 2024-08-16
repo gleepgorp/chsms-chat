@@ -9,12 +9,12 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get(':id')
-  findById(@Param('id') id: string): Promise<ProfileType> {
+  async findById(@Param('id') id: string): Promise<ProfileType> {
     return this.userService.findById(id);
   }
 
   @Get()
-  findAll(
+  async findAll(
     @Query('query') query: string): Promise<ProfileType[]> {
     return this.userService.searchUser(query);
   }

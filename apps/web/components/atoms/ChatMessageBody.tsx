@@ -4,17 +4,19 @@ import ChatBubble from './ChatBubble';
 import JumpToCurrentMessage from '../atoms/JumpToCurrentMessage';
 import { convertTimestamp, dateAndTime, isVisibleTimestamp } from '../../utils';
 import { useAuth } from '../../context';
+import LoadingSpinner from './LoadingSpinner';
 
 type ChatMessageBodyProps = {
   fetchedMessages: MessageType[]  
   isLoading: boolean;
   scrollToBottom?: () => void;
   isAtBottom?: boolean;
+  isFetchingNextPage?: boolean;
   innerRef?: React.Ref<HTMLDivElement>;
 }
 
 export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Element {
-  const { fetchedMessages, isLoading, isAtBottom, scrollToBottom, innerRef } = props;
+  const { fetchedMessages, isLoading, isAtBottom, scrollToBottom, innerRef, isFetchingNextPage } = props;
   const { user } = useAuth();
 
   const mappedMessages = fetchedMessages.map((data, index) => {
@@ -27,7 +29,8 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
     const lastMessage = fetchedMessages.length === index + 1;
 
     return (
-      <div 
+      <div  
+        ref={lastMessage ? innerRef : null}
         key={data.id || index} 
         className={`
           ${allowGap ? 'mt-8' : 'mt-0.5'}
@@ -42,7 +45,6 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
           </div>
         }
         <ChatBubble 
-          innerRef={lastMessage ? innerRef : null}
           reply={data?.reply}
           message={data.content}
           senderId={data.senderId}
@@ -59,6 +61,7 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
     <div className='text-stone-100 text-4xl max-h-[820px]'>
       <div className='flex flex-col-reverse'>
         {mappedMessages}
+        <div className='mt-3'>{isFetchingNextPage && <LoadingSpinner />}</div>
       </div>
       <JumpToCurrentMessage 
         isVisible={!isAtBottom}

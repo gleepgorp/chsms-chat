@@ -85,12 +85,12 @@ export default function ChatBubble(props: ChatBubbleProps) {
                 >
                   <div className='py-1.5 px-3'>{message}</div>
                 </Tooltip>
-                  <div className={`
-                    absolute hidden
-                    group-hover:inline-block
-                    ${placementClass[placement]}
-                  `}>
-                  <ReplyToChat onClickReply={handleReply}/>
+                <div className={`
+                  absolute hidden z-20
+                  group-hover:inline-block
+                  ${placementClass[placement]}
+                `}>
+                <ReplyToChat onClickReply={handleReply}/>
                 </div>
               </Tooltip>
             </div>

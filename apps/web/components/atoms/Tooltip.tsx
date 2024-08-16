@@ -40,7 +40,7 @@ export default function Tooltip(props: TooltipProps) {
   return (
     <>
       <div
-        className='relative inline-block'
+        className='relative'
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >

@@ -18,6 +18,7 @@ export default function ChatMessageContainer(): JSX.Element {
   const { ref, inView } = useInView();
   const { 
     data: fetchedMessagesPages, 
+    isFetching,
     fetchNextPage,
     hasNextPage,
     isLoading
@@ -102,6 +103,7 @@ export default function ChatMessageContainer(): JSX.Element {
               isAtBottom={isAtBottom}
               scrollToBottom={scrollToBottom}
               fetchedMessages={allMessages}
+              isFetchingNextPage={isFetching}
             />
           </div>
           <ChatMessageFooter chatId={chatId}/>

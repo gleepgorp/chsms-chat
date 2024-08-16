@@ -71,6 +71,39 @@ export const ChatApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        chatControllerDeleteChatAndMessagesByChatId: async (chatId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'chatId' is not null or undefined
+            assertParamExists('chatControllerDeleteChatAndMessagesByChatId', 'chatId', chatId)
+            const localVarPath = `/api/chat`
+                .replace(`{${"chatId"}}`, encodeURIComponent(String(chatId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} chatId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         chatControllerGetChatById: async (chatId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'chatId' is not null or undefined
             assertParamExists('chatControllerGetChatById', 'chatId', chatId)
@@ -202,6 +235,18 @@ export const ChatApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        async chatControllerDeleteChatAndMessagesByChatId(chatId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.chatControllerDeleteChatAndMessagesByChatId(chatId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ChatApi.chatControllerDeleteChatAndMessagesByChatId']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} chatId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         async chatControllerGetChatById(chatId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.chatControllerGetChatById(chatId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
@@ -258,6 +303,15 @@ export const ChatApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        chatControllerDeleteChatAndMessagesByChatId(chatId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.chatControllerDeleteChatAndMessagesByChatId(chatId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} chatId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         chatControllerGetChatById(chatId: string, options?: any): AxiosPromise<void> {
             return localVarFp.chatControllerGetChatById(chatId, options).then((request) => request(axios, basePath));
         },
@@ -299,6 +353,17 @@ export class ChatApi extends BaseAPI {
      */
     public chatControllerCreateChat(body: object, options?: RawAxiosRequestConfig) {
         return ChatApiFp(this.configuration).chatControllerCreateChat(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} chatId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ChatApi
+     */
+    public chatControllerDeleteChatAndMessagesByChatId(chatId: string, options?: RawAxiosRequestConfig) {
+        return ChatApiFp(this.configuration).chatControllerDeleteChatAndMessagesByChatId(chatId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

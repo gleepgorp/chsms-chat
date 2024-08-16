@@ -186,4 +186,14 @@ export class ChatService {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  async deleteChatAndMessagesByChatId(id: string): Promise<void> {
+    try {
+      await this.chatCollection.doc(id).delete();
+      await this.messageService.deleteMessagesByChatId(id);
+
+    } catch(err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

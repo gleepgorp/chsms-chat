@@ -131,6 +131,7 @@ import { ChatGateway } from '../chat/chat.gateway';
         }));
     
         const formattedMessages = messages.map((message) => ({
+          chatId: message.chatId,
           messageId: message.messageId,
           content: message.content,
           timestamp: message.timestamp,
@@ -143,6 +144,22 @@ import { ChatGateway } from '../chat/chat.gateway';
       } catch (err) {
         throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
       }
+    }
+
+    async deleteMessagesByChatId(chatId: string): Promise<void> {
+      const messageSnapshot = await this.messageCollection
+      .where('chatId', '==', chatId).limit(500);
+
+      const batch = this.db.batch();
+
+      messageSnapshot
+      .get()
+      .then(snapshot => {
+        snapshot.docs.forEach(doc => {
+          batch.delete(doc.ref);
+        })
+        return batch.commit();
+      })
     }
   }
 

@@ -10,14 +10,14 @@ export class MessageController {
   constructor(private messageService: MessageService) {}
 
   @Post()
-  createMessage(@Body() post: CreateMessageDTO, 
+  async createMessage(@Body() post: CreateMessageDTO, 
   @Query('replyId') replyId?: string
   ): Promise<MessageType> {
     return this.messageService.createMessage(post, replyId);
   }
 
   @Get(':id')
-  getMessagesByChatId(
+  async getMessagesByChatId(
     @Param('id') chatId: string,
     @Query('pageSize') pageSize: number,
     @Query('seconds') seconds?: string,
@@ -29,7 +29,7 @@ export class MessageController {
   }
 
   @Get('getMessage/:messageId')
-  getMessageById(@Param('messageId') messageId: string): Promise<MessageType> {
+  async getMessageById(@Param('messageId') messageId: string): Promise<MessageType> {
     return this.messageService.getMessageById(messageId);
   }
 }
