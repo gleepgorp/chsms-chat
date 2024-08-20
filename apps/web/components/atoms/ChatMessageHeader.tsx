@@ -33,7 +33,7 @@ export default function ChatMessageHeader(): JSX.Element {
         </span>
       </div>
       <div>
-        <MeatballMenu isHidden={false}/>
+        <MeatballMenu participants={[]} isHidden={false}/>
       </div>
     </div>
   )

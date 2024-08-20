@@ -9,13 +9,14 @@ type RoundedSize = 'sm' | 'md' | 'lg' | 'full';
 type ButtonProps = {
   children: React.ReactNode;
   href?: string;
-  onClick?: () => void;
+  onClick?: (e: any) => void;
   type?: 'button' | 'submit' | 'reset';
   variant?: ButtonVariant;
   size?: ButtonSize;
   disabled?: boolean;
   adornment?:boolean;
   width?: ButtonWidth;
+  inputAdornment?: React.ReactNode;
   roundedSize?: RoundedSize;
 }
 
@@ -60,6 +61,7 @@ export default function Button({
   disabled = false,
   adornment = false,
   width = 'standard',
+  inputAdornment,
 }: ButtonProps) {
   const Component = typeof href === 'string' ? Link : 'button';
 
@@ -74,7 +76,7 @@ export default function Button({
   `;
 
   const adornmentClass = `
-    ${adornment ? 'flex flex-row gap-4' : ''}
+    ${adornment || inputAdornment ? 'flex flex-row gap-4 items-center' : ''}
   `;
 
   return (
@@ -85,6 +87,7 @@ export default function Button({
       onClick={onClick}
     >
       <div className={adornmentClass}>
+        {inputAdornment && inputAdornment}
         {children}
       </div>
     </Component>
