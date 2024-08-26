@@ -6,7 +6,7 @@ import Tooltip from '../atoms/Tooltip';
 export default function NewChat() {
   return (
     <div className='relative flex items-center justify-center'>
-      <Tooltip size='xs' content='New chat'>
+      <Tooltip size='xs' content='New group chat'>
         <Button variant='icon' roundedSize='full' size='icon'>
           <BiSolidEdit className='text-xl'/>
         </Button>  

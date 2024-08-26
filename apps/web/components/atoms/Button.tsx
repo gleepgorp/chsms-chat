@@ -30,7 +30,7 @@ const roundedClasses: Record<RoundedSize, string> = {
 const variantClasses: Record<ButtonVariant, string> = {
   primary: 'bg-chsms-orange hover:bg-chsms-orange/90 text-stone-100 active:scale-95',
   secondary: 'bg-stone-700/10 hover:bg-stone-700/50 text-stone-100 active:scale-95',
-  gray: 'bg-stone-400 text-stone-100 hover:bg-stone-400/90',
+  gray: 'bg-stone-500/50 text-stone-100 hover:bg-stone-500/40 active:scale-95',
   link: 'bg-none text-stone-400 active:scale-95 text-sm',
   icon: 'bg-stone-600/50 hover:bg-stone-600/80 text-stone-400',
   svg: 'text-chsms-orange',

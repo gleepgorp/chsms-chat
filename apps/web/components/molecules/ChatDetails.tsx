@@ -72,7 +72,7 @@ export default function ChatDetails(props: ChatDetailsProps) {
                   {`${firstname} ${lastname}`}
                 </span>
                 <div className='flex flex-row gap-2 text-sm text-stone-400 whitespace-nowrap'>
-                  <span className={`truncate max-w-64 ${data.lastMessage?.read ? 'font-semibold text-stone-100' : ''}`}>
+                  <span className={`truncate max-w-24 xl:max-w-64 ${data.lastMessage?.read ? 'font-semibold text-stone-100' : ''}`}>
                     {ownerLastMessage} 
                     {data.lastMessage?.content}
                   </span>
@@ -83,9 +83,11 @@ export default function ChatDetails(props: ChatDetailsProps) {
             </div>
             <div>
             <MeatballMenu 
+              chatId={data.id}
               isHidden={true} 
               participants={data.participants}
               onClick={(e) => handleClick(e, index)} 
+              setIsOpen={setisOpen}
               isOpen={isOpen && dropdownIndex === index}
             />
             </div>

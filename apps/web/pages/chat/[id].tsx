@@ -4,6 +4,7 @@ import { useGetChatsByUserId } from '../../hooks';
 import ChatLayout from '../../layout/ChatLayout'
 import { useWebSocketChats } from '../../hooks/useWebSocketChats';
 import { useRouter } from 'next/router';
+import AlertModal from '../../components/molecules/AlertModal';
 
 function Messages() {
   const { user } = useAuth();
@@ -26,11 +27,12 @@ function Messages() {
   }, [fetchedChats, user, joinChatRooms]);
 
   return (
-    <div className='h-screen'>
+    <div className='h-screen relative'>
       <ChatLayout 
         fetchedChats={chats} 
         isLoading={isLoading}
       />
+      <AlertModal />
     </div>
   )
 } 

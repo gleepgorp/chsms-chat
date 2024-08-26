@@ -4,6 +4,7 @@ import { AxiosError } from 'axios'
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { CreateMessageDTO } from "../../api/src/app/message/dto/createMessage.dto";
 import { createMessage } from "../services/message";
+import { deleteChatAndMessagesByChatId } from "../services/chat";
 
 export const useCreateMessage = (
   mutationOptions: MutationOptions<
@@ -18,3 +19,16 @@ export const useCreateMessage = (
     ...mutationOptions,
   });
 };
+
+export const useDeleteChat = (
+  mutationOptions: MutationOptions<
+    any,
+    AxiosError<{ message: string }>,
+    { chatId: string }
+  >
+) => {
+  return useMutation({
+    mutationFn: ({ chatId }) => deleteChatAndMessagesByChatId(chatId),
+    ...mutationOptions,
+  });
+}
