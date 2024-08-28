@@ -7,10 +7,11 @@ import ChatMessageContainer from "../components/organisms/ChatMessageContainer";
 type ChatLayoutProps = {
   fetchedChats: ChatType[];
   isLoading: boolean;
+  innerRef?: React.Ref<HTMLDivElement>;
 };
 
 export default function ChatLayout(props: ChatLayoutProps): JSX.Element {
-  const { fetchedChats, isLoading } = props;
+  const { fetchedChats, isLoading, innerRef } = props;
 
   return (
     <MainLayout>
@@ -18,6 +19,7 @@ export default function ChatLayout(props: ChatLayoutProps): JSX.Element {
         <ChatContainer 
             fetchedChats={fetchedChats || []}
             isChatLoading={isLoading}
+            innerRef={innerRef}
           >
           <ChatMessageContainer />
         </ChatContainer>  

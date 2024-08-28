@@ -14,5 +14,7 @@ export type ChatType = {
   creatorId: string;
   type: ChatEnum;
   updatedAt: string;
-  lastMessage: MessageType
+  lastMessage: MessageType;
+  deletedBy: string[];
+  timestamp?: string;
 }

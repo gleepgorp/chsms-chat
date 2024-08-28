@@ -6,14 +6,14 @@ import { ChatDTO } from '../../api/src/app/chat/dto/chat.dto';
 
 const chatApi = apiClient.use(ChatApi);
 
-export async function getChatsByUserId(userId: string): Promise<ChatType[] | null> {
+export async function getChatsByUserId(userId: string, pageSize = 20, seconds?: string, nanoseconds?: string): Promise<ChatType[] | null> {
   try {
-    const { data } = await chatApi.chatControllerGetChatsByUserId(userId);
+    const { data } = await chatApi.chatControllerGetChatsByUserId(userId, pageSize, seconds || '', nanoseconds || '');
 
     return data as unknown as ChatType[];
   } catch (err) {
     console.error(err);
-    return null;
+    throw err;
   }
 }
 

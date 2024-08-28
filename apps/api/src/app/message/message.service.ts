@@ -46,6 +46,7 @@ import { ChatGateway } from '../chat/chat.gateway';
           chatName: "",
           creatorId: messageData.senderId,
           type: recipients.length > singleRecipient ? ChatEnum.GROUP : ChatEnum.DIRECT,
+          deletedBy: []
         });
         chatId = newChat.id;
       }

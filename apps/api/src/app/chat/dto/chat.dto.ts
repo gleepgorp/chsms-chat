@@ -29,4 +29,7 @@ export class ChatDTO {
   @IsString()
   @IsOptional()
   lastMessage?: string;
+
+  @IsArray()
+  deletedBy?: string[];
 }

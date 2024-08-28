@@ -1,5 +1,5 @@
 import { FirestoreDatabaseProvider } from "../firestore/firestore.providers";
-import { CollectionReference } from "@google-cloud/firestore";
+import { CollectionReference, Timestamp } from "@google-cloud/firestore";
 import { ChatDocument } from "../../documents/chat.document";
 import { Injectable, Inject, HttpException, HttpStatus, forwardRef, NotFoundException } from "@nestjs/common";
 import { ChatEnum, ChatType } from "types/Chat.type";
@@ -131,6 +131,7 @@ export class ChatService {
         type: chatData.type || ChatEnum.DIRECT,
         updatedAt: chatData.updatedAt,
         lastMessage: lastMessage || null,
+        deletedBy: []
       } as ChatType;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -155,15 +156,27 @@ export class ChatService {
     return null;
   }
 
-  async getChatsByUserId(userId: string): Promise<ChatType[]> {
+  async getChatsByUserId(userId: string, pageSize: number, seconds?: number, nanoseconds?: number): Promise<ChatType[]> {
     try {
-      const chatSnapshot = await this.chatCollection
-        .where('participants', 'array-contains', userId)
-        .orderBy('updatedAt', 'desc')
-        .get();
+      let query = this.chatCollection
+      .where('participants', 'array-contains', userId)
+      .orderBy('updatedAt', 'desc')
+      .limit(pageSize);
+
+      if (seconds !== undefined && nanoseconds !== undefined) {
+        const lastVisibleTimestamp = new Timestamp(seconds, nanoseconds);
+        query = query.startAt(lastVisibleTimestamp);
+      }
+
+      const chatSnapshot = await query.get();
 
       const chats: ChatType[] = await Promise.all(chatSnapshot.docs.map(async (doc) => {
         const chatData = doc.data();
+        
+        if (chatData.deletedBy && chatData.deletedBy.includes(userId)) {{
+          return null;
+        }}
+
         const participants = chatData.participants;
         const lastMessageId = chatData.lastMessageId;
         const users = await this.userService.findByIds(participants as unknown as string[]);
@@ -178,10 +191,11 @@ export class ChatService {
           type: chatData.type || ChatEnum.DIRECT,
           updatedAt: chatData.updatedAt,
           lastMessage: lastMessage || null,
+          deletedBy: []
         };
       }));
 
-      return chats as unknown as ChatType[];
+      return chats.filter(chat => chat !== null) as unknown as ChatType[];
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

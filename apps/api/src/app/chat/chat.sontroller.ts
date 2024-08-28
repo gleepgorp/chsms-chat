@@ -15,8 +15,15 @@ export class ChatController {
   }
 
   @Get(':id')
-  async getChatsByUserId(@Param('id') userId: string): Promise<ChatType[]> {
-    return this.chatService.getChatsByUserId(userId);
+  async getChatsByUserId(
+    @Param('id') userId: string,
+    @Query('pageSize') pageSize: number,
+    @Query('seconds') seconds: string,
+    @Query('nanoseconds') nanoseconds: string,
+  ): Promise<ChatType[]> {
+    const parsedSeconds = seconds ? parseInt(seconds, 10) : undefined;
+    const parsedNanoseconds = nanoseconds ? parseInt(nanoseconds, 10) : undefined;
+    return this.chatService.getChatsByUserId(userId, pageSize, parsedSeconds, parsedNanoseconds);
   }
 
   @Get('getChat/:chatId')

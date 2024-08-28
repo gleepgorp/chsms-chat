@@ -27,4 +27,8 @@ export class MessageDTO {
 
   @IsOptional()
   messageId?: string;
+
+  @IsArray()
+  @IsOptional()
+  deletedBy?: string[];
 }

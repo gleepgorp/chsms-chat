@@ -1,9 +1,9 @@
-import { useModalContext } from "apps/web/context/ModalContext";
+import { useModalContext } from "../../context/ModalContext";
 import Button from "../atoms/Button";
 
 type AlertModalProps = {
   isOpen?: boolean;
-  chatId: string;
+  chatId?: string;
   onClick?: () => void;
 }
 

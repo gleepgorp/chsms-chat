@@ -74,7 +74,7 @@ export const ChatApiAxiosParamCreator = function (configuration?: Configuration)
         chatControllerDeleteChatAndMessagesByChatId: async (chatId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'chatId' is not null or undefined
             assertParamExists('chatControllerDeleteChatAndMessagesByChatId', 'chatId', chatId)
-            const localVarPath = `/api/chat`
+            const localVarPath = `/api/chat/{chatId}`
                 .replace(`{${"chatId"}}`, encodeURIComponent(String(chatId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -177,12 +177,21 @@ export const ChatApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @param {string} id 
+         * @param {number} pageSize 
+         * @param {string} seconds 
+         * @param {string} nanoseconds 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        chatControllerGetChatsByUserId: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        chatControllerGetChatsByUserId: async (id: string, pageSize: number, seconds: string, nanoseconds: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('chatControllerGetChatsByUserId', 'id', id)
+            // verify required parameter 'pageSize' is not null or undefined
+            assertParamExists('chatControllerGetChatsByUserId', 'pageSize', pageSize)
+            // verify required parameter 'seconds' is not null or undefined
+            assertParamExists('chatControllerGetChatsByUserId', 'seconds', seconds)
+            // verify required parameter 'nanoseconds' is not null or undefined
+            assertParamExists('chatControllerGetChatsByUserId', 'nanoseconds', nanoseconds)
             const localVarPath = `/api/chat/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -195,6 +204,18 @@ export const ChatApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['pageSize'] = pageSize;
+            }
+
+            if (seconds !== undefined) {
+                localVarQueryParameter['seconds'] = seconds;
+            }
+
+            if (nanoseconds !== undefined) {
+                localVarQueryParameter['nanoseconds'] = nanoseconds;
+            }
 
 
     
@@ -269,11 +290,14 @@ export const ChatApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} id 
+         * @param {number} pageSize 
+         * @param {string} seconds 
+         * @param {string} nanoseconds 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async chatControllerGetChatsByUserId(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.chatControllerGetChatsByUserId(id, options);
+        async chatControllerGetChatsByUserId(id: string, pageSize: number, seconds: string, nanoseconds: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.chatControllerGetChatsByUserId(id, pageSize, seconds, nanoseconds, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ChatApi.chatControllerGetChatsByUserId']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -328,11 +352,14 @@ export const ChatApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @param {string} id 
+         * @param {number} pageSize 
+         * @param {string} seconds 
+         * @param {string} nanoseconds 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        chatControllerGetChatsByUserId(id: string, options?: any): AxiosPromise<void> {
-            return localVarFp.chatControllerGetChatsByUserId(id, options).then((request) => request(axios, basePath));
+        chatControllerGetChatsByUserId(id: string, pageSize: number, seconds: string, nanoseconds: string, options?: any): AxiosPromise<void> {
+            return localVarFp.chatControllerGetChatsByUserId(id, pageSize, seconds, nanoseconds, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -392,12 +419,15 @@ export class ChatApi extends BaseAPI {
     /**
      * 
      * @param {string} id 
+     * @param {number} pageSize 
+     * @param {string} seconds 
+     * @param {string} nanoseconds 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ChatApi
      */
-    public chatControllerGetChatsByUserId(id: string, options?: RawAxiosRequestConfig) {
-        return ChatApiFp(this.configuration).chatControllerGetChatsByUserId(id, options).then((request) => request(this.axios, this.basePath));
+    public chatControllerGetChatsByUserId(id: string, pageSize: number, seconds: string, nanoseconds: string, options?: RawAxiosRequestConfig) {
+        return ChatApiFp(this.configuration).chatControllerGetChatsByUserId(id, pageSize, seconds, nanoseconds, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

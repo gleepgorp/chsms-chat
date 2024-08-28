@@ -1,5 +1,5 @@
 /* eslint-disable @nx/enforce-module-boundaries */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useAuth } from 'apps/web/context/AuthContext'
 import { useRouter } from 'next/router';
 import { Routes } from 'apps/web/constants/routes';
@@ -11,14 +11,18 @@ type PropsType = {
 };
 
 export default function Authenticated({ children }: PropsType): React.ReactElement | null {
+  const pageSize = 20;
   const { user, loading } = useAuth();
   const router = useRouter();
   const { query } = router;
   const { id } = router.query;
   const userId = Array.isArray(user?.uid) ? user?.uid[0] : user?.uid || '';
-  const { data: fetchedChats } = useGetChatsByUserId(userId);
+  const { data: fetchedChats } = useGetChatsByUserId(userId, pageSize);
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
-  const isPartOfChat = fetchedChats?.some(chat => chat.id === id);
+  const allChats = useMemo(() => {
+    return fetchedChats?.pages.flatMap(page => page) || [];
+  }, [fetchedChats]);
+  const isPartOfChat = allChats?.some(chat => chat?.id === id);
 
   useEffect(() => {
     if (!loading) {

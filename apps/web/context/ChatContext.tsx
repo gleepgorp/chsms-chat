@@ -36,8 +36,8 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
   const  { children } = props;
   const { user } = useAuth();
   const router = useRouter();
-  const { id } = router.query;
   const loggedInUser = user?.uid;
+  const { id } = router.query;
   const chatId = Array.isArray(id) ? id[0] : id || '';
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [profile, setProfile] = useState<string>("");

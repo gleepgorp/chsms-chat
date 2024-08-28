@@ -16,10 +16,11 @@ type ChatContainerType = {
   children?: React.ReactNode;
   fetchedChats: ChatType[];
   isChatLoading: boolean;
+  innerRef?: React.Ref<HTMLDivElement>;
 }
 
 export default function ChatContainer(props: ChatContainerType): JSX.Element {
-  const { children, fetchedChats, isChatLoading } = props;
+  const { children, fetchedChats, isChatLoading, innerRef } = props;
   const debouncedDelay = 300; 
   const router = useRouter();
   const newChatRoute = router.pathname.includes('/new');
@@ -62,6 +63,7 @@ export default function ChatContainer(props: ChatContainerType): JSX.Element {
             <ChatDetails 
               isChatLoading={isChatLoading}
               fetchedChats={fetchedChats}
+              innerRef={innerRef}
               />
           } 
         </div>

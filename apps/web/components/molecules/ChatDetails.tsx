@@ -11,10 +11,11 @@ import { useChatContext } from '../../context/ChatContext';
 type ChatDetailsProps = {
   fetchedChats: ChatType[];
   isChatLoading: boolean;
+  innerRef?: React.Ref<HTMLDivElement>;
 }
 
 export default function ChatDetails(props: ChatDetailsProps) {
-  const { fetchedChats, isChatLoading } = props;
+  const { fetchedChats, innerRef, isChatLoading } = props;
   const { user } = useAuth();
   const router = useRouter();
   const { id } = router.query;
@@ -26,6 +27,7 @@ export default function ChatDetails(props: ChatDetailsProps) {
   const recipient = data.participants.find(p => p.accountId !== user?.uid);
   const ownerLastMessage = data?.lastMessage?.senderId === user?.uid ? 'You: ' : ''
   const isActive = data.id === id ? 'bg-stone-500/40 hover:bg-stone-500/40' : '';
+  const lastMessage = fetchedChats.length === index + 1;
 
   function handleFocus() {
     inputRef.current?.focus();
@@ -55,6 +57,7 @@ export default function ChatDetails(props: ChatDetailsProps) {
           href={`/chat/${data.id}`}
         >
           <div 
+            ref={lastMessage ? innerRef : null}
             className={
               `${isActive}
               hover:bg-stone-500/20 rounded-xl py-3 px-3 cursor-pointer text-stone-100 flex flex-row items-center justify-between group`
