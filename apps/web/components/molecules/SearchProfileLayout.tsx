@@ -5,6 +5,7 @@ import { extractInitials } from '../../utils';
 import { useGetChatByParticipants } from '../../hooks';
 import { useAuth } from '../../context';
 import { useNewChatContext } from '../../context/NewChatContext';
+import { useRouter } from 'next/router';
 
 type SearchProfileLayoutrProps = {
   accountId: string;
@@ -20,6 +21,7 @@ export default function SearchProfileLayout(props: SearchProfileLayoutrProps) {
   const { accountId, profileUrl, firstname, lastname, bgColor, handleSearchItem } = props;
   const { data: fetchedChats, isLoading } = useGetChatByParticipants(user?.uid || '', accountId);
   const profile = !profileUrl ? bgColor : profileUrl;
+  const router = useRouter();
   const chatExist = fetchedChats && fetchedChats?.id ? `/chat/${fetchedChats?.id}` : '/new';
   const { 
     setFirstnameInitial, 
@@ -39,10 +41,11 @@ export default function SearchProfileLayout(props: SearchProfileLayoutrProps) {
     setLastname(lastname || '');
     setProfile(profile || '');
     setRecipientId(accountId || '');
+    router.replace(chatExist);
   }
 
   return (
-    <Link href={chatExist} onClick={handleProfileClick} className='flex flex-row items-center gap-3 py-2 hover:bg-stone-500/20 rounded-lg cursor-pointer px-3'>
+    <div onClick={handleProfileClick} className='flex flex-row items-center gap-3 py-2 hover:bg-stone-500/20 rounded-lg cursor-pointer px-3'>
       <ChatProfilePicture 
         profile={profile}
         firstnameInitial={extractInitials(firstname)}
@@ -50,7 +53,7 @@ export default function SearchProfileLayout(props: SearchProfileLayoutrProps) {
         variant='sm'
       />
       <span className='text-sm font-medium capitalize'>{`${firstname} ${lastname}`}</span>
-    </Link>
+    </div>
   ) 
 }
 

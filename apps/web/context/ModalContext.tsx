@@ -7,7 +7,9 @@ type ModalProviderType = {
 type ModalContextType = {
   chatId: string;
   isOpen: boolean;
+  modalType: string;
   setChatId: Dispatch<SetStateAction<string>>;
+  setModalType: Dispatch<SetStateAction<string>>;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -25,13 +27,16 @@ export default function ModalProvider(props: ModalProviderType): JSX.Element {
   const { children } = props;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [chatId, setChatId] = useState<string>("");
+  const [modalType, setModalType] = useState<string>("");
 
   return (
     <ModalContext.Provider value={{
       chatId,
       isOpen,
+      modalType,
       setIsOpen,
       setChatId,
+      setModalType
     }}>
       {children}
     </ModalContext.Provider>

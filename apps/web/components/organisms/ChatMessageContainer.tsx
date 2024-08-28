@@ -56,6 +56,7 @@ export default function ChatMessageContainer(): JSX.Element {
     }
   }
 
+  // responsible for showing JumpToPresent component
   useEffect(() => {
     const scroller = scrollerRef.current;
     if (scroller) {
@@ -64,15 +65,23 @@ export default function ChatMessageContainer(): JSX.Element {
     }
   }, []);
 
+  // responsible for showing JumpToPresent component when scroll is not at bottom
   useEffect(() => {
     if (scrollerRef.current) {
       const { scrollHeight, clientHeight } = scrollerRef.current;
-      const scrollTop = parseInt(debouncedScrollPosition);
-      const atBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1;
-      setIsAtBottom(atBottom);
+      const isScrollable = scrollHeight > clientHeight;
+
+      if (isScrollable) {
+        const scrollTop = parseInt(debouncedScrollPosition);
+        const atBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1;
+        setIsAtBottom(atBottom);
+      } else {
+        setIsAtBottom(true);
+      }
     }
   }, [debouncedScrollPosition]);
 
+  // responsible for fetching nextpage for messages
   useEffect(() => {
     if (inView && hasNextPage) {
       setFetchingOldMssgs(true);
@@ -80,6 +89,7 @@ export default function ChatMessageContainer(): JSX.Element {
     }
   }, [inView, hasNextPage, fetchNextPage, setFetchingOldMssgs]);
 
+  // make scroll fixed at bottom
   useEffect(() => { 
     if (scrollerRef.current && !fetchingOldMssgs) {
       scrollerRef.current?.scrollTo({
@@ -103,7 +113,7 @@ export default function ChatMessageContainer(): JSX.Element {
               isAtBottom={isAtBottom}
               scrollToBottom={scrollToBottom}
               fetchedMessages={allMessages}
-              isFetchingNextPage={isFetching}
+              hasNextPage={hasNextPage}
             />
           </div>
           <ChatMessageFooter chatId={chatId}/>

@@ -4,11 +4,10 @@ import Button from "../atoms/Button";
 type AlertModalProps = {
   isOpen?: boolean;
   chatId?: string;
-  onClick?: () => void;
 }
 
 export default function AlertModal(props: AlertModalProps): JSX.Element {
-  const { isOpen, chatId } = props;
+  const { isOpen } = props;
   const { setIsOpen, setChatId } = useModalContext();
   
   function handleCancel() {
@@ -22,7 +21,7 @@ export default function AlertModal(props: AlertModalProps): JSX.Element {
 
   return (
     <>
-    {isOpen && 
+    {isOpen &&
       <div className="fixed z-50 top-0 bottom-0 left-0 right-0 bg-stone-900/70 flex justify-center items-center overflow-hidden">
         <div className="fixed">
           <div className="bg-stone-700 text-stone-100 rounded-lg p-4 flex flex-col gap-2">

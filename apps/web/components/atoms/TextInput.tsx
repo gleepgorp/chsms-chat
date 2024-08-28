@@ -48,8 +48,7 @@ export default function TextInput(props: TextInputProps): JSX.Element {
             bg-stone-600/40
             text-stone-100
             w-full rounded-full
-            placeholder:text-stone-400
-            '
+            placeholder:text-stone-400'
         />
       </div>
     </div>

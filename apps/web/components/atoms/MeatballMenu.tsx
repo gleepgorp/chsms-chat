@@ -7,7 +7,7 @@ import { LuLogOut } from "react-icons/lu";
 import ChatDropdownMenu from './ChatDropdownMenu';
 import Button from './Button';
 import { useDeleteChat } from '../../hooks/useMutation';
-import { useModalContext } from 'apps/web/context/ModalContext';
+import { useModalContext } from '../../context/ModalContext';
 // const { mutate: deleteChat } = useDeleteChat({
 //   onSuccess: deleteChat => {
 
@@ -25,7 +25,7 @@ type MeatballMenuType = {
 
 export default function MeatballMenu(props: MeatballMenuType) {
   const { isHidden, onClick, isOpen, participants, chatId, setIsOpen } = props;
-  const { setIsOpen: setOpenModal, setChatId } = useModalContext()
+  const { setIsOpen: setOpenModal, setChatId, setModalType } = useModalContext()
   const menuRef = useRef<HTMLDivElement>(null);
 
   function handleDelete(e: UIEvent) {
@@ -34,6 +34,7 @@ export default function MeatballMenu(props: MeatballMenuType) {
     setChatId(chatId);
     setOpenModal(true);
     setIsOpen(!isOpen);
+    setModalType('alert');
   }
 
   return (

@@ -11,12 +11,12 @@ type ChatMessageBodyProps = {
   isLoading: boolean;
   scrollToBottom?: () => void;
   isAtBottom?: boolean;
-  isFetchingNextPage?: boolean;
+  hasNextPage?: boolean;
   innerRef?: React.Ref<HTMLDivElement>;
 }
 
 export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Element {
-  const { fetchedMessages, isLoading, isAtBottom, scrollToBottom, innerRef, isFetchingNextPage } = props;
+  const { fetchedMessages, isLoading, isAtBottom, scrollToBottom, innerRef, hasNextPage } = props;
   const { user } = useAuth();
 
   const mappedMessages = fetchedMessages.map((data, index) => {
@@ -59,9 +59,14 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
 
   return (
     <div className='text-stone-100 text-4xl max-h-[820px]'>
+      {fetchedMessages.length === 0 && !isLoading &&
+        <div className='flex justify-center items-end h-[760px]'>
+          <span className='text-stone-400 text-base'>Start chatting now!</span>
+        </div>
+      }
       <div className='flex flex-col-reverse'>
         {mappedMessages}
-        <div className='mt-3'>{isFetchingNextPage && <LoadingSpinner />}</div>
+        <div className='mt-3'>{hasNextPage && <LoadingSpinner />}</div>
       </div>
       <JumpToCurrentMessage 
         isVisible={!isAtBottom}

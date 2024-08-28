@@ -9,6 +9,7 @@ import Tooltip from '../atoms/Tooltip';
 
 export default function Sidebar() {
   const router = useRouter();
+  
   function isActive(route: string) {
     const cleanRoute = route.startsWith('/') ? route.slice(1) : route;
     if (cleanRoute === '') {

@@ -4,7 +4,6 @@ import { useGetChatsByUserId } from '../../hooks';
 import ChatLayout from '../../layout/ChatLayout'
 import { useWebSocketChats } from '../../hooks/useWebSocketChats';
 import { useRouter } from 'next/router';
-import AlertModal from '../../components/molecules/AlertModal';
 import { ChatType } from 'types/Chat.type';
 import { useInView } from 'react-intersection-observer';
 
@@ -55,7 +54,6 @@ export default function Messages() {
         isLoading={isLoading}
         innerRef={ref}
       />
-      <AlertModal />
     </div>
   )
 } 

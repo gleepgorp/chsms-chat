@@ -38,7 +38,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
 
   const newChatRoute = router.pathname.includes('/new');
   
-  const { data: fetchedChats } = useGetChatsByUserId(user?.uid as string);
+  const { data: fetchedChats } = useGetChatsByUserId(user?.uid as string, 20);
   const { recipientId: NewChatRecipient } = useNewChatContext();
   const { mutate: createMessage } = useCreateMessage({
     onSuccess: createMessage => {
