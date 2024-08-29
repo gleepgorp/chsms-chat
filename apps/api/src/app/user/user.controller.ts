@@ -1,5 +1,5 @@
 import { ProfileType } from "types/Profile.type";
-import { Controller, Get, Param, Query } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { UserService } from "./user.service";
 
@@ -17,5 +17,11 @@ export class UserController {
   async findAll(
     @Query('query') query: string): Promise<ProfileType[]> {
     return this.userService.searchUser(query);
+  }
+
+  // find multiple users with multiple ids 
+  @Post('find')
+  async findUsersByIds(@Body() body: { ids: string[] }): Promise<ProfileType[]> {
+    return this.userService.findByIds(body.ids);
   }
 }

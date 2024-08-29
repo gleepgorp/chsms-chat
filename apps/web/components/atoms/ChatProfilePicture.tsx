@@ -7,17 +7,19 @@ type ChatProfilePictureProps = {
   firstnameInitial?: string;
   lastnameInitial?: string;
   variant?: ProfileVariant;
+  group?: boolean;
+  noChatName?: boolean;
 }
 
 const variantClass: Record<ProfileVariant, string> = {
   xs: 'w-8 h-8',
-  sm: 'w-10 h-10',
+  sm: 'w-9 h-9',
   md: 'w-12 h-12',
   lg: 'w-14 h-14'
 }
 
 export default function ChatProfilePicture(props: ChatProfilePictureProps) {
-  const { profile, firstnameInitial, lastnameInitial, variant = 'md' } = props;
+  const { profile, firstnameInitial, lastnameInitial, variant = 'md', group, noChatName } = props;
   return (
     <div 
       style={{ backgroundColor: profile }} 
@@ -26,6 +28,7 @@ export default function ChatProfilePicture(props: ChatProfilePictureProps) {
         flex items-center 
         justify-center
         text-stone-100
+        ${noChatName && group ? 'text-xs' : ''}
         ${variantClass[variant]}
       `}
     >

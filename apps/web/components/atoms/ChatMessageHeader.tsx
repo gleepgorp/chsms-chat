@@ -7,7 +7,7 @@ import { useNewChatContext } from '../../context/NewChatContext';
 import { useRouter } from 'next/router';
 
 export default function ChatMessageHeader(): JSX.Element {
-  const { firstnameInitial, lastnameInitial, profile, firstname, lastname } = useChatContext();
+  const { firstnameInitial, lastnameInitial, profile, firstname, lastname, groupParticipants, isGroup } = useChatContext();
   const { 
     firstnameInitial: NewChatFirstnameInitial, 
     lastnameInitial: NewChatLastnameInitial, 
@@ -17,6 +17,12 @@ export default function ChatMessageHeader(): JSX.Element {
   const router = useRouter();
   const newChatRoute = router.pathname.includes('/new');
   const { data: fetchedUser, isLoading } = useGetUserById('');
+  const group = groupParticipants.map((user, index) => {
+    const lastUser = groupParticipants.length - 1 === index;
+    return (
+      <span key={index}>{`${user}${lastUser ? '' : ','} ${' '}`}</span>
+    )
+  })
 
   return (
     <div className='p-2 flex flex-row justify-between'>
@@ -27,9 +33,11 @@ export default function ChatMessageHeader(): JSX.Element {
           lastnameInitial={newChatRoute ? NewChatLastnameInitial : lastnameInitial}
           variant='sm'
         />
-        <span className='capitalize text-stone-100 font-medium text-sm'>
-          {`${newChatRoute ? NewChatFirstname : firstname} 
-            ${newChatRoute ? NewChatLastname : lastname}`}
+        <span className='capitalize text-stone-100 font-medium text-sm flex flex-row'>
+          {isGroup ? group : 
+            `${newChatRoute ? NewChatFirstname : firstname} 
+            ${newChatRoute ? NewChatLastname : lastname}`
+          } 
         </span>
       </div>
       <div>

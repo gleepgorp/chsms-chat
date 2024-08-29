@@ -23,3 +23,15 @@ export async function searchUsers(query: string): Promise<ProfileType[] | null> 
     return null;
   }
 }
+
+export async function getUsersByIds(ids: string[]): Promise<ProfileType[] | null> {
+  try {
+    const response = await userApi.userControllerFindUsersByIds({
+      data: { ids }
+    });
+    return response as unknown as ProfileType[];
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+}

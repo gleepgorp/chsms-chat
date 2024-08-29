@@ -46,3 +46,14 @@ export async function deleteChatAndMessagesByChatId(chatId: string): Promise<voi
     console.error(err);
   }
 }
+
+export async function createChat(chatData: ChatType): Promise<ChatType | null> {
+  try {
+    const { data } = await chatApi.chatControllerCreateChat(chatData);
+
+    return data as unknown as ChatType;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}

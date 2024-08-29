@@ -41,7 +41,7 @@ export default function SearchProfileLayout(props: SearchProfileLayoutrProps) {
     setLastname(lastname || '');
     setProfile(profile || '');
     setRecipientId(accountId || '');
-    router.replace(chatExist);
+    router.push(chatExist);
   }
 
   return (

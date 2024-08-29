@@ -17,21 +17,20 @@ import { useModalContext } from '../../context/ModalContext';
 type MeatballMenuType = {
   isHidden: boolean;
   isOpen?: boolean;
-  chatId: string;
-  participants: ProfileType[];
+  chatId?: string;
+  participants?: ProfileType[];
   onClick?: (event: React.MouseEvent<HTMLElement>) => void;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  setIsOpen?: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function MeatballMenu(props: MeatballMenuType) {
   const { isHidden, onClick, isOpen, participants, chatId, setIsOpen } = props;
-  const { setIsOpen: setOpenModal, setChatId, setModalType } = useModalContext()
+  const { setIsOpen: setOpenModal, setModalType } = useModalContext()
   const menuRef = useRef<HTMLDivElement>(null);
 
   function handleDelete(e: UIEvent) {
     e.stopPropagation();
     e.preventDefault();
-    setChatId(chatId);
     setOpenModal(true);
     setIsOpen(!isOpen);
     setModalType('alert');
