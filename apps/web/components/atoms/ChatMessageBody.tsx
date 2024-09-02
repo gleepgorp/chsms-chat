@@ -53,6 +53,7 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
           placement={isSender ? 'left' : 'right'}
           timestamp={convertTimestamp(data.timestamp).date.toLocaleString()}
         /> 
+        <span>{data.recipientId.firstname}</span>
       </div>
     )
   })

@@ -483,6 +483,55 @@ export const MessageApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @param {string} chatId 
+         * @param {string} replyId 
+         * @param {object} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        messageControllerCreateMessageGroupChat: async (chatId: string, replyId: string, body: object, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'chatId' is not null or undefined
+            assertParamExists('messageControllerCreateMessageGroupChat', 'chatId', chatId)
+            // verify required parameter 'replyId' is not null or undefined
+            assertParamExists('messageControllerCreateMessageGroupChat', 'replyId', replyId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('messageControllerCreateMessageGroupChat', 'body', body)
+            const localVarPath = `/api/message/groupChat`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (chatId !== undefined) {
+                localVarQueryParameter['chatId'] = chatId;
+            }
+
+            if (replyId !== undefined) {
+                localVarQueryParameter['replyId'] = replyId;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} messageId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -593,6 +642,20 @@ export const MessageApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} chatId 
+         * @param {string} replyId 
+         * @param {object} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async messageControllerCreateMessageGroupChat(chatId: string, replyId: string, body: object, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.messageControllerCreateMessageGroupChat(chatId, replyId, body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['MessageApi.messageControllerCreateMessageGroupChat']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {string} messageId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -640,6 +703,17 @@ export const MessageApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
+         * @param {string} chatId 
+         * @param {string} replyId 
+         * @param {object} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        messageControllerCreateMessageGroupChat(chatId: string, replyId: string, body: object, options?: any): AxiosPromise<void> {
+            return localVarFp.messageControllerCreateMessageGroupChat(chatId, replyId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {string} messageId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -679,6 +753,19 @@ export class MessageApi extends BaseAPI {
      */
     public messageControllerCreateMessage(replyId: string, body: object, options?: RawAxiosRequestConfig) {
         return MessageApiFp(this.configuration).messageControllerCreateMessage(replyId, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} chatId 
+     * @param {string} replyId 
+     * @param {object} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MessageApi
+     */
+    public messageControllerCreateMessageGroupChat(chatId: string, replyId: string, body: object, options?: RawAxiosRequestConfig) {
+        return MessageApiFp(this.configuration).messageControllerCreateMessageGroupChat(chatId, replyId, body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

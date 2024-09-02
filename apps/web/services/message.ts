@@ -16,6 +16,17 @@ export async function createMessage(messageData: MessageDTO, replyId?: string): 
   }
 }
 
+export async function createMessageGroupChat(messageData: MessageDTO, chatId: string, replyId?: string): Promise<MessageType | null> {
+  try {
+    const { data } = await messageApi.messageControllerCreateMessageGroupChat(chatId, replyId as string, messageData);
+
+    return data as unknown as MessageType;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
 export async function getMessagesByChatId(chatId: string, pageSize: number, seconds?: string, nanoseconds?: string): Promise<MessageType[] | null> {
   try {
     const { data } = await messageApi.messageControllerGetMessagesByChatId(chatId, pageSize, seconds || '', nanoseconds || '');

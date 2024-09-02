@@ -10,10 +10,20 @@ export class MessageController {
   constructor(private messageService: MessageService) {}
 
   @Post()
-  async createMessage(@Body() post: CreateMessageDTO, 
-  @Query('replyId') replyId?: string
+  async createMessage(
+    @Body() post: CreateMessageDTO, 
+    @Query('replyId') replyId?: string
   ): Promise<MessageType> {
     return this.messageService.createMessage(post, replyId);
+  }
+
+  @Post('groupChat')
+  async createMessageGroupChat(
+    @Body() post: CreateMessageDTO,
+    @Query('chatId') chatId: string,
+    @Query('replyId') replyId?: string,
+  ): Promise<MessageType> {
+    return this.messageService.createMessageGroupChat(post, chatId, replyId);
   }
 
   @Get(':id')

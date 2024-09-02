@@ -37,7 +37,7 @@ import { ChatGateway } from '../chat/chat.gateway';
 
       const existingChat = await this.chatService.findExistingChat(messageData.senderId, recipients);
 
-      if (existingChat) {
+      if (existingChat) { 
         chatId = existingChat.id;
       } else {
         const newChat = await this.chatService.createChat({
@@ -54,26 +54,20 @@ import { ChatGateway } from '../chat/chat.gateway';
 
       const writeBatch = this.db.batch(); 
       const docRef = this.messageCollection.doc();
+      const batchData = {
+        messageId: docRef.id,
+        timestamp: new Date(),
+        chatId: chatId,
+        ...messageData,
+      };
 
       if (replyId) {
         const replyDoc = await this.messageCollection.doc(replyId).get();
         const reply = replyDoc.data().content;
-
-        writeBatch.set(docRef, {
-          messageId: docRef.id,
-          timestamp: new Date(),
-          chatId: chatId, 
-          reply: reply,
-          ...messageData,
-        });
-      } else {
-        writeBatch.set(docRef, {
-          messageId: docRef.id,
-          timestamp: new Date(),
-          chatId: chatId, 
-          ...messageData,
-        });
+        batchData.reply = reply;
       }
+
+      writeBatch.set(docRef, batchData);
       
       const chatRef = this.chatCollection.doc(chatId);
       writeBatch.update(chatRef, {
@@ -92,6 +86,40 @@ import { ChatGateway } from '../chat/chat.gateway';
 
       return message;
     } 
+
+    async createMessageGroupChat(messageData: MessageDTO, chatId: string, replyId?: string): Promise<MessageType> {
+      const writeBatch = this.db.batch();
+      const docRef = this.messageCollection.doc();
+      const batchData = {
+        messageId: docRef.id,
+        timestamp: new Date(),
+        chatId: chatId,
+        ...messageData,
+      };
+
+      if (replyId) {
+        const replyDoc = await this.messageCollection.doc(replyId).get();
+        const reply = replyDoc.data().content;
+        batchData.reply = reply;
+      }
+
+      writeBatch.set(docRef, batchData);
+
+      const chatRef = this.chatCollection.doc(chatId);
+      writeBatch.update(chatRef, {
+        lastMessageId: docRef.id,
+        updatedAt: new Date(),
+      });
+
+      await writeBatch.commit();
+      const messageDoc = await docRef.get();
+      const message = { ...messageDoc.data(), id: messageDoc.id } as MessageType;
+
+      await this.chatService.updateLastMessage(chatId, message.id);
+      this.chatGateway.server.to(chatId).emit('newMessage', message);
+
+      return message;
+    }
 
     async getMessageById(messageId: string): Promise<MessageType> {
       const messageSnapshot = await this.messageCollection.doc(messageId).get();

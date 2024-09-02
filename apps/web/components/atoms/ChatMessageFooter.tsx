@@ -3,7 +3,7 @@ import { IoSend } from "react-icons/io5";
 import Button from './Button';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import TextInputFormik from './TextInputFormik';
-import { useCreateMessage } from '../../hooks/useMutation';
+import { useCreateMessage, useCreateMessageGroupChat } from '../../hooks/useMutation';
 import { useQueryClient } from '@tanstack/react-query';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { MessageDTO } from 'apps/api/src/app/message/dto/message.dto';
@@ -23,7 +23,7 @@ type ChatMessageFooterProps = {
 export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.Element {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const { recipientId, setFetchingOldMssgs } = useChatContext();
+  const { recipientIds, setFetchingOldMssgs, isGroup } = useChatContext();
   const { 
     messageId: replyId,
     replyChatId, 
@@ -45,11 +45,22 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
       queryClient.setQueryData(['GET_MSSG_BY_CHATID', createMessage.id], createMessage)
     },
   });
+  const { mutate: createMessageGC } = useCreateMessageGroupChat({
+    onSuccess: createMessageGC => {
+      queryClient.setQueryData(['GET_MSSG_FOR_GROUP', createMessageGC.id], createMessageGC)
+    },
+  });
   
   function onSubmit(data: MessageDTO, { resetForm }: FormikHelpers<MessageDTO>) {
-    createMessage({ messageData: data, replyId });
+    if (isGroup) {
+      createMessageGC({ messageData: data, chatId: id as string, replyId });
+    } else {
+      createMessage({ messageData: data, replyId });
+    }
+
     resetForm();
     setFetchingOldMssgs(false);
+    setRecipientId('');
 
     if (newChatRoute && fetchedChats) {
       setTimeout(() => {
@@ -71,7 +82,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
     content: '',
     read: false,
     senderId: user?.uid,
-    recipientId: [newChatRoute ? NewChatRecipient : recipientId],
+    recipientId: (newChatRoute ? NewChatRecipient : recipientIds),
   }
 
   return (

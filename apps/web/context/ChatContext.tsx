@@ -17,7 +17,7 @@ type ChatContextType = {
   lastnameInitial: string;
   lastname: string;
   firstname: string;
-  recipientId: string;
+  recipientIds: string[];
   fetchingOldMssgs: boolean;
   isGroup: boolean;
   groupParticipants: string[];
@@ -39,9 +39,7 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
   const  { children } = props;
   const { user } = useAuth();
   const router = useRouter();
-  const profilePath = router.pathname.includes('/profile');
-  const newPath = router.pathname.includes('/new');
-  const indexPath = router.pathname.includes('/');
+  const chatPath = router.pathname.includes('/chat');
   const loggedInUser = user?.uid;
   const { id } = router.query;
   const chatId = Array.isArray(id) ? id[0] : id || '';
@@ -52,7 +50,7 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
   const [lastnameInitial, setLastnameInitial] = useState<string>("");
   const [groupParticipants, setGroupParticipants] = useState<string[]>([]);
   const [lastname, setLastname] = useState<string>("");
-  const [recipientId, setRecipientId] = useState<string>("");
+  const [recipientIds, setRecipientIds] = useState<string[]>([]);
   const [fetchingOldMssgs, setFetchingOldMssgs] = useState<boolean>(false);
   const [isGroup, setIsGroup] = useState<boolean>(false);
   const inputRef = useRef(null);
@@ -62,10 +60,10 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
       setSelectedChatId(chatId);
       const chatData = await getChatById(chatId);
 
-      if (!profilePath && !newPath && !indexPath) {
+      if (chatPath) {
         const isGroupChat = chatData?.type === ChatEnum.GROUP;
         setIsGroup(isGroupChat);
-        const recipient = chatData?.participants?.find(p => p !== loggedInUser);
+        const recipients = chatData?.participants?.filter(p => p !== loggedInUser);
         const groupUserData = await getUsersByIds(chatData?.participants);
         
         const userArr = [];
@@ -76,8 +74,10 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
           });
         }
         setGroupParticipants(userArr);
+        setRecipientIds(recipients);
+        console.log(recipients);
   
-        if (groupUserData && recipient) {
+        if (groupUserData && recipients) {
           groupUserData.data.forEach((user) => {
             const profileBg = user.profileBgColor;
             const profileUrl = user.profilePicture;
@@ -92,7 +92,6 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
             setFirstname(firstname || '');
             setLastnameInitial(lastnameInital || '');
             setLastname(lastname || '');
-            setRecipientId(recipient || '');
           })
   
         } else {
@@ -103,7 +102,7 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
     }
 
     fetchChat();
-  }, [chatId, loggedInUser])
+  }, [chatId, chatPath, loggedInUser])
 
   return (
     <ChatContext.Provider value={{ 
@@ -114,7 +113,7 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
         firstname,
         lastnameInitial,
         lastname,
-        recipientId,
+        recipientIds,
         fetchingOldMssgs,
         isGroup,
         setFetchingOldMssgs,
