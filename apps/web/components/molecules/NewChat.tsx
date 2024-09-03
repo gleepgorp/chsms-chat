@@ -8,7 +8,6 @@ export default function NewChat() {
   const { setIsOpen, setModalType } = useModalContext();
 
   function handleOpenModal() {
-    console.log("Hello world");
     setIsOpen(true);
     setModalType('form');
   }

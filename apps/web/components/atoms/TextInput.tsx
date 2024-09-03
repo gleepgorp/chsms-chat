@@ -1,5 +1,5 @@
 import React, { ChangeEvent, ReactNode } from 'react'
-import { IoArrowBack } from "react-icons/io5";
+import { IoArrowBack, IoClose } from "react-icons/io5";
 import Button from './Button';
 
 type TextInputProps = {
@@ -10,25 +10,28 @@ type TextInputProps = {
   adornment?: ReactNode;
   isChatPath?: boolean;
   searchItem: string;
+  forModal?: boolean
   handleSearchItem: () => void;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
 export default function TextInput(props: TextInputProps): JSX.Element {
-  const { type, label, placeholder, adornment, onChange, value, searchItem, handleSearchItem } = props;
+  const { type, label, placeholder, adornment, onChange, value, searchItem, handleSearchItem, forModal } = props;
 
   return (
-    <div className='flex flex-row items-center gap-3'>
+    <div className='relative flex flex-row items-center gap-3'>
       {searchItem && 
-        <Button
-          size='icon'
-          variant='icon'
-          roundedSize='full'
-          onClick={handleSearchItem}
-        >
-          <IoArrowBack className='text-stone-400/60 text-2xl'/>
-        </Button>
-      }
+        <div className={`${forModal && 'absolute right-0 z-50 pr-1'}`}>
+          <Button
+            size='icon'
+            variant='icon'
+            roundedSize='full'
+            onClick={handleSearchItem}
+          >
+            {forModal ? <IoClose className='text-stone-400/60 text-lg'/> : <IoArrowBack className='text-stone-400/60 text-2xl'/>}
+          </Button>
+        </div>
+      } 
       <div className='relative flex items-center w-full'>
         {adornment && (
           <div className='absolute left-0 pl-4'>

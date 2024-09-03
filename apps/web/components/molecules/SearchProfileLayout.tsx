@@ -1,11 +1,11 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { useEffect, useState } from 'react'
 import ChatProfilePicture from '../atoms/ChatProfilePicture';
-import Link from 'next/link';
 import { extractInitials } from '../../utils';
 import { useGetChatByParticipants } from '../../hooks';
 import { useAuth } from '../../context';
 import { useNewChatContext } from '../../context/NewChatContext';
 import { useRouter } from 'next/router';
+import { useModalContext } from '../../context/ModalContext';
 
 type SearchProfileLayoutrProps = {
   accountId: string;
@@ -13,16 +13,22 @@ type SearchProfileLayoutrProps = {
   firstname?: string;
   lastname?: string;
   bgColor?: string;
+  forModal?: boolean
+  onSelect: (firstname: string, id: string) => void;
   handleSearchItem?: () => void;
 }
 
 export default function SearchProfileLayout(props: SearchProfileLayoutrProps) {
   const { user } = useAuth();
-  const { accountId, profileUrl, firstname, lastname, bgColor, handleSearchItem } = props;
-  const { data: fetchedChats, isLoading } = useGetChatByParticipants(user?.uid || '', accountId);
-  const profile = !profileUrl ? bgColor : profileUrl;
   const router = useRouter();
+  const { groupMembers } = useModalContext();
+  const { accountId, profileUrl, firstname, lastname, bgColor, handleSearchItem, forModal, onSelect } = props;
+  const { data: fetchedChats, isLoading } = useGetChatByParticipants(user?.uid || '', accountId);
+
+  const profile = !profileUrl ? bgColor : profileUrl;
   const chatExist = fetchedChats && fetchedChats?.id ? `/chat/${fetchedChats?.id}` : '/new';
+  const fullName = `${firstname} ${lastname}`
+
   const { 
     setFirstnameInitial, 
     setLastnameInitial, 
@@ -32,16 +38,20 @@ export default function SearchProfileLayout(props: SearchProfileLayoutrProps) {
     setProfile } = useNewChatContext();
 
   function handleProfileClick() {
-    if (handleSearchItem) {
-      handleSearchItem();
+    if (forModal) {
+      onSelect((fullName || ''), accountId);
+    } else {
+      if (handleSearchItem) {
+        handleSearchItem();
+      }
+      setFirstnameInitial(extractInitials(firstname) || '');
+      setLastnameInitial(extractInitials(lastname) || '');
+      setFirstname(firstname || '');
+      setLastname(lastname || '');
+      setProfile(profile || '');
+      setRecipientId(accountId || '');
+      router.push(chatExist);
     }
-    setFirstnameInitial(extractInitials(firstname) || '');
-    setLastnameInitial(extractInitials(lastname) || '');
-    setFirstname(firstname || '');
-    setLastname(lastname || '');
-    setProfile(profile || '');
-    setRecipientId(accountId || '');
-    router.push(chatExist);
   }
 
   return (
@@ -50,7 +60,7 @@ export default function SearchProfileLayout(props: SearchProfileLayoutrProps) {
         profile={profile}
         firstnameInitial={extractInitials(firstname)}
         lastnameInitial={extractInitials(lastname)}
-        variant='sm'
+        variant='sm' 
       />
       <span className='text-sm font-medium capitalize'>{`${firstname} ${lastname}`}</span>
     </div>

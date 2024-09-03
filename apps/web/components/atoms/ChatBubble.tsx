@@ -61,7 +61,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
             </div>
           } 
           <div className={`flex flex-col ${isSender ? 'items-end' : 'items-start'}`}>
-            {!isSender && <span className='text-stone-300 text-xs py-1'>Vince Tapdasan</span> }
+            {!isSender && <span className='text-stone-300/70 text-xs py-1'>Vince Tapdasan</span> }
             {reply && 
               <ReplyElement 
                 reply={reply}

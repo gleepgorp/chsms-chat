@@ -75,7 +75,6 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
         }
         setGroupParticipants(userArr);
         setRecipientIds(recipients);
-        console.log(recipients);
   
         if (groupUserData && recipients) {
           groupUserData.data.forEach((user) => {
