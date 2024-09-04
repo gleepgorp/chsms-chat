@@ -2,7 +2,7 @@ import { apiClient } from "./api";
 import { ChatType } from 'types/Chat.type';
 import { ChatApi } from "@chsms/api-client";
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import { ChatDTO } from '../../api/src/app/chat/dto/chat.dto';
+import { CreateChatDTO } from "apps/api/src/app/chat/dto/createChat.dto";
 
 const chatApi = apiClient.use(ChatApi);
 
@@ -47,7 +47,7 @@ export async function deleteChatAndMessagesByChatId(chatId: string): Promise<voi
   }
 }
 
-export async function createChat(chatData: ChatType): Promise<ChatType | null> {
+export async function createChat(chatData: CreateChatDTO): Promise<ChatType | null> {
   try {
     const { data } = await chatApi.chatControllerCreateChat(chatData);
 

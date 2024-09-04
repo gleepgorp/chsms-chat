@@ -3,7 +3,10 @@ import { AxiosError } from 'axios'
 
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { CreateMessageDTO } from "../../api/src/app/message/dto/createMessage.dto";
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { CreateChatDTO } from "../../api/src/app/chat/dto/createChat.dto"
 import { createMessage, createMessageGroupChat } from "../services/message";
+import { createChat } from "../services/chat";
 import { deleteChatAndMessagesByChatId } from "../services/chat";
 
 export const useCreateMessage = (
@@ -34,6 +37,20 @@ export const useCreateMessageGroupChat = (
     ...mutationOptions,
   });
 };
+
+export const useCreateGroupChat = (
+  mutationOptions: MutationOptions<
+    any,
+    AxiosError<{ message: string }>,
+    { chatData: CreateChatDTO; }
+  >,
+) => {
+  return useMutation({
+    mutationFn: ({ chatData }) =>
+    createChat(chatData),
+    ...mutationOptions
+  })
+}
 
 export const useDeleteChat = (
   mutationOptions: MutationOptions<

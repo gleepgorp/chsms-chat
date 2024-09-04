@@ -18,3 +18,8 @@ export type ChatType = {
   deletedBy: string[];
   timestamp?: string;
 }
+
+export type UserGroupType = {
+  user: string;
+  id: string;
+}

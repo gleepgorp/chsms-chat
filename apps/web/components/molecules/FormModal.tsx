@@ -8,6 +8,12 @@ import { useSearchUser } from "../../hooks";
 import useDebounce from "../../hooks/useDebounce";
 import CreateGroupUserGrid from "./CreateGroupUserGrid";
 import UserPill from "../atoms/UserPill";
+import { useCreateGroupChat } from "../../hooks/useMutation";
+import { useQueryClient } from "@tanstack/react-query";
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { ChatDTO } from "apps/api/src/app/chat/dto/chat.dto";
+import { useAuth } from "../../context";
+import { ChatEnum } from "types/Chat.type";
 
 type FormModalProps = {
   isOpen?: boolean;
@@ -16,12 +22,27 @@ type FormModalProps = {
 export default function FormModal(props: FormModalProps): JSX.Element {
   const { isOpen } = props;
   const debouncedDelay = 300; 
-  const { setIsOpen, setGroupMembers, setGroupMembersIds, groupMembersIds } = useModalContext();
-  const [searchItem, setSearchItem] = useState<string>("");
-  const searchItemDebounced = useDebounce(searchItem, debouncedDelay);
-  const { data } = useSearchUser(searchItemDebounced);
+  const { user } = useAuth();
+  const loggedUser = user?.uid;
+  const queryClient = useQueryClient();
+  const { setIsOpen, setGroupMembers, groupMembers } = useModalContext();
 
-  function handleSearchItem() { 
+  const groupMembersIds = groupMembers.map(user => user.id);
+  const participants = [ loggedUser as string, ...groupMembersIds ]
+
+  const [searchItem, setSearchItem] = useState<string>("");
+  const [insufficient, setInsufficient] = useState<string>("");
+
+  const searchItemDebounced = useDebounce(searchItem, debouncedDelay);
+
+  const { data } = useSearchUser(searchItemDebounced);
+  const { mutate: createChat } = useCreateGroupChat({
+    onSuccess: createChat => {
+      queryClient.setQueryData(['CREATE_GROUPCHAT', createChat.id],createChat)
+    },
+  });
+
+  function handleSearchItem() {                               
     setSearchItem('');
   }
 
@@ -29,11 +50,23 @@ export default function FormModal(props: FormModalProps): JSX.Element {
     setIsOpen(!isOpen);
     setSearchItem('');
     setGroupMembers([]);
-    setGroupMembersIds([]);
+    setInsufficient("");
   }
-
-  function handleCreateGroupChat() {
-    console.log(groupMembersIds);
+  const initialValues = {
+    lastMessageId: "",
+    chatName: "",
+    creatorId: loggedUser,
+    type: ChatEnum.GROUP,
+    participants: participants,
+    deletedBy: []
+  }
+  function handleCreateGroupChat(data: ChatDTO) {
+    if (groupMembers.length < 2) {
+      setInsufficient("Oops, you need more people to create a group.");
+    } else {
+      createChat({ chatData: data })
+      setInsufficient("");
+    }
   }
 
   return (
@@ -62,6 +95,7 @@ export default function FormModal(props: FormModalProps): JSX.Element {
               <CreateGroupUserGrid>
                 <UserPill />
               </CreateGroupUserGrid>
+              { groupMembers.length < 2 ? <span className="text-sm text-red-400">{insufficient}</span> : null }
               <div className='overflow-y-auto overflow-x-hidden max-h-96 bg-stone-500/20 rounded-lg'>
                 {searchItem && 
                   <ChatSearchContainer 
@@ -76,7 +110,7 @@ export default function FormModal(props: FormModalProps): JSX.Element {
               <Button width="full" variant="gray" onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button width="full" onClick={handleCreateGroupChat}>
+              <Button width="full" onClick={() => handleCreateGroupChat(initialValues)}>
                 Confirm
               </Button>
             </div>

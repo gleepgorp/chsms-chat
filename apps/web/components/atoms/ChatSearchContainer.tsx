@@ -1,7 +1,9 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { ProfileType } from 'types/Profile.type'
 import SearchProfileLayout from '../molecules/SearchProfileLayout';
 import { useModalContext } from '../../context/ModalContext';
+import { useAuth } from '../../context';
+import { UserGroupType } from 'types/Chat.type';
 
 type ChatSearchContainerProps = {
   data: ProfileType[];
@@ -11,31 +13,32 @@ type ChatSearchContainerProps = {
 }
 
 export default function ChatSearchContainer(props: ChatSearchContainerProps) {
+  const { user, profile } = useAuth();
+  const userId = user && user.uid;
+  const loggedUserFullname = `${profile?.firstname} ${profile?.lastname}`
+  const loggedUser: UserGroupType = { user: loggedUserFullname, id: userId as string};
   const { data, handleSearchItem, forModal } = props;
-  const { setGroupMembers, setGroupMembersIds } = useModalContext();
+  const { setGroupMembers, groupMembers } = useModalContext();
 
-  // collects data to set group members 
+  useEffect(() => {
+    console.log(groupMembers);
+  }, [groupMembers])
+
+  // collects data to set group members ui
   const handleProfileSelect = (user: string, id: string) => {
     setGroupMembers(prev => {
-      // condition to exclude existing data
-      if (prev.includes(user)) {
-        return prev;
-      } else {
-        const newMembers = [...prev, user];
-        return newMembers;
+      const member = { user, id };
+      
+      if (!prev.some(m => m.id === id)) {
+        return [...prev, member];
       }
+      return prev;
     });
-    setGroupMembersIds(prev => {
-      if (prev.includes(id)) {
-        return prev;
-      } else {
-        const newIds = [...prev, id];
-        return newIds;
-      }
-    })
   };
 
-  const mappedData = data.map((doc, index) => {
+  // exclude logged user since its already the creator
+  const excludeLoggedUser = data.filter(doc => doc.accountId !== loggedUser.id);
+  const mappedData = excludeLoggedUser.map((doc, index) => {
     return (
       <div key={doc.accountId || index}>
         <SearchProfileLayout 
