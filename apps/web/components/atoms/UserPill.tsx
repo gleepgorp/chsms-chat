@@ -10,7 +10,7 @@ import { UserGroupType } from "types/Chat.type";
 // }
 
 export default function UserPill(): JSX.Element {
-  const { groupMembers, groupMembersIds, setGroupMembers, setGroupMembersIds } = useModalContext();
+  const { groupMembers, setGroupMembers } = useModalContext();
   const { user, profile } = useAuth();
   const userId = user && user.uid;
   const loggedUserFullname = `${profile?.firstname} ${profile?.lastname}`

@@ -66,6 +66,9 @@ export default function FormModal(props: FormModalProps): JSX.Element {
     } else {
       createChat({ chatData: data })
       setInsufficient("");
+      setIsOpen(!isOpen);
+      setSearchItem('');
+      setGroupMembers([]);
     }
   }
 
@@ -79,7 +82,7 @@ export default function FormModal(props: FormModalProps): JSX.Element {
               <span className="font-semibold text-center text-xl flex-1">Create group chat</span>
             </div>
             <span className="text-center px-6 text-[15px] text-stone-300">Search people up and create your group chat!</span>
-            <div className='bg-stone-700/20 h-full rounded-lg p-3 flex flex-col gap-2 max-w-[520px]'>
+            <div className='bg-stone-700/20 h-full rounded-lg p-3 flex flex-col gap-2 w-[520px]'>
               <div className='flex flex-col gap-3'>
                 <TextInput 
                   type='text'

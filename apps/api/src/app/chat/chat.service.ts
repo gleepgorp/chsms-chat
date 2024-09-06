@@ -33,6 +33,15 @@ export class ChatService {
 
     let lastMessageId = '';
 
+    const participants = await this.userService.findByIds(chatData.participants);
+      const participantDetails = participants.map((participant) => ({
+        id: participant.accountId,
+        firstname: participant.firstname,
+        lastname: participant.lastname,
+        profileBgColor: participant.profileBgColor,
+        profilePicture: participant.profilePicture,
+      }))
+
     if (initialMessage) {
       const messageDocRef = this.messageCollection.doc();
       writeBatch.set(messageDocRef, {
@@ -47,6 +56,7 @@ export class ChatService {
     writeBatch.set(docRef, {
       updatedAt: new Date(),
       lastMessageId,
+      participantsDetails: participantDetails,
       ...chatData,
     });
     await writeBatch.commit();

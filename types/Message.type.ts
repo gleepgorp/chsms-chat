@@ -4,10 +4,11 @@ export type MessageType = {
   id: string;
   chatId?: string;
   senderId: string;
+  sender?: ProfileType;
   content: string;
   readBy: string;
   timestamp: string;
-  recipientId: ProfileType;
+  recipientId: string;
   read: string;
   reply: string;
   messageId?: string;

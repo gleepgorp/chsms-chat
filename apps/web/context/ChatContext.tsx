@@ -5,6 +5,7 @@ import { useAuth } from './AuthContext';
 import { useRouter } from 'next/router';
 import { extractInitials } from '../utils';
 import { ChatEnum } from 'types/Chat.type';
+import { ProfileType } from 'types/Profile.type';
 
 type ChatProviderType = {
   children: ReactNode;
@@ -17,11 +18,12 @@ type ChatContextType = {
   lastnameInitial: string;
   lastname: string;
   firstname: string;
-  recipientIds: string[];
+  recipientIds: ProfileType[];
   fetchingOldMssgs: boolean;
   isGroup: boolean;
-  groupParticipants: string[];
+  groupParticipants: ProfileType[];
   setFetchingOldMssgs: Dispatch<SetStateAction<boolean>>;
+  setIsGroup: Dispatch<SetStateAction<boolean>>;
   inputRef: React.RefObject<HTMLInputElement>;
 }
 
@@ -48,9 +50,9 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
   const [firstnameInitial, setFirstnameInitial] = useState<string>("");
   const [firstname, setFirstname] = useState<string>("");
   const [lastnameInitial, setLastnameInitial] = useState<string>("");
-  const [groupParticipants, setGroupParticipants] = useState<string[]>([]);
+  const [groupParticipants, setGroupParticipants] = useState<ProfileType[]>([]);
   const [lastname, setLastname] = useState<string>("");
-  const [recipientIds, setRecipientIds] = useState<string[]>([]);
+  const [recipientIds, setRecipientIds] = useState<ProfileType[]>([]);
   const [fetchingOldMssgs, setFetchingOldMssgs] = useState<boolean>(false);
   const [isGroup, setIsGroup] = useState<boolean>(false);
   const inputRef = useRef(null);
@@ -64,25 +66,15 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
         const isGroupChat = chatData?.type === ChatEnum.GROUP;
         setIsGroup(isGroupChat);
         const recipients = chatData?.participants?.filter(p => p !== loggedInUser);
-        const groupUserData = await getUsersByIds(chatData?.participants);
         
-        const userArr = [];
-        // if data is an object with array check array.isArray
-        if (groupUserData && Array.isArray(groupUserData.data)) {
-          groupUserData.data.forEach((user) => {
-            userArr.push(user.firstname);
-          });
-        }
-        setGroupParticipants(userArr);
-        setRecipientIds(recipients);
-  
-        if (groupUserData && recipients) {
-          groupUserData.data.forEach((user) => {
-            const profileBg = user.profileBgColor;
-            const profileUrl = user.profilePicture;
+        if (chatData?.participantsDetails && recipients) {
+          const recipient = chatData.participantsDetails.find(user => user.id !== loggedInUser)
+          if (recipient) {
+            const profileBg = recipient.profileBgColor;
+            const profileUrl = recipient.profilePicture;
             const profile = !profileUrl ? profileBg : '';
-            const firstname = user.firstname;
-            const lastname = user.lastname;
+            const firstname = recipient.firstname;
+            const lastname = recipient.lastname;
             const firstnameInital = extractInitials(firstname);
             const lastnameInital = extractInitials(lastname);
             
@@ -91,13 +83,13 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
             setFirstname(firstname || '');
             setLastnameInitial(lastnameInital || '');
             setLastname(lastname || '');
-          })
-  
+            setGroupParticipants(chatData.participantsDetails || []);
+            setRecipientIds(recipients);
+          }
         } else {
           return null;
         }
       }
-      
     }
 
     fetchChat();
@@ -116,6 +108,7 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
         fetchingOldMssgs,
         isGroup,
         setFetchingOldMssgs,
+        setIsGroup,
         groupParticipants,
       }}
     >

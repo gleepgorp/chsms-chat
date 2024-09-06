@@ -23,7 +23,7 @@ type ChatMessageFooterProps = {
 export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.Element {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const { recipientIds, setFetchingOldMssgs, isGroup } = useChatContext();
+  const { recipientIds, setFetchingOldMssgs, isGroup, setIsGroup } = useChatContext();
   const { 
     messageId: replyId,
     replyChatId, 
@@ -82,7 +82,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
     content: '',
     read: false,
     senderId: user?.uid,
-    recipientId: (newChatRoute ? NewChatRecipient : recipientIds),
+    recipientId: newChatRoute ? [NewChatRecipient] : recipientIds,
   }
 
   return (

@@ -17,6 +17,11 @@ type ChatBubbleProps = {
   placement: TipPlacement;
   messageId?: string;
   reply?: string;
+  sender: string;
+  fNameInitial: string;
+  lNameInitial: string;
+  profile: string
+  isGroup: boolean;
   innerRef?: React.Ref<HTMLDivElement>;
 }
 
@@ -28,10 +33,10 @@ const placementClass: Record<TipPlacement, string> = {
 }
 
 export default function ChatBubble(props: ChatBubbleProps) {
-  const { message, senderId, timestamp, isProfileVisible, placement, messageId, reply, innerRef } = props;
+  const { message, senderId, timestamp, isProfileVisible, placement, messageId, reply, innerRef, sender, profile: profileDisplay, fNameInitial, lNameInitial, isGroup } = props;
   const { user } = useAuth();
   const isSender = senderId === user?.uid;
-  const { firstnameInitial, lastnameInitial, profile, firstname, lastname } = useChatContext();
+  const { firstname, lastname } = useChatContext();
   const { setRecipient, setMessageReplied, setRecipientId, setMessageId } = useReplyContext();
 
   function handleReply() {
@@ -53,15 +58,15 @@ export default function ChatBubble(props: ChatBubbleProps) {
               `}
             >
               <ChatProfilePicture
-                firstnameInitial={firstnameInitial}
-                lastnameInitial={lastnameInitial}
-                profile={profile}
+                firstnameInitial={fNameInitial}
+                lastnameInitial={lNameInitial}
+                profile={profileDisplay}
                 variant='xs'
               />
             </div>
           } 
           <div className={`flex flex-col ${isSender ? 'items-end' : 'items-start'}`}>
-            {!isSender && <span className='text-stone-300/70 text-xs py-1'>Vince Tapdasan</span> }
+            {!isSender && isGroup &&  <span className='text-stone-300/70 text-xs py-1 capitalize'>{sender}</span> }
             {reply && 
               <ReplyElement 
                 reply={reply}

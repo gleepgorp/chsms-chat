@@ -44,7 +44,7 @@ export default function ChatSearchContainer(props: ChatSearchContainerProps) {
         <SearchProfileLayout 
           forModal={forModal}
           handleSearchItem={handleSearchItem}
-          accountId={doc.accountId}
+          accountId={doc.accountId || ''}
           profileUrl={doc.profilePicture}
           firstname={doc.firstname}
           lastname={doc.lastname}

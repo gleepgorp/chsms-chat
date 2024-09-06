@@ -1,5 +1,6 @@
 import { IsString, IsOptional, IsArray, ArrayMinSize, IsUUID } from "class-validator";
 import { ChatEnum } from 'types/Chat.type';
+import { ProfileType } from "types/Profile.type";
 
 export class ChatDTO {
   @IsString()
@@ -32,4 +33,8 @@ export class ChatDTO {
 
   @IsArray()
   deletedBy?: string[];
+
+  @IsArray()
+  @IsOptional()
+  participantsDetails: ProfileType[];
 }

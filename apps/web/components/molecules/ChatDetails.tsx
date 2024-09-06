@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import MeatballMenu from '../atoms/MeatballMenu'
 import { ChatEnum, ChatType } from 'types/Chat.type';
 import { useAuth } from '../../context/index';
@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import ChatProfilePicture from '../atoms/ChatProfilePicture';
 import { useChatContext } from '../../context/ChatContext';
+import GroupUserProfilePics from '../atoms/GroupUserProfilesPics';
 
 type ChatDetailsProps = {
   fetchedChats: ChatType[];
@@ -36,30 +37,6 @@ export default function ChatDetails(props: ChatDetailsProps) {
     const lastUser = data.participants.length - 1 === index;
     return (
       <span key={index}>{`${user.firstname}${lastUser ? '' : ','} ${' '}`}</span>
-    )
-  });
-  
-  const userProfilePics = data.participants.map((user, index) => {
-    const one = index === 1;
-    const zero = index === 0;
-
-    return (
-      <div 
-        key={index} 
-        className={`
-            ${one && 'absolute -top-0.5 left-3'}
-            ${zero && 'absolute top-2.5'}
-          `}
-        >
-        <ChatProfilePicture 
-          group={group}
-          noChatName={noChatName}
-          profile={user.profilePicture === "" ? user.profileBgColor : user.profilePicture}
-          firstnameInitial={extractInitials(user.firstname)}
-          lastnameInitial={extractInitials(user.lastname)}
-          variant='sm'
-        />
-      </div>
     )
   });
 
@@ -97,7 +74,12 @@ export default function ChatDetails(props: ChatDetailsProps) {
               hover:bg-stone-500/20 rounded-xl py-3 px-3 cursor-pointer text-stone-100 flex flex-row items-center justify-between group`
             }
             >
-            <div className={`flex flex-row items-center gap-2.5 relative ${group && 'w-12 h-12' }`}>
+            <div className={`
+              flex flex-row 
+              items-center relative 
+              ${group && 'w-12 h-12' }
+              ${!group && 'gap-2.5'}
+              `}>
               {!group ? 
                 <ChatProfilePicture 
                   profile={profile}
@@ -105,13 +87,14 @@ export default function ChatDetails(props: ChatDetailsProps) {
                   lastnameInitial={lastnameInitial}
                   variant='md'
                 />  
-                : (
-                  <div className='flex pr-12'>
-                    {userProfilePics.slice(0, 2)}
-                  </div>
-                )
+                : <GroupUserProfilePics 
+                    size='sm'
+                    group={group} 
+                    noChatName={noChatName}
+                    participants={data.participants}
+                  />
               }
-              <div className='flex flex-col'>
+              <div className={`flex flex-col ${group && 'pl-[58px]'}`}>
                 <div className='font-medium text-sm capitalize'>
                   <span className='flex flex-row gap-1 max-w-36 xl:max-w-96'>
                     {group && noChatName ? (

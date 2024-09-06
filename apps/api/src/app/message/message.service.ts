@@ -8,6 +8,7 @@ import { ChatService } from '../chat/chat.service';
 import { ChatEnum } from 'types/Chat.type';
 import { ChatDocument } from '../../documents/chat.document';
 import { ChatGateway } from '../chat/chat.gateway';
+import { UserService } from '../user/user.service';
 
 @Injectable() 
   export class MessageService {
@@ -18,6 +19,8 @@ import { ChatGateway } from '../chat/chat.gateway';
       private chatCollection: CollectionReference<MessageType>,
       @Inject(forwardRef(() => ChatService))
       private chatService: ChatService,
+      @Inject(forwardRef(() => UserService))
+      private userService: UserService,
       @Inject(forwardRef(() => ChatGateway))
       private chatGateway: ChatGateway,
       @Inject(FirestoreDatabaseProvider)  
@@ -40,8 +43,20 @@ import { ChatGateway } from '../chat/chat.gateway';
       if (existingChat) { 
         chatId = existingChat.id;
       } else {
+        const recipientId = messageData.recipientId.map(id => id);
+        const userIds = [...recipientId, messageData.senderId]
+        const participants = await this.userService.findByIds(userIds);
+        const participantDetails = participants.map((participant) => ({
+          id: participant.accountId,
+          firstname: participant.firstname,
+          lastname: participant.lastname,
+          profileBgColor: participant.profileBgColor,
+          profilePicture: participant.profilePicture,
+        }))
+
         const newChat = await this.chatService.createChat({
           participants: [messageData.senderId, ...recipients],
+          participantsDetails: participantDetails,
           lastMessageId: '',
           chatName: "",
           creatorId: messageData.senderId,
@@ -51,6 +66,13 @@ import { ChatGateway } from '../chat/chat.gateway';
         chatId = newChat.id;
       }
       
+      const sender = await this.userService.findById(messageData.senderId);
+      const senderFormatted = {
+        firstname: sender.firstname,
+        lastname: sender.lastname,
+        profileBgColor: sender.profileBgColor || "",
+        profilePicture: sender.profilePicture || ""
+      }
 
       const writeBatch = this.db.batch(); 
       const docRef = this.messageCollection.doc();
@@ -58,6 +80,7 @@ import { ChatGateway } from '../chat/chat.gateway';
         messageId: docRef.id,
         timestamp: new Date(),
         chatId: chatId,
+        sender: senderFormatted,
         ...messageData,
       };
 
@@ -90,10 +113,20 @@ import { ChatGateway } from '../chat/chat.gateway';
     async createMessageGroupChat(messageData: MessageDTO, chatId: string, replyId?: string): Promise<MessageType> {
       const writeBatch = this.db.batch();
       const docRef = this.messageCollection.doc();
+
+      const sender = await this.userService.findById(messageData.senderId);
+      const senderFormatted = {
+        firstname: sender.firstname,
+        lastname: sender.lastname,
+        profileBgColor: sender.profileBgColor || "",
+        profilePicture: sender.profilePicture || ""
+      }
+
       const batchData = {
         messageId: docRef.id,
         timestamp: new Date(),
         chatId: chatId,
+        sender: senderFormatted,
         ...messageData,
       };
 
@@ -166,6 +199,12 @@ import { ChatGateway } from '../chat/chat.gateway';
           timestamp: message.timestamp,
           recipientId: message.recipientId,
           senderId: message.senderId,
+          sender: {
+            firstname: message.sender.firstname,
+            lastname: message.sender.lastname,
+            profileBgColor: message.sender.profileBgColor || "",
+            profilePicture: message.sender.profilePicture || ""
+          },
           reply: message.reply,
         }));
     

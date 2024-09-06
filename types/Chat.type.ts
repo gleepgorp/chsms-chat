@@ -9,6 +9,7 @@ export enum ChatEnum {
 export type ChatType = {
   id: string;
   participants: ProfileType[];
+  participantsDetails?: ProfileType[];
   lastMessageId: string;
   chatName: string;
   creatorId: string;

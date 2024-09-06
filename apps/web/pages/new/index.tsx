@@ -1,10 +1,16 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useAuth } from '../../context';
 import { useGetChatsByUserId } from '../../hooks';
 import ChatLayout from '../../layout/ChatLayout'
+import { useChatContext } from '../../context/ChatContext';
+import { useRouter } from 'next/router';
 
 export default function NewChatPage() {
   const { user } = useAuth();
+  const router = useRouter();
+  const newChatRoute = router.pathname.includes('/new');
+  const { setIsGroup } = useChatContext();
+
   const { 
     data: fetchedChats, 
     isLoading,
@@ -17,6 +23,12 @@ export default function NewChatPage() {
     }
   }, [fetchedChats]);
 
+  useEffect(() => {
+    if (newChatRoute) {
+      setIsGroup(false);
+    }
+  }, [newChatRoute, setIsGroup])
+
   return (
     <div className='h-screen'>
       <ChatLayout 
@@ -24,5 +36,5 @@ export default function NewChatPage() {
         isLoading={isLoading}
       />
     </div>
-  )
+  ) 
 }
