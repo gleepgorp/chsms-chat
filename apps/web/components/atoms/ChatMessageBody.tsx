@@ -36,7 +36,7 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
     const isGroup = data.recipientId.length > 1;
 
     if (data.sender) {
-      const sender = `${data.sender.firstname} ${data.sender.lastname}`;
+      const sender = data.sender.firstname;
       const fNameInitial = extractInitials(data.sender.firstname);
       const lNameInitial = extractInitials(data.sender.lastname);
       const profileDisplay = data.sender.profilePicture ? data.sender.profilePicture : data.sender.profileBgColor;
@@ -60,9 +60,9 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
           }
           <ChatBubble 
             isGroup={isGroup}
-            reply={data?.reply}
+            reply={data.reply}
             message={data.content}
-            sender={sender}
+            sender={sender || ''}
             profile={profile || ''}
             senderId={data.senderId}
             messageId={data.messageId}

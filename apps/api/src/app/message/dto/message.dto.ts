@@ -1,4 +1,5 @@
 import { IsArray, IsBoolean, IsOptional, IsString } from "class-validator";
+import { MessageType } from "types/Message.type";
 
 export class MessageDTO {
   @IsString()      
@@ -23,7 +24,7 @@ export class MessageDTO {
 
   @IsString()
   @IsOptional()
-  reply?: string;
+  reply?: MessageType;
 
   @IsOptional()
   messageId?: string;

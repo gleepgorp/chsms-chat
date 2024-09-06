@@ -86,7 +86,12 @@ import { UserService } from '../user/user.service';
 
       if (replyId) {
         const replyDoc = await this.messageCollection.doc(replyId).get();
-        const reply = replyDoc.data().content;
+        const replyDocRef = replyDoc.data();
+        const reply = {
+          id: replyDocRef.senderId,
+          content: replyDocRef.content,
+          sender: replyDocRef.sender
+        };
         batchData.reply = reply;
       }
 
@@ -132,7 +137,12 @@ import { UserService } from '../user/user.service';
 
       if (replyId) {
         const replyDoc = await this.messageCollection.doc(replyId).get();
-        const reply = replyDoc.data().content;
+        const replyDocRef = replyDoc.data();
+        const reply = {
+          id: replyDocRef.senderId,
+          content: replyDocRef.content,
+          sender: replyDocRef.sender
+        };
         batchData.reply = reply;
       }
 

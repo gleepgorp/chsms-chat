@@ -8,6 +8,7 @@ import ReplyToChat from './ReplyToChat';
 import { TipPlacement } from './TooltipContent';
 import { useReplyContext } from '../../context/ReplyContext';
 import ReplyElement from './ReplyElement';
+import { MessageType } from 'types/Message.type';
 
 type ChatBubbleProps = {
   message?: string;
@@ -16,7 +17,7 @@ type ChatBubbleProps = {
   isProfileVisible?: boolean;
   placement: TipPlacement;
   messageId?: string;
-  reply?: string;
+  reply?: MessageType;
   sender: string;
   fNameInitial: string;
   lNameInitial: string;
@@ -46,6 +47,9 @@ export default function ChatBubble(props: ChatBubbleProps) {
     setRecipientId(senderId || '');
     setMessageId(messageId || '');
   }
+
+  const forYou = reply?.id === user?.uid;
+  const repliedTo = forYou ? "You" : reply?.sender?.firstname
   
   return (
     <>
@@ -66,10 +70,18 @@ export default function ChatBubble(props: ChatBubbleProps) {
             </div>
           } 
           <div className={`flex flex-col ${isSender ? 'items-end' : 'items-start'}`}>
-            {!isSender && isGroup &&  <span className='text-stone-300/70 text-xs py-1 capitalize'>{sender}</span> }
+            {!isSender &&
+              <span className='text-stone-300/70 text-xs py-1'>
+                {(reply || isGroup) && 
+                  <span className='capitalize'>
+                    {sender}
+                  </span>}
+                {reply && ` replied to `}
+                <span className='capitalize'>{repliedTo}</span>
+              </span> }
             {reply && 
               <ReplyElement 
-                reply={reply}
+                reply={reply.content}
                 isSender={isSender}
               />
             }
