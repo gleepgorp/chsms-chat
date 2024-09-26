@@ -17,14 +17,17 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-	background-color: #57534e;
-
+	background-color: #817f7c;
 }
 
 .inner-headings span{
   position: relative;
   line-height: 100px;
   animation: slide 10s ease infinite;
+}
+
+.preview::-webkit-scrollbar {
+  height: 10px;
 }
 
 @keyframes slide {

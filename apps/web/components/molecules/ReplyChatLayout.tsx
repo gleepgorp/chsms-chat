@@ -14,7 +14,9 @@ export default function ReplyChatLayout(): JSX.Element {
     setRecipient,
     setMessageReplied,
     setRecipientId,
-    setMessageId
+    setMessageId,
+    setIsSent,
+    isSent
   } = useReplyContext();
 
   function handleCloseReply() {
@@ -22,11 +24,12 @@ export default function ReplyChatLayout(): JSX.Element {
     setMessageReplied('');
     setRecipientId('');
     setMessageId('');
+    setIsSent(false);
   }
 
   return (
     <>
-    {recipient &&
+    {recipient && !isSent &&
       <div className="text-stone-100 sticky bottom-0 w-full border-t border-stone-600/60 mt-2">
         <div className="flex flex-row gap-2 items-center justify-between px-3 py-2">
           <div className="flex flex-col">

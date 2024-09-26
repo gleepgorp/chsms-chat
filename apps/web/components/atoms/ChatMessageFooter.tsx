@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, Fragment, useEffect, useState } from 'react'
 import { IoSend } from "react-icons/io5";
 import Button from './Button';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
@@ -15,6 +15,10 @@ import { messageSchema } from '../../schema/message-schema';
 import { useGetChatsByUserId } from '../../hooks';
 import ReplyChatLayout from '../molecules/ReplyChatLayout';
 import { useReplyContext } from '../../context/ReplyContext';
+import { IoClose } from "react-icons/io5";
+import Image from 'next/image';
+import UploadFile from './UploadFile';
+import FilePreview from './FilePreview';
 
 type ChatMessageFooterProps = {
   chatId: string;
@@ -23,6 +27,10 @@ type ChatMessageFooterProps = {
 export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.Element {
   const queryClient = useQueryClient();
   const { user } = useAuth();
+
+  const [fileList, setFileList] = useState<string[]>([]);
+  const notEmptyFileList = fileList.length !== 0;
+  
   const { recipientIds, setFetchingOldMssgs, isGroup, setIsGroup } = useChatContext();
   const { 
     messageId: replyId,
@@ -31,6 +39,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
     setMessageReplied, 
     setRecipientId,
     setMessageId,
+    setIsSent
   } = useReplyContext();
 
   const router = useRouter();
@@ -61,6 +70,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
     resetForm();
     setFetchingOldMssgs(false);
     setRecipientId('');
+    setIsSent(true);
 
     if (newChatRoute && fetchedChats) {
       setTimeout(() => {
@@ -68,6 +78,30 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
       }, 1000)  
     }
   }
+
+  const handleRemoveFile = (index: number) => {
+    const updatedList = fileList.filter((_, i) => i !== index);
+    setFileList(updatedList)
+  } 
+
+  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const newFileURLs = Array.from(files).map(file => URL.createObjectURL(file));
+      setFileList(prevList => [...prevList, ...newFileURLs]);
+    }
+  }
+
+  const images = fileList.map((file, index) => {
+    return (
+      <div key={index} className='flex-shrink-0 relative'>
+        <img src={file} alt="" className='object-cover rounded-lg h-[50px] w-[50px]'/>
+        <button onClick={() => handleRemoveFile(index)} className='bg-stone-800 absolute -top-2 -right-2 p-1 rounded-full cursor-pointer hover:bg-stone-900'>
+          <IoClose className='text-stone-100'/>
+        </button>
+      </div>
+    )
+  });
 
   useEffect(() => {
     if (!replyChatId) {
@@ -86,7 +120,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
   }
 
   return (
-    <div className='mt-2'>
+    <div className='mt-2 w-full'>
       <ReplyChatLayout />
       <Formik
         enableReinitialize
@@ -95,8 +129,10 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
         onSubmit={onSubmit}
       >
         {() => (
-          <Form className='flex flex-row gap-4 p-2'>
-            <div className='flex-1'>
+          <Form className={`flex flex-row gap-4 p-2 "items-center" ${notEmptyFileList && "items-end"} `}>
+            <UploadFile handleFile={handleFile}/>
+            <div className={`rounded-full ${notEmptyFileList && "rounded-xl bg-stone-700"} w-full`}>
+              <FilePreview notEmptyFileList={notEmptyFileList} images={images}/>
               <Field 
                 label="message"
                 id='content'
@@ -110,7 +146,9 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
               />
             </div>
             <Button type='submit' variant='svg' size='svg'>
-              <IoSend className='text-xl'/>
+              <div className='p-2 rounded-full hover:bg-stone-600'>
+                <IoSend className='text-xl'/>
+              </div>
             </Button>
           </Form>
         )}

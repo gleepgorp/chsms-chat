@@ -9,6 +9,7 @@ import { TipPlacement } from './TooltipContent';
 import { useReplyContext } from '../../context/ReplyContext';
 import ReplyElement from './ReplyElement';
 import { MessageType } from 'types/Message.type';
+import { BsFillReplyFill } from "react-icons/bs";
 
 type ChatBubbleProps = {
   message?: string;
@@ -38,7 +39,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
   const { user } = useAuth();
   const isSender = senderId === user?.uid;
   const { firstname, lastname } = useChatContext();
-  const { setRecipient, setMessageReplied, setRecipientId, setMessageId } = useReplyContext();
+  const { setRecipient, setMessageReplied, setRecipientId, setMessageId, setIsSent } = useReplyContext();
 
   function handleReply() {
     const chatRecipient = `${firstname} ${lastname}`;
@@ -46,10 +47,11 @@ export default function ChatBubble(props: ChatBubbleProps) {
     setMessageReplied(message || '');
     setRecipientId(senderId || '');
     setMessageId(messageId || '');
+    setIsSent(false);
   }
 
   const forYou = reply?.id === user?.uid;
-  const repliedTo = forYou ? "You" : reply?.sender?.firstname
+  const repliedTo = forYou ? "you" : reply?.sender?.firstname
   
   return (
     <>
@@ -70,15 +72,25 @@ export default function ChatBubble(props: ChatBubbleProps) {
             </div>
           } 
           <div className={`flex flex-col ${isSender ? 'items-end' : 'items-start'}`}>
-            {!isSender &&
-              <span className='text-stone-300/70 text-xs py-1'>
+            {!isSender ?
+              <div className='text-stone-300/70 text-xs py-1'>
                 {(reply || isGroup) && 
-                  <span className='capitalize'>
-                    {sender}
-                  </span>}
-                {reply && ` replied to `}
-                <span className='capitalize'>{repliedTo}</span>
-              </span> }
+                  <div className='flex flex-row gap-1 items-center'>
+                    <BsFillReplyFill />
+                    <span className='capitalize'>{sender}</span>
+                    {reply && ` replied to `}
+                    <span>{repliedTo}</span>
+                  </div>
+                }
+              </div> : 
+              (reply && 
+                  <div className='flex flex-row gap-1 items-center text-stone-300/70 text-xs py-1 pr-1'>
+                    <BsFillReplyFill />
+                    <span>You replied to</span>
+                    <span className={`${forYou ? '' : 'capitalize'}`}>{forYou ? 'yourself' : repliedTo}</span>
+                  </div>
+                )
+              }
             {reply && 
               <ReplyElement 
                 reply={reply.content}

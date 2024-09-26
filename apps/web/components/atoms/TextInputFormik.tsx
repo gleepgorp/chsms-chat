@@ -8,7 +8,7 @@ type InputVariant = 'auth' | 'standard';
 
 const variantClass: Record<InputVariant, string> = {
   auth: 'bg-stone-100 rounded-lg text-stone-800',
-  standard: 'bg-stone-600/40 rounded-full text-stone-100'
+  standard: 'bg-stone-700 rounded-full text-stone-100'
 }
 
 export type TextInputFormikProps = HTMLProps<HTMLInputElement> & FieldProps & {
@@ -49,8 +49,8 @@ export default function TextInputFormik({ field, form, ...props }: TextInputForm
             ${props.variant === InputVariants.STANDARD  ? '' : ''} 
             ${props.disabled ? 'opacity-50 pointer-events-none' : ''}
             ${variantClass[props.variant]}
-            ${props.showLabel ? 'pb-2 pt-[18px] px-3 placeholder-transparent' : 'p-3'}
-            peer outline-none text-sm w-full 
+            ${props.showLabel ? 'pb-2 pt-[18px] px-3 placeholder-transparent' : 'p-4'}
+            peer outline-none text-sm w-full h-10
           ` 
         }
       />

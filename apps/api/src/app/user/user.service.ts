@@ -79,4 +79,11 @@ export class UserService {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  async uploadProfile(imageData: string, userId: string): Promise<void> {
+    const userRef = this.userCollection.doc(userId);
+    await userRef.update({
+      profilePicture: imageData
+    });
+  }
 }

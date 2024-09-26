@@ -15,7 +15,7 @@ export default function ChatLayout(props: ChatLayoutProps): JSX.Element {
 
   return (
     <MainLayout>
-      <div className="h-screen flex flex-row gap-3">
+      <div className="h-screen flex gap-3">
         <ChatContainer 
             fetchedChats={fetchedChats || []}
             isChatLoading={isLoading}
