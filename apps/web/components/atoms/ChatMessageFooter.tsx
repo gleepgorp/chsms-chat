@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Fragment, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { IoSend } from "react-icons/io5";
 import Button from './Button';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
@@ -15,8 +15,6 @@ import { messageSchema } from '../../schema/message-schema';
 import { useGetChatsByUserId } from '../../hooks';
 import ReplyChatLayout from '../molecules/ReplyChatLayout';
 import { useReplyContext } from '../../context/ReplyContext';
-import { IoClose } from "react-icons/io5";
-import Image from 'next/image';
 import UploadFile from './UploadFile';
 import FilePreview from './FilePreview';
 
@@ -27,11 +25,14 @@ type ChatMessageFooterProps = {
 export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.Element {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-
-  const [fileList, setFileList] = useState<string[]>([]);
-  const notEmptyFileList = fileList.length !== 0;
+  const router = useRouter();
+  const id = router.query.id as string;
   
-  const { recipientIds, setFetchingOldMssgs, isGroup, setIsGroup } = useChatContext();
+  const { recipientIds, setFetchingOldMssgs, isGroup, fileList, setFileList } = useChatContext();
+  // find current chat files base on url id
+  const currentChatFiles = fileList.find(file => file.chatId === id)?.files || [];
+  const notEmptyFileList = currentChatFiles.map(item => item.length !== 0);
+
   const { 
     messageId: replyId,
     replyChatId, 
@@ -41,9 +42,6 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
     setMessageId,
     setIsSent
   } = useReplyContext();
-
-  const router = useRouter();
-  const { id } = router.query;
 
   const newChatRoute = router.pathname.includes('/new');
   
@@ -80,28 +78,40 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
   }
 
   const handleRemoveFile = (index: number) => {
-    const updatedList = fileList.filter((_, i) => i !== index);
-    setFileList(updatedList)
+    
+    // must maintain structure of state to ensure no undefined
+    setFileList(prevFiles => {
+      return prevFiles.map(item => {
+        if (item.chatId === id) {
+          return { ...item, files: item.files.filter((_, i) => i !== index) };
+        }
+        return item;
+      })
+    })
   } 
 
   const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
       const newFileURLs = Array.from(files).map(file => URL.createObjectURL(file));
-      setFileList(prevList => [...prevList, ...newFileURLs]);
+
+      // this function allows selected images as draft but only as a state
+      // if web is refreshed selected images will be empty, this is for user experience
+      setFileList(prevFiles => {
+        const existingFileObj = prevFiles.find(item => item.chatId === id);
+
+        if (existingFileObj ) {
+          return prevFiles.map(item => 
+            item.chatId === id 
+            ? { ...item, files: [...item.files, ...newFileURLs ] }
+            : item
+          );
+        } else {
+          return [...prevFiles, { chatId: id as string, files: newFileURLs }];
+        }
+      })
     }
   }
-
-  const images = fileList.map((file, index) => {
-    return (
-      <div key={index} className='flex-shrink-0 relative'>
-        <img src={file} alt="" className='object-cover rounded-lg h-[50px] w-[50px]'/>
-        <button onClick={() => handleRemoveFile(index)} className='bg-stone-800 absolute -top-2 -right-2 p-1 rounded-full cursor-pointer hover:bg-stone-900'>
-          <IoClose className='text-stone-100'/>
-        </button>
-      </div>
-    )
-  });
 
   useEffect(() => {
     if (!replyChatId) {
@@ -132,7 +142,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
           <Form className={`flex flex-row gap-4 p-2 "items-center" ${notEmptyFileList && "items-end"} `}>
             <UploadFile handleFile={handleFile}/>
             <div className={`rounded-full ${notEmptyFileList && "rounded-xl bg-stone-700"} w-full`}>
-              <FilePreview notEmptyFileList={notEmptyFileList} images={images}/>
+              <FilePreview handleRemoveFile={handleRemoveFile}/>
               <Field 
                 label="message"
                 id='content'

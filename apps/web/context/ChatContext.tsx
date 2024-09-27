@@ -11,6 +11,11 @@ type ChatProviderType = {
   children: ReactNode;
 }
 
+export type fileListObject = {
+  chatId: string;
+  files: string[];
+}
+
 type ChatContextType = {
   selectedChatId: string | null;
   profile: string;
@@ -22,6 +27,8 @@ type ChatContextType = {
   fetchingOldMssgs: boolean;
   isGroup: boolean;
   groupParticipants: ProfileType[];
+  fileList: fileListObject[];
+  setFileList: Dispatch<SetStateAction<fileListObject[]>>;
   setFetchingOldMssgs: Dispatch<SetStateAction<boolean>>;
   setIsGroup: Dispatch<SetStateAction<boolean>>;
   inputRef: React.RefObject<HTMLInputElement>;
@@ -55,6 +62,10 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
   const [recipientIds, setRecipientIds] = useState<ProfileType[]>([]);
   const [fetchingOldMssgs, setFetchingOldMssgs] = useState<boolean>(false);
   const [isGroup, setIsGroup] = useState<boolean>(false);
+  const [fileList, setFileList] = useState<fileListObject[]>([{
+    chatId: "",
+    files: [],
+  }]);
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -110,6 +121,8 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
         setFetchingOldMssgs,
         setIsGroup,
         groupParticipants,
+        fileList,
+        setFileList,
       }}
     >
       {children}

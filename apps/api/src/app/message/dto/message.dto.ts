@@ -32,4 +32,8 @@ export class MessageDTO {
   @IsArray()
   @IsOptional()
   deletedBy?: string[];
+
+  @IsArray()
+  @IsOptional()
+  files?: string[];
 }
