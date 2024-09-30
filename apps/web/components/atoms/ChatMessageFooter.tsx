@@ -17,6 +17,9 @@ import ReplyChatLayout from '../molecules/ReplyChatLayout';
 import { useReplyContext } from '../../context/ReplyContext';
 import UploadFile from './UploadFile';
 import FilePreview from './FilePreview';
+import { filterFileUpload, storage } from '../../utils';
+import { ref, uploadBytes, listAll } from 'firebase/storage';
+import { v4 } from 'uuid';
 
 type ChatMessageFooterProps = {
   chatId: string;
@@ -27,6 +30,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
   const { user } = useAuth();
   const router = useRouter();
   const id = router.query.id as string;
+  const loggedUser = user?.uid as string;
   
   const { recipientIds, setFetchingOldMssgs, isGroup, fileList, setFileList } = useChatContext();
   // find current chat files base on url id
@@ -57,6 +61,19 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
       queryClient.setQueryData(['GET_MSSG_FOR_GROUP', createMessageGC.id], createMessageGC)
     },
   });
+
+  // for chat apps uploading file one by one is better than a single blob
+  const existingFile = fileList.find(item => item.chatId === id);
+  function uploadImage() {
+    if (existingFile) {
+      existingFile.actualFiles.forEach((file: File) => {
+        const imageRef = ref(storage, `${id}/${loggedUser}/images/${file.name + v4()}`);
+        uploadBytes(imageRef, file).then(() => {
+          console.log(`Image ${file.name}} uploaded`);
+        })
+      })
+    }
+  }
   
   function onSubmit(data: MessageDTO, { resetForm }: FormikHelpers<MessageDTO>) {
     if (isGroup) {
@@ -64,11 +81,22 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
     } else {
       createMessage({ messageData: data, replyId });
     }
-
-    resetForm();
+    
     setFetchingOldMssgs(false);
     setRecipientId('');
     setIsSent(true);
+    if (existingFile && existingFile.actualFiles.length > 0) {
+      uploadImage();
+      setFileList(prevFiles => {
+        return prevFiles.map(item => {
+          if (item.chatId === id) {
+            return { ...item, files: [], actualFiles: []}
+          }
+          return item;
+        })
+      });
+    }
+    resetForm();
 
     if (newChatRoute && fetchedChats) {
       setTimeout(() => {
@@ -83,31 +111,41 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
     setFileList(prevFiles => {
       return prevFiles.map(item => {
         if (item.chatId === id) {
-          return { ...item, files: item.files.filter((_, i) => i !== index) };
+          return { ...item, 
+            files: filterFileUpload(item.files, index),
+            actualFiles: item.actualFiles.filter((_, i) => i !== index),
+          };
         }
         return item;
       })
     })
-  } 
+  }  
 
   const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
       const newFileURLs = Array.from(files).map(file => URL.createObjectURL(file));
+      const newFiles = Array.from(files).map(file => file);
 
       // this function allows selected images as draft but only as a state
-      // if web is refreshed selected images will be empty, this is for user experience
       setFileList(prevFiles => {
         const existingFileObj = prevFiles.find(item => item.chatId === id);
 
         if (existingFileObj ) {
           return prevFiles.map(item => 
             item.chatId === id 
-            ? { ...item, files: [...item.files, ...newFileURLs ] }
+            ? { ...item, 
+                files: [...item.files, ...newFileURLs ], 
+                actualFiles: [...item.actualFiles, ...newFiles],
+              }
             : item
           );
         } else {
-          return [...prevFiles, { chatId: id as string, files: newFileURLs }];
+          return [...prevFiles, { 
+            chatId: id as string, 
+            files: newFileURLs,  
+            actualFiles: newFiles,
+          }];
         }
       })
     }
@@ -139,14 +177,16 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
         onSubmit={onSubmit}
       >
         {() => (
-          <Form className={`flex flex-row gap-4 p-2 "items-center" ${notEmptyFileList && "items-end"} `}>
+          <Form
+           className={`flex flex-row gap-4 p-2 "items-center" ${notEmptyFileList && "items-end"} `}
+          >
             <UploadFile handleFile={handleFile}/>
             <div className={`rounded-full ${notEmptyFileList && "rounded-xl bg-stone-700"} w-full`}>
               <FilePreview handleRemoveFile={handleRemoveFile}/>
               <Field 
                 label="message"
                 id='content'
-                name='content'
+                name='content'  
                 type='text'
                 autoComplete='off'
                 variant='standard'

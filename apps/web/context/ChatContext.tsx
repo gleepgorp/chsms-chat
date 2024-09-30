@@ -14,6 +14,7 @@ type ChatProviderType = {
 export type fileListObject = {
   chatId: string;
   files: string[];
+  actualFiles: File[],
 }
 
 type ChatContextType = {
@@ -65,6 +66,7 @@ export default function ChatProvider(props: ChatProviderType): JSX.Element {
   const [fileList, setFileList] = useState<fileListObject[]>([{
     chatId: "",
     files: [],
+    actualFiles: [],
   }]);
   const inputRef = useRef(null);
 

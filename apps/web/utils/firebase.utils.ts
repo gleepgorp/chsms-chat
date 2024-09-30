@@ -1,4 +1,5 @@
 import { getApps, initializeApp } from 'firebase/app';
+import { getStorage } from 'firebase/storage'
 import { 
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -17,6 +18,7 @@ import randomColorRGB from './randomRGB.utils';
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 const db = getFirestore(app);
+export const storage = getStorage(app);
 
 async function forgotPassword(email: string): Promise<void> {
   sendPasswordResetEmail(auth, email);
