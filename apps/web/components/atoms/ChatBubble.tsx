@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { RefObject } from 'react';
 import { useAuth } from '../../context';
 import Tooltip from './Tooltip';
@@ -10,6 +11,7 @@ import { useReplyContext } from '../../context/ReplyContext';
 import ReplyElement from './ReplyElement';
 import { MessageType } from 'types/Message.type';
 import { BsFillReplyFill } from "react-icons/bs";
+import Image from 'next/image';
 
 type ChatBubbleProps = {
   message?: string;
@@ -25,6 +27,7 @@ type ChatBubbleProps = {
   profile: string
   isGroup: boolean;
   innerRef?: React.Ref<HTMLDivElement>;
+  files: string[];
 }
 
 const placementClass: Record<TipPlacement, string> = {
@@ -35,7 +38,7 @@ const placementClass: Record<TipPlacement, string> = {
 }
 
 export default function ChatBubble(props: ChatBubbleProps) {
-  const { message, senderId, timestamp, isProfileVisible, placement, messageId, reply, innerRef, sender, profile: profileDisplay, fNameInitial, lNameInitial, isGroup } = props;
+  const { message, senderId, timestamp, isProfileVisible, placement, messageId, reply, innerRef, sender, profile: profileDisplay, fNameInitial, lNameInitial, isGroup, files } = props;
   const { user } = useAuth();
   const isSender = senderId === user?.uid;
   const { firstname, lastname } = useChatContext();
@@ -50,6 +53,13 @@ export default function ChatBubble(props: ChatBubbleProps) {
     setIsSent(false);
   }
 
+  const filesMapped = files.map((file, index) => {
+    return (
+      <div key={index}>
+        <img src={file} alt="" width={50} height={50}/>
+      </div>
+    )
+  })
   const forYou = reply?.id === user?.uid;
   const repliedTo = forYou ? "you" : reply?.sender?.firstname
   
@@ -113,7 +123,8 @@ export default function ChatBubble(props: ChatBubbleProps) {
                   content={dateAndTime(timestamp || '').formatted}
                   placement={isSender ? 'left' : 'right'}
                 >
-                  <div className='py-1.5 px-3'>{message}</div>
+                  <div className='py-1.5 px-3'>{message}</div> 
+                  {filesMapped} 
                 </Tooltip>
                 <div className={`
                   absolute hidden z-20

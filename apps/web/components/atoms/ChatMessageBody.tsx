@@ -71,6 +71,7 @@ export default function ChatMessageBody(props: ChatMessageBodyProps): JSX.Elemen
             isProfileVisible={isProfileVisible}
             placement={isSender ? 'left' : 'right'}
             timestamp={convertTimestamp(data.timestamp).date.toLocaleString()}
+            files={data.files || []}
           /> 
         </div>
       )

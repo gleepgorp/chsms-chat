@@ -19,7 +19,7 @@ export default function ChatMessageContainer(): JSX.Element {
   const { 
     data: fetchedMessagesPages, 
     isFetching,
-    fetchNextPage,
+    fetchNextPage,  
     hasNextPage,
     isLoading
   } = useGetMessagesInfinite(chatId, pageSize);

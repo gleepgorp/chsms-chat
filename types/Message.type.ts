@@ -12,4 +12,5 @@ export type MessageType = {
   read?: string;
   reply?: MessageType;
   messageId?: string;
+  files?: string[],
 }

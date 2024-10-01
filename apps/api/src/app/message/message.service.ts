@@ -204,6 +204,7 @@ import { UserService } from '../user/user.service';
     
         const formattedMessages = messages.map((message) => ({
           chatId: message.chatId,
+          files: message.files,
           messageId: message.messageId,
           content: message.content,
           timestamp: message.timestamp,

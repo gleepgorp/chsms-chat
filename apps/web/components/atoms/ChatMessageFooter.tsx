@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { IoSend } from "react-icons/io5";
 import Button from './Button';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
@@ -18,7 +18,7 @@ import { useReplyContext } from '../../context/ReplyContext';
 import UploadFile from './UploadFile';
 import FilePreview from './FilePreview';
 import { filterFileUpload, storage } from '../../utils';
-import { ref, uploadBytes, listAll } from 'firebase/storage';
+import { ref, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
 
 type ChatMessageFooterProps = {
@@ -31,6 +31,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
   const router = useRouter();
   const id = router.query.id as string;
   const loggedUser = user?.uid as string;
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const { recipientIds, setFetchingOldMssgs, isGroup, fileList, setFileList } = useChatContext();
   // find current chat files base on url id
@@ -64,38 +65,49 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
 
   // for chat apps uploading file one by one is better than a single blob
   const existingFile = fileList.find(item => item.chatId === id);
-  function uploadImage() {
+  async function uploadImage() {
     if (existingFile) {
-      existingFile.actualFiles.forEach((file: File) => {
-        const imageRef = ref(storage, `${id}/${loggedUser}/images/${file.name + v4()}`);
-        uploadBytes(imageRef, file).then(() => {
-          console.log(`Image ${file.name}} uploaded`);
-        })
-      })
+      const urls = [];
+      for (const file of existingFile.actualFiles) {
+        const imageRef = ref(storage, `${id}/${loggedUser}/${file.name + v4()}`);
+        try {
+          await uploadBytes(imageRef, file);
+  
+          const downloadURL = await getDownloadURL(imageRef);
+          urls.push(downloadURL);
+  
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      return urls;
     }
   }
   
-  function onSubmit(data: MessageDTO, { resetForm }: FormikHelpers<MessageDTO>) {
-    if (isGroup) {
-      createMessageGC({ messageData: data, chatId: id as string, replyId });
-    } else {
-      createMessage({ messageData: data, replyId });
+  async function onSubmit(data: MessageDTO, { resetForm }: FormikHelpers<MessageDTO>) {
+    let urls = [];
+    if (existingFile && existingFile.actualFiles.length > 0) {
+      // this will return the urls from the uploadImage
+      urls = await uploadImage();
     }
     
+    const messageData = {
+      ...data,
+      files: urls,
+    }
+
+    if (isGroup) {
+      createMessageGC({ messageData, chatId: id as string, replyId });
+    } else {
+      createMessage({ messageData, replyId });
+    }
+
+    setFileList(prevFiles => prevFiles.map(item => 
+      item.chatId === id ? { ...item, files: [], actualFiles: []} : item
+    ));
     setFetchingOldMssgs(false);
     setRecipientId('');
     setIsSent(true);
-    if (existingFile && existingFile.actualFiles.length > 0) {
-      uploadImage();
-      setFileList(prevFiles => {
-        return prevFiles.map(item => {
-          if (item.chatId === id) {
-            return { ...item, files: [], actualFiles: []}
-          }
-          return item;
-        })
-      });
-    }
     resetForm();
 
     if (newChatRoute && fetchedChats) {
@@ -111,9 +123,14 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
     setFileList(prevFiles => {
       return prevFiles.map(item => {
         if (item.chatId === id) {
-          return { ...item, 
-            files: filterFileUpload(item.files, index),
-            actualFiles: item.actualFiles.filter((_, i) => i !== index),
+          const newFiles = [...item.files];
+          newFiles.splice(index, 1);
+          const newActualFiles = [...item.actualFiles];
+          newActualFiles.splice(index, 1);
+          return { 
+            ...item, 
+            files: newFiles,
+            actualFiles: newActualFiles,
           };
         }
         return item;
@@ -148,6 +165,7 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
           }];
         }
       })
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   }
 
@@ -174,13 +192,14 @@ export default function ChatMessageFooter(props: ChatMessageFooterProps): JSX.El
         enableReinitialize
         initialValues={initialValues}
         validationSchema={messageSchema}
+        validationContext={{ existingFiles: existingFile?.actualFiles }}
         onSubmit={onSubmit}
       >
         {() => (
           <Form
            className={`flex flex-row gap-4 p-2 "items-center" ${notEmptyFileList && "items-end"} `}
           >
-            <UploadFile handleFile={handleFile}/>
+            <UploadFile handleFile={handleFile} fileInputRef={fileInputRef}/>
             <div className={`rounded-full ${notEmptyFileList && "rounded-xl bg-stone-700"} w-full`}>
               <FilePreview handleRemoveFile={handleRemoveFile}/>
               <Field 
