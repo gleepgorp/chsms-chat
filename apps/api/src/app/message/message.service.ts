@@ -90,7 +90,8 @@ import { UserService } from '../user/user.service';
         const reply = {
           id: replyDocRef.senderId,
           content: replyDocRef.content,
-          sender: replyDocRef.sender
+          sender: replyDocRef.sender,
+          files: replyDocRef.files,
         };
         batchData.reply = reply;
       }
@@ -141,7 +142,8 @@ import { UserService } from '../user/user.service';
         const reply = {
           id: replyDocRef.senderId,
           content: replyDocRef.content,
-          sender: replyDocRef.sender
+          sender: replyDocRef.sender,
+          files: replyDocRef.files,
         };
         batchData.reply = reply;
       }

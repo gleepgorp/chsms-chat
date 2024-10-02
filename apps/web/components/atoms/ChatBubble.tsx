@@ -56,7 +56,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
   const filesMapped = files.map((file, index) => {
     return (
       <div key={index}>
-        <img src={file} alt="" width={50} height={50}/>
+        <img src={file} alt="" className='w-[260px] flex object-cover rounded-lg'/>
       </div>
     )
   })
@@ -86,16 +86,16 @@ export default function ChatBubble(props: ChatBubbleProps) {
               <div className='text-stone-300/70 text-xs py-1'>
                 {(reply || isGroup) && 
                   <div className='flex flex-row gap-1 items-center'>
-                    <BsFillReplyFill />
-                    <span className='capitalize'>{sender}</span>
+                    {reply && <BsFillReplyFill />}
+                    {isProfileVisible && <span className='capitalize'>{sender}</span>}
                     {reply && ` replied to `}
-                    <span>{repliedTo}</span>
+                    <span className='capitalize'>{repliedTo}</span>
                   </div>
                 }
               </div> : 
               (reply && 
                   <div className='flex flex-row gap-1 items-center text-stone-300/70 text-xs py-1 pr-1'>
-                    <BsFillReplyFill />
+                    {reply && <BsFillReplyFill />}
                     <span>You replied to</span>
                     <span className={`${forYou ? '' : 'capitalize'}`}>{forYou ? 'yourself' : repliedTo}</span>
                   </div>
@@ -105,6 +105,7 @@ export default function ChatBubble(props: ChatBubbleProps) {
               <ReplyElement 
                 reply={reply.content}
                 isSender={isSender}
+                files={reply.files}
               />
             }
             <div className={`
@@ -123,8 +124,8 @@ export default function ChatBubble(props: ChatBubbleProps) {
                   content={dateAndTime(timestamp || '').formatted}
                   placement={isSender ? 'left' : 'right'}
                 >
-                  <div className='py-1.5 px-3'>{message}</div> 
-                  {filesMapped} 
+                  {message && <div className='py-1.5 px-3'>{message}</div>}  
+                  {filesMapped}
                 </Tooltip>
                 <div className={`
                   absolute hidden z-20
